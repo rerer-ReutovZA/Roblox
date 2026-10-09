@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Potato Tycoon — рендер</title>
+<style>
+  html, body { margin: 0; overflow: hidden; background: #000; }
+  canvas { display: block; }
+  #caption {
+    position: absolute; left: 0; right: 0; bottom: 0; padding: 14px 22px;
+    background: linear-gradient(transparent, rgba(10, 14, 22, 0.78));
+    color: #fff; font: bold 26px 'DejaVu Sans', sans-serif; text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+  }
+  #caption small { display: block; font-size: 15px; font-weight: normal; opacity: 0.8; margin-bottom: 4px; letter-spacing: 1px; }
+</style>
+<script type="importmap">
+{ "imports": { "three": "./three/build/three.module.js", "three/addons/": "./three/examples/jsm/" } }
+</script>
+</head>
+<body>
+<div id="caption"><small>POTATO TYCOON · КАРТОФЕЛЬНЫЙ МАГНАТ</small><span id="title"></span></div>
+<script type="module" src="./viewer.js"></script>
+</body>
+</html>

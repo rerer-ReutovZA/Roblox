@@ -1,0 +1,13 @@
+# сборки и временные файлы
+build/
+sourcemap.json
+*.rbxl.lock
+*.rbxlx.lock
+.DS_Store
+__pycache__/
+node_modules/
+
+# тяжёлые производные Blender: пересобираются art/blender/build.py
+art/*.blend
+art/*.blend1
+art/export/glb/

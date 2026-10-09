@@ -1,0 +1,121 @@
+{
+  "name": "PotatoTycoon",
+  "tree": {
+    "$className": "DataModel",
+
+    "ReplicatedStorage": {
+      "$className": "ReplicatedStorage",
+      "Shared": {
+        "$path": "src/shared"
+      }
+    },
+
+    "ServerScriptService": {
+      "$className": "ServerScriptService",
+      "Server": {
+        "$path": "src/server"
+      }
+    },
+
+    "StarterPlayer": {
+      "$className": "StarterPlayer",
+      "$properties": {
+        "CharacterWalkSpeed": 20
+      },
+      "StarterPlayerScripts": {
+        "$className": "StarterPlayerScripts",
+        "Client": {
+          "$path": "src/client"
+        }
+      }
+    },
+
+    "Workspace": {
+      "$className": "Workspace",
+      "$properties": {
+        "StreamingEnabled": false
+      },
+      "Ground": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "Size": [900, 2, 900],
+          "Position": [0, -1, 0],
+          "Material": "Grass",
+          "Color": [0.38, 0.6, 0.29],
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth",
+          "Locked": true
+        }
+      },
+      "SpawnLocation": {
+        "$className": "SpawnLocation",
+        "$properties": {
+          "Anchored": true,
+          "Size": [8, 1, 8],
+          "Position": [0, 0.5, 18],
+          "Material": "Pavement",
+          "Color": [0.85, 0.75, 0.45],
+          "Neutral": true,
+          "Duration": 0,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth"
+        }
+      }
+    },
+
+    "Lighting": {
+      "$className": "Lighting",
+      "$properties": {
+        "ClockTime": 14.5,
+        "Brightness": 2.5,
+        "GlobalShadows": true,
+        "Ambient": [0.27, 0.27, 0.3],
+        "OutdoorAmbient": [0.55, 0.55, 0.58],
+        "EnvironmentDiffuseScale": 0.6,
+        "EnvironmentSpecularScale": 0.6
+      },
+      "Atmosphere": {
+        "$className": "Atmosphere",
+        "$properties": {
+          "Density": 0.28,
+          "Offset": 0.1,
+          "Color": [0.78, 0.83, 0.9],
+          "Decay": [0.42, 0.5, 0.6],
+          "Glare": 0.2,
+          "Haze": 1
+        }
+      },
+      "Bloom": {
+        "$className": "BloomEffect",
+        "$properties": {
+          "Intensity": 0.6,
+          "Size": 24,
+          "Threshold": 1.6
+        }
+      },
+      "ColorCorrection": {
+        "$className": "ColorCorrectionEffect",
+        "$properties": {
+          "Saturation": 0.12,
+          "Contrast": 0.05
+        }
+      }
+    },
+
+    "SoundService": {
+      "$className": "SoundService"
+    },
+
+    "TextChatService": {
+      "$className": "TextChatService",
+      "$properties": {
+        "ChatVersion": "TextChatService"
+      }
+    },
+
+    "Players": {
+      "$className": "Players"
+    }
+  }
+}

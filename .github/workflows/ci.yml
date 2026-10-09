@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Установить инструменты
+        run: |
+          mkdir -p "$HOME/bin" && cd "$HOME/bin"
+          get() { curl -sSfL -o tool.zip "$1" && unzip -o -q tool.zip && rm tool.zip; }
+          get https://github.com/rojo-rbx/rojo/releases/download/v7.4.4/rojo-7.4.4-linux-x86_64.zip
+          get https://github.com/Kampfkarren/selene/releases/download/0.27.1/selene-0.27.1-linux.zip
+          get https://github.com/JohnnyMorganz/StyLua/releases/download/v0.20.0/stylua-linux-x86_64.zip
+          get https://github.com/lune-org/lune/releases/download/v0.10.4/lune-0.10.4-linux-x86_64.zip
+          get https://github.com/luau-lang/luau/releases/download/0.640/luau-ubuntu.zip
+          chmod +x ./*
+          echo "$HOME/bin" >> "$GITHUB_PATH"
+
+      - name: Линтер (selene)
+        run: selene src tools
+
+      - name: Форматирование (StyLua)
+        run: stylua --check src tools
+
+      - name: Раскладка базы
+        run: luau tools/layout.luau
+
+      - name: Симуляция баланса
+        run: luau tools/simulate.luau
+
+      - name: Сборка места (Rojo)
+        run: |
+          mkdir -p build
+          rojo build default.project.json -o build/PotatoTycoon.rbxlx
+
+      - name: Смоук-тест (Lune)
+        run: lune run tools/smoke_test.luau build/PotatoTycoon.rbxlx
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PotatoTycoon
+          path: build/PotatoTycoon.rbxlx
