@@ -1,0 +1,2148 @@
+{
+ "Aeroponic": {
+  "parts": [
+   {
+    "name": "Body__Chrome",
+    "tris": 126
+   },
+   {
+    "name": "Body__Glass",
+    "tris": 360
+   },
+   {
+    "name": "Body__Leaf",
+    "tris": 672
+   },
+   {
+    "name": "Body__LeafDark",
+    "tris": 672
+   },
+   {
+    "name": "Body__MetalDark",
+    "tris": 606
+   },
+   {
+    "name": "Body__NeonCyan",
+    "tris": 316
+   },
+   {
+    "name": "Body__White",
+    "tris": 980
+   },
+   {
+    "name": "PanelLed__NeonGreen@pulse_2",
+    "tris": 190
+   }
+  ],
+  "tris": 3922
+ },
+ "AutoBedT1": {
+  "parts": [
+   {
+    "name": "Auger__Chrome@spin_z_-360#1.38,0.66,0",
+    "tris": 44
+   },
+   {
+    "name": "Auger__Orange@spin_z_-360#1.38,0.66,0",
+    "tris": 2308
+   },
+   {
+    "name": "Body__Black",
+    "tris": 216
+   },
+   {
+    "name": "Body__Green",
+    "tris": 1622
+   },
+   {
+    "name": "Body__GreenDark",
+    "tris": 108
+   },
+   {
+    "name": "Body__MetalDark",
+    "tris": 126
+   },
+   {
+    "name": "Body__Potato",
+    "tris": 864
+   },
+   {
+    "name": "Body__Soil",
+    "tris": 560
+   },
+   {
+    "name": "Body__SoilDark",
+    "tris": 108
+   },
+   {
+    "name": "Body__Steel",
+    "tris": 608
+   },
+   {
+    "name": "Body__Yellow",
+    "tris": 432
+   },
+   {
+    "name": "Bush/Plant0__Flower@sway_x_2.5_3.14_0.15#-0.503,0.97,1.9",
+    "tris": 1020
+   },
+   {
+    "name": "Bush/Plant0__FlowerCore@sway_x_2.5_3.14_0.15#-0.503,0.97,1.9",
+    "tris": 114
+   },
+   {
+    "name": "Bush/Plant0__Leaf@sway_x_2.5_3.14_0.15#-0.503,0.97,1.9",
+    "tris": 2856
+   },
+   {
+    "name": "Bush/Plant0__LeafDark@sway_x_2.5_3.14_0.15#-0.503,0.97,1.9",
+    "tris": 1428
+   },
+   {
+    "name": "Bush/Plant0__Stem@sway_x_2.5_3.14_0.15#-0.503,0.97,1.9",
+    "tris": 1680
+   },
+   {
+    "name": "Bush/Plant1__Flower@sway_x_2.5_3.14_0.45#-0.397,0.97,0",
+    "tris": 1020
+   },
+   {
+    "name": "Bush/Plant1__FlowerCore@sway_x_2.5_3.14_0.45#-0.397,0.97,0",
+    "tris": 114
+   },
+   {
+    "name": "Bush/Plant1__Leaf@sway_x_2.5_3.14_0.45#-0.397,0.97,0",
+    "tris": 2856
+   },
+   {
+    "name": "Bush/Plant1__LeafDark@sway_x_2.5_3.14_0.45#-0.397,0.97,0",
+    "tris": 1428
+   },
+   {
+    "name": "Bush/Plant1__Stem@sway_x_2.5_3.14_0.45#-0.397,0.97,0",
+    "tris": 1680
+   },
+   {
+    "name": "Bush/Plant2__Flower@sway_x_2.5_3.14_0.75#-0.384,0.97,-1.9",
+    "tris": 1020
+   },
+   {
+    "name": "Bush/Plant2__FlowerCore@sway_x_2.5_3.14_0.75#-0.384,0.97,-1.9",
+    "tris": 114
+   },
+   {
+    "name": "Bush/Plant2__Leaf@sway_x_2.5_3.14_0.75#-0.384,0.97,-1.9",
+    "tris": 2856
+   },
+   {
+    "name": "Bush/Plant2__LeafDark@sway_x_2.5_3.14_0.75#-0.384,0.97,-1.9",
+    "tris": 1428
+   },
+   {
+    "name": "Bush/Plant2__Stem@sway_x_2.5_3.14_0.75#-0.384,0.97,-1.9",
+    "tris": 1680
+   },
+   {
+    "name": "Tubers__Potato",
+    "tris": 2592
+   }
+  ],
+  "tris": 30882
+ },
+ "AutoBedT2": {
+  "parts": [
+   {
+    "name": "Body__Black",
+    "tris": 500
+   },
+   {
+    "name": "Body__Blue",
+    "tris": 496
+   },
+   {
+    "name": "Body__Chrome",
+    "tris": 436
+   },
+   {
+    "name": "Body__Glass",
+    "tris": 126
+   },
+   {
+    "name": "Body__MetalDark",
+    "tris": 108
+   },
+   {
+    "name": "Body__Soil",
+    "tris": 560
+   },
+   {
+    "name": "Body__SoilDark",
+    "tris": 108
+   },
+   {
+    "name": "Body__Steel",
+    "tris": 864
+   },
+   {
+    "name": "Bush/Plant0__Flower@sway_x_2.5_3.14_0.15#0.025,1.03,1.867",
+    "tris": 600
+   },
+   {
+    "name": "Bush/Plant0__FlowerCore@sway_x_2.5_3.14_0.15#0.025,1.03,1.867",
+    "tris": 114
+   },
+   {
+    "name": "Bush/Plant0__Leaf@sway_x_2.5_3.14_0.15#0.025,1.03,1.867",
+    "tris": 1000
+   },
+   {
+    "name": "Bush/Plant0__LeafDark@sway_x_2.5_3.14_0.15#0.025,1.03,1.867",
+    "tris": 600
+   },
+   {
+    "name": "Bush/Plant0__Stem@sway_x_2.5_3.14_0.15#0.025,1.03,1.867",
+    "tris": 1528
+   },
+   {
+    "name": "Bush/Plant1__Flower@sway_x_2.5_3.14_0.45#0.089,1.03,0",
+    "tris": 600
+   },
+   {
+    "name": "Bush/Plant1__FlowerCore@sway_x_2.5_3.14_0.45#0.089,1.03,0",
+    "tris": 114
+   },
+   {
+    "name": "Bush/Plant1__Leaf@sway_x_2.5_3.14_0.45#0.089,1.03,0",
+    "tris": 1000
+   },
+   {
+    "name": "Bush/Plant1__LeafDark@sway_x_2.5_3.14_0.45#0.089,1.03,0",
+    "tris": 600
+   },
+   {
+    "name": "Bush/Plant1__Stem@sway_x_2.5_3.14_0.45#0.089,1.03,0",
+    "tris": 1528
+   },
+   {
+    "name": "Bush/Plant2__Flower@sway_x_2.5_3.14_0.75#-0.097,1.03,-1.867",
+    "tris": 600
+   },
+   {
+    "name": "Bush/Plant2__FlowerCore@sway_x_2.5_3.14_0.75#-0.097,1.03,-1.867",
+    "tris": 114
+   },
+   {
+    "name": "Bush/Plant2__Leaf@sway_x_2.5_3.14_0.75#-0.097,1.03,-1.867",
+    "tris": 1000
+   },
+   {
+    "name": "Bush/Plant2__LeafDark@sway_x_2.5_3.14_0.75#-0.097,1.03,-1.867",
+    "tris": 600
+   },
+   {
+    "name": "Bush/Plant2__Stem@sway_x_2.5_3.14_0.75#-0.097,1.03,-1.867",
+    "tris": 1528
+   },
+   {
+    "name": "Nozzle__Black@slide_z_-1.8_3.14#0,0,0",
+    "tris": 152
+   },
+   {
+    "name": "Nozzle__Blue@slide_z_-1.8_3.14#0,0,0",
+    "tris": 324
+   },
+   {
+    "name": "Nozzle__BlueDark@slide_z_-1.8_3.14#0,0,0",
+    "tris": 190
+   },
+   {
+    "name": "Nozzle__Chrome@slide_z_-1.8_3.14#0,0,0",
+    "tris": 126
+   },
+   {
+    "name": "Nozzle__Rubber@slide_z_-1.8_3.14#0,0,0",
+    "tris": 612
+   },
+   {
+    "name": "Tubers__Potato",
+    "tris": 2592
+   }
+  ],
+  "tris": 18720
+ },
+ "AutoBedT3": {
+  "parts": [
+   {
+    "name": "Body__Black",
+    "tris": 648
+   },
+   {
+    "name": "Body__MetalDark",
+    "tris": 972
+   },
+   {
+    "name": "Body__NeonRed",
+    "tris": 432
+   },
+   {
+    "name": "Body__Soil",
+    "tris": 560
+   },
+   {
+    "name": "Body__SoilDark",
+    "tris": 108
+   },
+   {
+    "name": "Bush/Plant0__Flower@sway_x_2.5_3.14_0.15#0.059,1.03,1.867",
+    "tris": 1020
+   },
+   {
+    "name": "Bush/Plant0__FlowerCore@sway_x_2.5_3.14_0.15#0.059,1.03,1.867",
+    "tris": 114
+   },
+   {
+    "name": "Bush/Plant0__Leaf@sway_x_2.5_3.14_0.15#0.059,1.03,1.867",
+    "tris": 2856
+   },
+   {
+    "name": "Bush/Plant0__LeafDark@sway_x_2.5_3.14_0.15#0.059,1.03,1.867",
+    "tris": 1428
+   },
+   {
+    "name": "Bush/Plant0__Stem@sway_x_2.5_3.14_0.15#0.059,1.03,1.867",
+    "tris": 1680
+   },
+   {
+    "name": "Bush/Plant1__Flower@sway_x_2.5_3.14_0.45#-0.025,1.03,0",
+    "tris": 1020
+   },
+   {
+    "name": "Bush/Plant1__FlowerCore@sway_x_2.5_3.14_0.45#-0.025,1.03,0",
+    "tris": 114
+   },
+   {
+    "name": "Bush/Plant1__Leaf@sway_x_2.5_3.14_0.45#-0.025,1.03,0",
+    "tris": 2856
+   },
+   {
+    "name": "Bush/Plant1__LeafDark@sway_x_2.5_3.14_0.45#-0.025,1.03,0",
+    "tris": 1428
+   },
+   {
+    "name": "Bush/Plant1__Stem@sway_x_2.5_3.14_0.45#-0.025,1.03,0",
+    "tris": 1680
+   },
+   {
+    "name": "Bush/Plant2__Flower@sway_x_2.5_3.14_0.75#-0.061,1.03,-1.867",
+    "tris": 1020
+   },
+   {
+    "name": "Bush/Plant2__FlowerCore@sway_x_2.5_3.14_0.75#-0.061,1.03,-1.867",
+    "tris": 114
+   },
+   {
+    "name": "Bush/Plant2__Leaf@sway_x_2.5_3.14_0.75#-0.061,1.03,-1.867",
+    "tris": 2856
+   },
+   {
+    "name": "Bush/Plant2__LeafDark@sway_x_2.5_3.14_0.75#-0.061,1.03,-1.867",
+    "tris": 1428
+   },
+   {
+    "name": "Bush/Plant2__Stem@sway_x_2.5_3.14_0.75#-0.061,1.03,-1.867",
+    "tris": 1680
+   },
+   {
+    "name": "Laser__MetalDark@slide_z_-2.3_3.14#0,0,0",
+    "tris": 108
+   },
+   {
+    "name": "Laser__NeonRed@slide_z_-2.3_3.14#0,0,0",
+    "tris": 1170
+   },
+   {
+    "name": "Laser__White@slide_z_-2.3_3.14#0,0,0",
+    "tris": 188
+   },
+   {
+    "name": "Tubers__Potato",
+    "tris": 2592
+   },
+   {
+    "name": "WarnLamp__NeonRed@pulse_4",
+    "tris": 190
+   }
+  ],
+  "tris": 28262
+ },
+ "BedMetal": {
+  "parts": [
+   {
+    "name": "Body__Chrome",
+    "tris": 3428
+   },
+   {
+    "name": "Body__MetalDark",
+    "tris": 440
+   },
+   {
+    "name": "Body__NeonOrange",
+    "tris": 1944
+   },
+   {
+    "name": "Body__Red",
+    "tris": 12
+   },
+   {
+    "name": "Body__Soil",
+    "tris": 560
+   },
+   {
+    "name": "Body__SoilDark",
+    "tris": 108
+   },
+   {
+    "name": "Body__Steel",
+    "tris": 432
+   },
+   {
+    "name": "Body__White",
+    "tris": 92
+   },
+   {
+    "name": "Bush/Plant0__Flower@sway_x_2.5_3.14_0.15#-0.052,1.13,2",
+    "tris": 1020
+   },
+   {
+    "name": "Bush/Plant0__FlowerCore@sway_x_2.5_3.14_0.15#-0.052,1.13,2",
+    "tris": 114
+   },
+   {
+    "name": "Bush/Plant0__Leaf@sway_x_2.5_3.14_0.15#-0.052,1.13,2",
+    "tris": 2856
+   },
+   {
+    "name": "Bush/Plant0__LeafDark@sway_x_2.5_3.14_0.15#-0.052,1.13,2",
+    "tris": 1428
+   },
+   {
+    "name": "Bush/Plant0__Stem@sway_x_2.5_3.14_0.15#-0.052,1.13,2",
+    "tris": 1680
+   },
+   {
+    "name": "Bush/Plant1__Flower@sway_x_2.5_3.14_0.45#-0.048,1.13,0",
+    "tris": 1020
+   },
+   {
+    "name": "Bush/Plant1__FlowerCore@sway_x_2.5_3.14_0.45#-0.048,1.13,0",
+    "tris": 114
+   },
+   {
+    "name": "Bush/Plant1__Leaf@sway_x_2.5_3.14_0.45#-0.048,1.13,0",
+    "tris": 2856
+   },
+   {
+    "name": "Bush/Plant1__LeafDark@sway_x_2.5_3.14_0.45#-0.048,1.13,0",
+    "tris": 1428
+   },
+   {
+    "name": "Bush/Plant1__Stem@sway_x_2.5_3.14_0.45#-0.048,1.13,0",
+    "tris": 1680
+   },
+   {
+    "name": "Bush/Plant2__Flower@sway_x_2.5_3.14_0.75#0.027,1.13,-2",
+    "tris": 1020
+   },
+   {
+    "name": "Bush/Plant2__FlowerCore@sway_x_2.5_3.14_0.75#0.027,1.13,-2",
+    "tris": 114
+   },
+   {
+    "name": "Bush/Plant2__Leaf@sway_x_2.5_3.14_0.75#0.027,1.13,-2",
+    "tris": 2856
+   },
+   {
+    "name": "Bush/Plant2__LeafDark@sway_x_2.5_3.14_0.75#0.027,1.13,-2",
+    "tris": 1428
+   },
+   {
+    "name": "Bush/Plant2__Stem@sway_x_2.5_3.14_0.75#0.027,1.13,-2",
+    "tris": 1680
+   },
+   {
+    "name": "HeatLamp__NeonOrange@pulse_2",
+    "tris": 190
+   },
+   {
+    "name": "Tubers__Potato",
+    "tris": 2592
+   }
+  ],
+  "tris": 31092
+ },
+ "BedStone": {
+  "parts": [
+   {
+    "name": "Body__Soil",
+    "tris": 560
+   },
+   {
+    "name": "Body__SoilDark",
+    "tris": 108
+   },
+   {
+    "name": "Body__Stone",
+    "tris": 4032
+   },
+   {
+    "name": "Body__StoneDark",
+    "tris": 1728
+   },
+   {
+    "name": "Body__StoneLight",
+    "tris": 3456
+   },
+   {
+    "name": "Bush/Plant0__Flower@sway_x_2.5_3.14_0.15#0.091,1.01,1.867",
+    "tris": 600
+   },
+   {
+    "name": "Bush/Plant0__FlowerCore@sway_x_2.5_3.14_0.15#0.091,1.01,1.867",
+    "tris": 114
+   },
+   {
+    "name": "Bush/Plant0__Leaf@sway_x_2.5_3.14_0.15#0.091,1.01,1.867",
+    "tris": 1000
+   },
+   {
+    "name": "Bush/Plant0__LeafDark@sway_x_2.5_3.14_0.15#0.091,1.01,1.867",
+    "tris": 600
+   },
+   {
+    "name": "Bush/Plant0__Stem@sway_x_2.5_3.14_0.15#0.091,1.01,1.867",
+    "tris": 1528
+   },
+   {
+    "name": "Bush/Plant1__Flower@sway_x_2.5_3.14_0.45#0.021,1.01,0",
+    "tris": 600
+   },
+   {
+    "name": "Bush/Plant1__FlowerCore@sway_x_2.5_3.14_0.45#0.021,1.01,0",
+    "tris": 114
+   },
+   {
+    "name": "Bush/Plant1__Leaf@sway_x_2.5_3.14_0.45#0.021,1.01,0",
+    "tris": 1000
+   },
+   {
+    "name": "Bush/Plant1__LeafDark@sway_x_2.5_3.14_0.45#0.021,1.01,0",
+    "tris": 600
+   },
+   {
+    "name": "Bush/Plant1__Stem@sway_x_2.5_3.14_0.45#0.021,1.01,0",
+    "tris": 1528
+   },
+   {
+    "name": "Bush/Plant2__Flower@sway_x_2.5_3.14_0.75#0.09,1.01,-1.867",
+    "tris": 600
+   },
+   {
+    "name": "Bush/Plant2__FlowerCore@sway_x_2.5_3.14_0.75#0.09,1.01,-1.867",
+    "tris": 114
+   },
+   {
+    "name": "Bush/Plant2__Leaf@sway_x_2.5_3.14_0.75#0.09,1.01,-1.867",
+    "tris": 1000
+   },
+   {
+    "name": "Bush/Plant2__LeafDark@sway_x_2.5_3.14_0.75#0.09,1.01,-1.867",
+    "tris": 600
+   },
+   {
+    "name": "Bush/Plant2__Stem@sway_x_2.5_3.14_0.75#0.09,1.01,-1.867",
+    "tris": 1528
+   },
+   {
+    "name": "Tubers__Potato",
+    "tris": 2592
+   }
+  ],
+  "tris": 24002
+ },
+ "BedWood": {
+  "parts": [
+   {
+    "name": "Body__MetalDark",
+    "tris": 1520
+   },
+   {
+    "name": "Body__Soil",
+    "tris": 560
+   },
+   {
+    "name": "Body__SoilDark",
+    "tris": 108
+   },
+   {
+    "name": "Body__Wood",
+    "tris": 432
+   },
+   {
+    "name": "Body__WoodDark",
+    "tris": 488
+   },
+   {
+    "name": "Body__WoodLight",
+    "tris": 432
+   },
+   {
+    "name": "Bush/Plant0__Flower@sway_x_2.5_3.14_0.15#-0.073,0.85,2",
+    "tris": 600
+   },
+   {
+    "name": "Bush/Plant0__FlowerCore@sway_x_2.5_3.14_0.15#-0.073,0.85,2",
+    "tris": 114
+   },
+   {
+    "name": "Bush/Plant0__Leaf@sway_x_2.5_3.14_0.15#-0.073,0.85,2",
+    "tris": 1000
+   },
+   {
+    "name": "Bush/Plant0__LeafDark@sway_x_2.5_3.14_0.15#-0.073,0.85,2",
+    "tris": 600
+   },
+   {
+    "name": "Bush/Plant0__Stem@sway_x_2.5_3.14_0.15#-0.073,0.85,2",
+    "tris": 1528
+   },
+   {
+    "name": "Bush/Plant1__Flower@sway_x_2.5_3.14_0.45#-0.081,0.85,0",
+    "tris": 600
+   },
+   {
+    "name": "Bush/Plant1__FlowerCore@sway_x_2.5_3.14_0.45#-0.081,0.85,0",
+    "tris": 114
+   },
+   {
+    "name": "Bush/Plant1__Leaf@sway_x_2.5_3.14_0.45#-0.081,0.85,0",
+    "tris": 1000
+   },
+   {
+    "name": "Bush/Plant1__LeafDark@sway_x_2.5_3.14_0.45#-0.081,0.85,0",
+    "tris": 600
+   },
+   {
+    "name": "Bush/Plant1__Stem@sway_x_2.5_3.14_0.45#-0.081,0.85,0",
+    "tris": 1528
+   },
+   {
+    "name": "Bush/Plant2__Flower@sway_x_2.5_3.14_0.75#-0.054,0.85,-2",
+    "tris": 600
+   },
+   {
+    "name": "Bush/Plant2__FlowerCore@sway_x_2.5_3.14_0.75#-0.054,0.85,-2",
+    "tris": 114
+   },
+   {
+    "name": "Bush/Plant2__Leaf@sway_x_2.5_3.14_0.75#-0.054,0.85,-2",
+    "tris": 1000
+   },
+   {
+    "name": "Bush/Plant2__LeafDark@sway_x_2.5_3.14_0.75#-0.054,0.85,-2",
+    "tris": 600
+   },
+   {
+    "name": "Bush/Plant2__Stem@sway_x_2.5_3.14_0.75#-0.054,0.85,-2",
+    "tris": 1528
+   },
+   {
+    "name": "Tubers__Potato",
+    "tris": 2592
+   }
+  ],
+  "tris": 17658
+ },
+ "BigSack": {
+  "parts": [
+   {
+    "name": "Body__Burlap",
+    "tris": 1344
+   },
+   {
+    "name": "Body__Gold",
+    "tris": 380
+   },
+   {
+    "name": "Body__Potato",
+    "tris": 1728
+   },
+   {
+    "name": "Body__Red",
+    "tris": 136
+   },
+   {
+    "name": "Body__Straw",
+    "tris": 384
+   },
+   {
+    "name": "Body__WoodDark",
+    "tris": 1588
+   }
+  ],
+  "tris": 5560
+ },
+ "BiohumusTank": {
+  "parts": [
+   {
+    "name": "Body__Chrome",
+    "tris": 400
+   },
+   {
+    "name": "Body__Copper",
+    "tris": 126
+   },
+   {
+    "name": "Body__MetalDark",
+    "tris": 948
+   },
+   {
+    "name": "Body__Skin",
+    "tris": 1500
+   },
+   {
+    "name": "Body__SoilDark",
+    "tris": 1408
+   },
+   {
+    "name": "Body__WoodDark",
+    "tris": 560
+   }
+  ],
+  "tris": 4942
+ },
+ "Bug": {
+  "parts": [
+   {
+    "name": "BugBody__Black@bob_0.03_25.13#0,0,0",
+    "tris": 3740
+   },
+   {
+    "name": "BugBody__BugOrange@bob_0.03_25.13#0,0,0",
+    "tris": 574
+   },
+   {
+    "name": "BugBody__Shell@bob_0.03_25.13#0,0,0",
+    "tris": 878
+   },
+   {
+    "name": "BugBody/HeadGroup__Black@sway_y_8_6.28#0,0.4,1.28",
+    "tris": 2050
+   },
+   {
+    "name": "BugBody/HeadGroup__BugOrange@sway_y_8_6.28#0,0.4,1.28",
+    "tris": 1760
+   },
+   {
+    "name": "BugBody/Hip0-1__Black@sway_y_14_12.57_0.5#-0.5,0.32,0.72",
+    "tris": 544
+   },
+   {
+    "name": "BugBody/Hip0-1__BugOrange@sway_y_14_12.57_0.5#-0.5,0.32,0.72",
+    "tris": 500
+   },
+   {
+    "name": "BugBody/Hip01__Black@sway_y_14_12.57_0#0.5,0.32,0.72",
+    "tris": 544
+   },
+   {
+    "name": "BugBody/Hip01__BugOrange@sway_y_14_12.57_0#0.5,0.32,0.72",
+    "tris": 500
+   },
+   {
+    "name": "BugBody/Hip1-1__Black@sway_y_14_12.57_0#-0.5,0.32,0.25",
+    "tris": 544
+   },
+   {
+    "name": "BugBody/Hip1-1__BugOrange@sway_y_14_12.57_0#-0.5,0.32,0.25",
+    "tris": 500
+   },
+   {
+    "name": "BugBody/Hip11__Black@sway_y_14_12.57_0.5#0.5,0.32,0.25",
+    "tris": 544
+   },
+   {
+    "name": "BugBody/Hip11__BugOrange@sway_y_14_12.57_0.5#0.5,0.32,0.25",
+    "tris": 500
+   },
+   {
+    "name": "BugBody/Hip2-1__Black@sway_y_14_12.57_0.5#-0.5,0.32,-0.25",
+    "tris": 544
+   },
+   {
+    "name": "BugBody/Hip2-1__BugOrange@sway_y_14_12.57_0.5#-0.5,0.32,-0.25",
+    "tris": 500
+   },
+   {
+    "name": "BugBody/Hip21__Black@sway_y_14_12.57_0#0.5,0.32,-0.25",
+    "tris": 544
+   },
+   {
+    "name": "BugBody/Hip21__BugOrange@sway_y_14_12.57_0#0.5,0.32,-0.25",
+    "tris": 500
+   }
+  ],
+  "tris": 15266
+ },
+ "DripSystem": {
+  "parts": [
+   {
+    "name": "Body__Black",
+    "tris": 2666
+   },
+   {
+    "name": "Body__Blue",
+    "tris": 320
+   },
+   {
+    "name": "Body__BlueDark",
+    "tris": 948
+   },
+   {
+    "name": "Body__Chrome",
+    "tris": 126
+   },
+   {
+    "name": "Body__Glass",
+    "tris": 46
+   },
+   {
+    "name": "Body__Green",
+    "tris": 580
+   },
+   {
+    "name": "Body__MetalDark",
+    "tris": 216
+   },
+   {
+    "name": "Body__Red",
+    "tris": 768
+   },
+   {
+    "name": "Body__White",
+    "tris": 190
+   },
+   {
+    "name": "Drop-1__Water@pulse_2",
+    "tris": 40
+   },
+   {
+    "name": "Drop-3__Water@pulse_2",
+    "tris": 40
+   },
+   {
+    "name": "Drop-5__Water@pulse_2",
+    "tris": 40
+   },
+   {
+    "name": "Drop-7__Water@pulse_2",
+    "tris": 40
+   },
+   {
+    "name": "Drop-9__Water@pulse_2",
+    "tris": 40
+   },
+   {
+    "name": "Drop1__Water@pulse_2",
+    "tris": 40
+   },
+   {
+    "name": "Drop3__Water@pulse_2",
+    "tris": 40
+   },
+   {
+    "name": "Drop5__Water@pulse_2",
+    "tris": 40
+   },
+   {
+    "name": "Drop7__Water@pulse_2",
+    "tris": 40
+   },
+   {
+    "name": "Drop9__Water@pulse_2",
+    "tris": 40
+   }
+  ],
+  "tris": 6260
+ },
+ "Drone": {
+  "parts": [
+   {
+    "name": "DroneBody__Black@bob_0.12_3.14#0,1.6,0",
+    "tris": 320
+   },
+   {
+    "name": "DroneBody__Chrome@bob_0.12_3.14#0,1.6,0",
+    "tris": 44
+   },
+   {
+    "name": "DroneBody__Glass@bob_0.12_3.14#0,1.6,0",
+    "tris": 190
+   },
+   {
+    "name": "DroneBody__Grey@bob_0.12_3.14#0,1.6,0",
+    "tris": 2430
+   },
+   {
+    "name": "DroneBody__MetalDark@bob_0.12_3.14#0,1.6,0",
+    "tris": 1250
+   },
+   {
+    "name": "DroneBody__NeonGreen@bob_0.12_3.14#0,1.6,0",
+    "tris": 570
+   },
+   {
+    "name": "DroneBody__NeonRed@bob_0.12_3.14#0,1.6,0",
+    "tris": 570
+   },
+   {
+    "name": "DroneBody__Orange@bob_0.12_3.14#0,1.6,0",
+    "tris": 252
+   },
+   {
+    "name": "DroneBody__Rubber@bob_0.12_3.14#0,1.6,0",
+    "tris": 1480
+   },
+   {
+    "name": "DroneBody__White@bob_0.12_3.14#0,1.6,0",
+    "tris": 3918
+   },
+   {
+    "name": "DroneBody/Claw__Chrome@sway_x_6_3.14_0.25#0,0.94,-0.12",
+    "tris": 2220
+   },
+   {
+    "name": "DroneBody/Claw__MetalDark@sway_x_6_3.14_0.25#0,0.94,-0.12",
+    "tris": 256
+   },
+   {
+    "name": "DroneBody/Claw__Potato@sway_x_6_3.14_0.25#0,0.94,-0.12",
+    "tris": 288
+   },
+   {
+    "name": "DroneBody/Prop0__Black@spin_y_1440#-0.98,1.86,0.98",
+    "tris": 280
+   },
+   {
+    "name": "DroneBody/Prop0__MetalDark@spin_y_1440#-0.98,1.86,0.98",
+    "tris": 190
+   },
+   {
+    "name": "DroneBody/Prop1__Black@spin_y_-1440#0.98,1.86,0.98",
+    "tris": 280
+   },
+   {
+    "name": "DroneBody/Prop1__MetalDark@spin_y_-1440#0.98,1.86,0.98",
+    "tris": 190
+   },
+   {
+    "name": "DroneBody/Prop2__Black@spin_y_1440#0.98,1.86,-0.98",
+    "tris": 280
+   },
+   {
+    "name": "DroneBody/Prop2__MetalDark@spin_y_1440#0.98,1.86,-0.98",
+    "tris": 190
+   },
+   {
+    "name": "DroneBody/Prop3__Black@spin_y_-1440#-0.98,1.86,-0.98",
+    "tris": 280
+   },
+   {
+    "name": "DroneBody/Prop3__MetalDark@spin_y_-1440#-0.98,1.86,-0.98",
+    "tris": 190
+   }
+  ],
+  "tris": 15668
+ },
+ "FenceWood": {
+  "parts": [
+   {
+    "name": "Body__Wood",
+    "tris": 3436
+   },
+   {
+    "name": "Body__WoodDark",
+    "tris": 4500
+   },
+   {
+    "name": "Body__WoodLight",
+    "tris": 3240
+   },
+   {
+    "name": "GateSign__MetalDark@sway_z_-2_3.14#0,3.35,12.85",
+    "tris": 88
+   },
+   {
+    "name": "GateSign__Potato@sway_z_-2_3.14#0,3.35,12.85",
+    "tris": 288
+   },
+   {
+    "name": "GateSign__WoodDark@sway_z_-2_3.14#0,3.35,12.85",
+    "tris": 2092
+   },
+   {
+    "name": "GateSign__WoodLight@sway_z_-2_3.14#0,3.35,12.85",
+    "tris": 108
+   }
+  ],
+  "tris": 13752
+ },
+ "Fertilizer": {
+  "parts": [
+   {
+    "name": "Body__Black",
+    "tris": 608
+   },
+   {
+    "name": "Body__Blue",
+    "tris": 298
+   },
+   {
+    "name": "Body__Glass",
+    "tris": 38
+   },
+   {
+    "name": "Body__Green",
+    "tris": 38
+   },
+   {
+    "name": "Body__MetalDark",
+    "tris": 108
+   },
+   {
+    "name": "Body__White",
+    "tris": 332
+   },
+   {
+    "name": "DoserLed__NeonGreen@pulse_4",
+    "tris": 190
+   }
+  ],
+  "tris": 1612
+ },
+ "Flagpole": {
+  "parts": [
+   {
+    "name": "Body__Chrome",
+    "tris": 94
+   },
+   {
+    "name": "Body__Concrete",
+    "tris": 254
+   },
+   {
+    "name": "Body__Gold",
+    "tris": 120
+   },
+   {
+    "name": "Flag__MetalDark@sway_y_12_3.14#0,11,0",
+    "tris": 252
+   },
+   {
+    "name": "Flag__Red@sway_y_12_3.14#0,11,0",
+    "tris": 2120
+   },
+   {
+    "name": "Flag__WoodDark@sway_y_12_3.14#0,11,0",
+    "tris": 576
+   },
+   {
+    "name": "Flag__Yellow@sway_y_12_3.14#0,11,0",
+    "tris": 416
+   }
+  ],
+  "tris": 3832
+ },
+ "Fogger": {
+  "parts": [
+   {
+    "name": "Body__Chrome",
+    "tris": 318
+   },
+   {
+    "name": "Body__Glass",
+    "tris": 108
+   },
+   {
+    "name": "Body__NeonCyan",
+    "tris": 108
+   },
+   {
+    "name": "Body__Water",
+    "tris": 108
+   },
+   {
+    "name": "Body__White",
+    "tris": 188
+   },
+   {
+    "name": "Mist0__White@pulse_1",
+    "tris": 896
+   },
+   {
+    "name": "Mist1__White@pulse_1.5",
+    "tris": 896
+   },
+   {
+    "name": "Mist2__White@pulse_2",
+    "tris": 896
+   }
+  ],
+  "tris": 3518
+ },
+ "ForceDome": {
+  "parts": [
+   {
+    "name": "Body__Black",
+    "tris": 190
+   },
+   {
+    "name": "Body__Chrome",
+    "tris": 2000
+   },
+   {
+    "name": "Body__MetalDark",
+    "tris": 2286
+   },
+   {
+    "name": "Orb__NeonCyan@pulse_1.5",
+    "tris": 280
+   }
+  ],
+  "tris": 4756
+ },
+ "GenPetrol": {
+  "parts": [
+   {
+    "name": "Body__Black@slide_x_0.012_37.70#0,0,0",
+    "tris": 2400
+   },
+   {
+    "name": "Body__Black",
+    "tris": 740
+   },
+   {
+    "name": "Body__Chrome@slide_x_0.012_37.70#0,0,0",
+    "tris": 1240
+   },
+   {
+    "name": "Body__Grey@slide_x_0.012_37.70#0,0,0",
+    "tris": 648
+   },
+   {
+    "name": "Body__MetalDark@slide_x_0.012_37.70#0,0,0",
+    "tris": 368
+   },
+   {
+    "name": "Body__MetalDark",
+    "tris": 376
+   },
+   {
+    "name": "Body__NeonGreen@slide_x_0.012_37.70#0,0,0",
+    "tris": 190
+   },
+   {
+    "name": "Body__Red@slide_x_0.012_37.70#0,0,0",
+    "tris": 960
+   },
+   {
+    "name": "Body__Rubber",
+    "tris": 1752
+   },
+   {
+    "name": "Body__White@slide_x_0.012_37.70#0,0,0",
+    "tris": 368
+   }
+  ],
+  "tris": 9042
+ },
+ "GreenhousePro": {
+  "parts": [
+   {
+    "name": "Body__Black",
+    "tris": 132
+   },
+   {
+    "name": "Body__Chrome",
+    "tris": 1176
+   },
+   {
+    "name": "Body__Concrete",
+    "tris": 108
+   },
+   {
+    "name": "Body__Glass",
+    "tris": 548
+   },
+   {
+    "name": "Body__Leaf",
+    "tris": 2304
+   },
+   {
+    "name": "Body__LeafDark",
+    "tris": 2304
+   },
+   {
+    "name": "Body__NeonWhite",
+    "tris": 384
+   },
+   {
+    "name": "Body__Soil",
+    "tris": 216
+   },
+   {
+    "name": "Body__SoilDark",
+    "tris": 1440
+   },
+   {
+    "name": "Body__StoneLight",
+    "tris": 108
+   },
+   {
+    "name": "Body__White",
+    "tris": 216
+   },
+   {
+    "name": "Body__WoodLight",
+    "tris": 216
+   }
+  ],
+  "tris": 9152
+ },
+ "GreenhouseSmall": {
+  "parts": [
+   {
+    "name": "Body__Concrete",
+    "tris": 108
+   },
+   {
+    "name": "Body__Glass",
+    "tris": 100
+   },
+   {
+    "name": "Body__Gold",
+    "tris": 190
+   },
+   {
+    "name": "Body__Leaf",
+    "tris": 1920
+   },
+   {
+    "name": "Body__LeafDark",
+    "tris": 1920
+   },
+   {
+    "name": "Body__Soil",
+    "tris": 108
+   },
+   {
+    "name": "Body__SoilDark",
+    "tris": 1200
+   },
+   {
+    "name": "Body__WoodDark",
+    "tris": 2808
+   },
+   {
+    "name": "Body__WoodLight",
+    "tris": 108
+   }
+  ],
+  "tris": 8462
+ },
+ "HarvestTower": {
+  "parts": [
+   {
+    "name": "Beacon__NeonRed@pulse_3",
+    "tris": 254
+   },
+   {
+    "name": "Body__Blue",
+    "tris": 108
+   },
+   {
+    "name": "Body__Chrome",
+    "tris": 44
+   },
+   {
+    "name": "Body__Concrete",
+    "tris": 432
+   },
+   {
+    "name": "Body__Glass",
+    "tris": 108
+   },
+   {
+    "name": "Body__MetalDark",
+    "tris": 1222
+   },
+   {
+    "name": "Body__RedMetal",
+    "tris": 284
+   },
+   {
+    "name": "Body__Steel",
+    "tris": 108
+   },
+   {
+    "name": "Body__White",
+    "tris": 5328
+   },
+   {
+    "name": "Body__Yellow",
+    "tris": 516
+   },
+   {
+    "name": "Radar__Chrome@spin_y_90#0,13.55,-0.15",
+    "tris": 44
+   },
+   {
+    "name": "Radar__MetalDark@spin_y_90#0,13.55,-0.15",
+    "tris": 532
+   },
+   {
+    "name": "Radar__White@spin_y_90#0,13.55,-0.15",
+    "tris": 576
+   }
+  ],
+  "tris": 9556
+ },
+ "HydroRack2": {
+  "parts": [
+   {
+    "name": "Body__BlueDark",
+    "tris": 108
+   },
+   {
+    "name": "Body__Chrome",
+    "tris": 864
+   },
+   {
+    "name": "Body__Leaf",
+    "tris": 2560
+   },
+   {
+    "name": "Body__LeafDark",
+    "tris": 3840
+   },
+   {
+    "name": "Body__MetalDark",
+    "tris": 216
+   },
+   {
+    "name": "Body__NeonPurple",
+    "tris": 864
+   },
+   {
+    "name": "Body__Rubber",
+    "tris": 504
+   },
+   {
+    "name": "Body__Water",
+    "tris": 216
+   },
+   {
+    "name": "Body__White",
+    "tris": 2660
+   }
+  ],
+  "tris": 11832
+ },
+ "HydroRack3": {
+  "parts": [
+   {
+    "name": "Body__BlueDark",
+    "tris": 108
+   },
+   {
+    "name": "Body__Chrome",
+    "tris": 1080
+   },
+   {
+    "name": "Body__Leaf",
+    "tris": 3840
+   },
+   {
+    "name": "Body__LeafDark",
+    "tris": 5760
+   },
+   {
+    "name": "Body__MetalDark",
+    "tris": 324
+   },
+   {
+    "name": "Body__NeonPurple",
+    "tris": 1296
+   },
+   {
+    "name": "Body__Rubber",
+    "tris": 504
+   },
+   {
+    "name": "Body__Water",
+    "tris": 324
+   },
+   {
+    "name": "Body__White",
+    "tris": 3968
+   }
+  ],
+  "tris": 17204
+ },
+ "HydroTower": {
+  "parts": [
+   {
+    "name": "Body__Blue",
+    "tris": 480
+   },
+   {
+    "name": "Body__NeonCyan",
+    "tris": 192
+   },
+   {
+    "name": "Body__Water",
+    "tris": 158
+   },
+   {
+    "name": "Tower__Leaf@spin_y_12#0,1,0",
+    "tris": 1536
+   },
+   {
+    "name": "Tower__LeafDark@spin_y_12#0,1,0",
+    "tris": 1536
+   },
+   {
+    "name": "Tower__White@spin_y_12#0,1,0",
+    "tris": 2558
+   }
+  ],
+  "tris": 6460
+ },
+ "HydroTray": {
+  "parts": [
+   {
+    "name": "Body__BlueDark",
+    "tris": 192
+   },
+   {
+    "name": "Body__Chrome",
+    "tris": 648
+   },
+   {
+    "name": "Body__Leaf",
+    "tris": 1280
+   },
+   {
+    "name": "Body__LeafDark",
+    "tris": 1920
+   },
+   {
+    "name": "Body__Rubber",
+    "tris": 504
+   },
+   {
+    "name": "Body__Water",
+    "tris": 108
+   },
+   {
+    "name": "Body__White",
+    "tris": 1808
+   }
+  ],
+  "tris": 6460
+ },
+ "Ionizer": {
+  "parts": [
+   {
+    "name": "Body__Copper",
+    "tris": 5498
+   },
+   {
+    "name": "Body__MetalDark",
+    "tris": 286
+   },
+   {
+    "name": "Orb__NeonCyan@pulse_2",
+    "tris": 240
+   },
+   {
+    "name": "Rings__NeonCyan@spin_y_45#0,2,0",
+    "tris": 1920
+   }
+  ],
+  "tris": 7944
+ },
+ "LampBasic": {
+  "parts": [
+   {
+    "name": "Body__Black",
+    "tris": 88
+   },
+   {
+    "name": "Body__Chrome",
+    "tris": 884
+   },
+   {
+    "name": "Body__GreenDark",
+    "tris": 1016
+   },
+   {
+    "name": "Body__MetalDark",
+    "tris": 862
+   },
+   {
+    "name": "Body__NeonYellow",
+    "tris": 476
+   },
+   {
+    "name": "Body__White",
+    "tris": 760
+   }
+  ],
+  "tris": 4086
+ },
+ "LampLed": {
+  "parts": [
+   {
+    "name": "Body__Chrome",
+    "tris": 936
+   },
+   {
+    "name": "Body__Grey",
+    "tris": 1944
+   },
+   {
+    "name": "Body__MetalDark",
+    "tris": 1078
+   },
+   {
+    "name": "Body__NeonPurple",
+    "tris": 648
+   },
+   {
+    "name": "Body__NeonRed",
+    "tris": 648
+   }
+  ],
+  "tris": 5254
+ },
+ "LampQuantum": {
+  "parts": [
+   {
+    "name": "Body__Chrome",
+    "tris": 848
+   },
+   {
+    "name": "Body__MetalDark",
+    "tris": 862
+   },
+   {
+    "name": "Body__NeonCyan",
+    "tris": 216
+   },
+   {
+    "name": "Body__White",
+    "tris": 376
+   },
+   {
+    "name": "Ring-1__NeonCyan@spin_y_90#0,5.95,5",
+    "tris": 960
+   },
+   {
+    "name": "Ring-1__NeonWhite@spin_y_90#0,5.95,5",
+    "tris": 216
+   },
+   {
+    "name": "Ring1__NeonCyan@spin_y_90#0,5.95,-5",
+    "tris": 960
+   },
+   {
+    "name": "Ring1__NeonWhite@spin_y_90#0,5.95,-5",
+    "tris": 216
+   }
+  ],
+  "tris": 4654
+ },
+ "LaunchPad": {
+  "parts": [
+   {
+    "name": "Body__Black",
+    "tris": 84
+   },
+   {
+    "name": "Body__Chrome",
+    "tris": 500
+   },
+   {
+    "name": "Body__Concrete",
+    "tris": 108
+   },
+   {
+    "name": "Body__MetalDark",
+    "tris": 2392
+   },
+   {
+    "name": "Body__Steel",
+    "tris": 1188
+   },
+   {
+    "name": "Body__StoneLight",
+    "tris": 108
+   },
+   {
+    "name": "Body__White",
+    "tris": 500
+   },
+   {
+    "name": "Body__Yellow",
+    "tris": 384
+   },
+   {
+    "name": "Lamp-1-1__NeonRed@pulse_1.5",
+    "tris": 254
+   },
+   {
+    "name": "Lamp-11__NeonRed@pulse_1.5",
+    "tris": 254
+   },
+   {
+    "name": "Lamp1-1__NeonRed@pulse_1.5",
+    "tris": 254
+   },
+   {
+    "name": "Lamp11__NeonRed@pulse_1.5",
+    "tris": 254
+   }
+  ],
+  "tris": 6280
+ },
+ "LedBoard": {
+  "parts": [
+   {
+    "name": "Body__Black",
+    "tris": 432
+   },
+   {
+    "name": "Body__Chrome",
+    "tris": 570
+   },
+   {
+    "name": "Body__MetalDark",
+    "tris": 648
+   },
+   {
+    "name": "Body__Potato",
+    "tris": 288
+   }
+  ],
+  "tris": 1938
+ },
+ "Mascot": {
+  "parts": [
+   {
+    "name": "Plush__Black@bob_0.25_3.14#0,0,0",
+    "tris": 380
+   },
+   {
+    "name": "Plush__FabricRed@bob_0.25_3.14#0,0,0",
+    "tris": 744
+   },
+   {
+    "name": "Plush__FabricWhite@bob_0.25_3.14#0,0,0",
+    "tris": 3102
+   },
+   {
+    "name": "Plush__Potato@bob_0.25_3.14#0,0,0",
+    "tris": 3400
+   },
+   {
+    "name": "Plush__PotatoDark@bob_0.25_3.14#0,0,0",
+    "tris": 760
+   },
+   {
+    "name": "Plush__Red@bob_0.25_3.14#0,0,0",
+    "tris": 3316
+   },
+   {
+    "name": "Plush__White@bob_0.25_3.14#0,0,0",
+    "tris": 760
+   }
+  ],
+  "tris": 12462
+ },
+ "MoleTrap": {
+  "parts": [
+   {
+    "name": "AntennaTip__NeonRed@pulse_2",
+    "tris": 190
+   },
+   {
+    "name": "Body__Black",
+    "tris": 44
+   },
+   {
+    "name": "Body__Chrome",
+    "tris": 108
+   },
+   {
+    "name": "Body__Green",
+    "tris": 318
+   },
+   {
+    "name": "Body__GreenDark",
+    "tris": 756
+   },
+   {
+    "name": "Body__Soil",
+    "tris": 1408
+   },
+   {
+    "name": "Body__SolarCell",
+    "tris": 1944
+   },
+   {
+    "name": "Wave0__NeonCyan@pulse_2",
+    "tris": 768
+   },
+   {
+    "name": "Wave1__NeonCyan@pulse_3",
+    "tris": 768
+   }
+  ],
+  "tris": 6304
+ },
+ "NeonSign": {
+  "parts": [
+   {
+    "name": "Body__Black",
+    "tris": 404
+   },
+   {
+    "name": "Body__Gold",
+    "tris": 576
+   },
+   {
+    "name": "Body__MetalDark",
+    "tris": 1224
+   },
+   {
+    "name": "Body__NeonPurple",
+    "tris": 176
+   },
+   {
+    "name": "Body__NeonYellow",
+    "tris": 3088
+   }
+  ],
+  "tris": 5468
+ },
+ "SellStand": {
+  "parts": [
+   {
+    "name": "Body__Black",
+    "tris": 108
+   },
+   {
+    "name": "Body__BlueDark",
+    "tris": 108
+   },
+   {
+    "name": "Body__Burlap",
+    "tris": 2688
+   },
+   {
+    "name": "Body__Chrome",
+    "tris": 44
+   },
+   {
+    "name": "Body__FabricRed",
+    "tris": 520
+   },
+   {
+    "name": "Body__FabricWhite",
+    "tris": 416
+   },
+   {
+    "name": "Body__MetalDark",
+    "tris": 254
+   },
+   {
+    "name": "Body__NeonGreen",
+    "tris": 108
+   },
+   {
+    "name": "Body__Potato",
+    "tris": 9912
+   },
+   {
+    "name": "Body__Potato",
+    "tris": 1176
+   },
+   {
+    "name": "Body__Straw",
+    "tris": 768
+   },
+   {
+    "name": "Body__White",
+    "tris": 1244
+   },
+   {
+    "name": "Body__Wood",
+    "tris": 2572
+   },
+   {
+    "name": "Body__WoodDark",
+    "tris": 4902
+   },
+   {
+    "name": "Body__WoodLight",
+    "tris": 3132
+   },
+   {
+    "name": "Body__Yellow",
+    "tris": 108
+   },
+   {
+    "name": "ScalePan__Chrome@bob_0.03_6.28#-2.3,2.22,2.3",
+    "tris": 320
+   },
+   {
+    "name": "ScalePan__Potato@bob_0.03_6.28#-2.3,2.22,2.3",
+    "tris": 504
+   }
+  ],
+  "tris": 28884
+ },
+ "Shuttle": {
+  "parts": [
+   {
+    "name": "Stack__Black",
+    "tris": 3246
+   },
+   {
+    "name": "Stack__Copper",
+    "tris": 1140
+   },
+   {
+    "name": "Stack__Glass",
+    "tris": 288
+   },
+   {
+    "name": "Stack__Gold",
+    "tris": 288
+   },
+   {
+    "name": "Stack__MetalDark",
+    "tris": 2956
+   },
+   {
+    "name": "Stack__Orange",
+    "tris": 1248
+   },
+   {
+    "name": "Stack__White",
+    "tris": 3820
+   },
+   {
+    "name": "Stack/Flames__NeonOrange",
+    "tris": 480
+   },
+   {
+    "name": "Stack/Flames__NeonYellow",
+    "tris": 288
+   }
+  ],
+  "tris": 13754
+ },
+ "Slicer": {
+  "parts": [
+   {
+    "name": "BladeDisc__Chrome@spin_y_720#0.1,2.32,-0.35",
+    "tris": 648
+   },
+   {
+    "name": "BladeDisc__Gold@spin_y_720#0.1,2.32,-0.35",
+    "tris": 188
+   },
+   {
+    "name": "BladeDisc__MetalDark@spin_y_720#0.1,2.32,-0.35",
+    "tris": 140
+   },
+   {
+    "name": "Body__Black",
+    "tris": 596
+   },
+   {
+    "name": "Body__Blue",
+    "tris": 392
+   },
+   {
+    "name": "Body__Chrome",
+    "tris": 980
+   },
+   {
+    "name": "Body__Glass",
+    "tris": 140
+   },
+   {
+    "name": "Body__Green",
+    "tris": 140
+   },
+   {
+    "name": "Body__GreenDark",
+    "tris": 1622
+   },
+   {
+    "name": "Body__MetalDark",
+    "tris": 324
+   },
+   {
+    "name": "Body__NeonGreen",
+    "tris": 108
+   },
+   {
+    "name": "Body__Potato",
+    "tris": 1176
+   },
+   {
+    "name": "Body__Red",
+    "tris": 458
+   },
+   {
+    "name": "Body__Rubber",
+    "tris": 540
+   },
+   {
+    "name": "Body__Steel",
+    "tris": 324
+   },
+   {
+    "name": "Body__Yellow",
+    "tris": 2718
+   },
+   {
+    "name": "Chips__Yellow@slide_x_0.19_6.28#0,0,0",
+    "tris": 2352
+   }
+  ],
+  "tris": 12846
+ },
+ "SoilSensor": {
+  "parts": [
+   {
+    "name": "Body__Black",
+    "tris": 812
+   },
+   {
+    "name": "Body__Chrome",
+    "tris": 214
+   },
+   {
+    "name": "Body__NeonGreen",
+    "tris": 108
+   },
+   {
+    "name": "Body__Soil",
+    "tris": 1408
+   },
+   {
+    "name": "Body__SolarCell",
+    "tris": 1944
+   },
+   {
+    "name": "Body__White",
+    "tris": 108
+   }
+  ],
+  "tris": 4594
+ },
+ "SolarSmall": {
+  "parts": [
+   {
+    "name": "Body__Black",
+    "tris": 500
+   },
+   {
+    "name": "Body__Chrome",
+    "tris": 216
+   },
+   {
+    "name": "Body__Gold",
+    "tris": 190
+   },
+   {
+    "name": "Body__Red",
+    "tris": 216
+   },
+   {
+    "name": "Body__RedMetal",
+    "tris": 108
+   },
+   {
+    "name": "Body__SolarCell",
+    "tris": 3888
+   },
+   {
+    "name": "Body__White",
+    "tris": 108
+   },
+   {
+    "name": "Body__Wood",
+    "tris": 1376
+   },
+   {
+    "name": "Body__WoodDark",
+    "tris": 648
+   },
+   {
+    "name": "Body__WoodLight",
+    "tris": 1296
+   },
+   {
+    "name": "InverterLed__NeonGreen@pulse_1",
+    "tris": 190
+   }
+  ],
+  "tris": 8736
+ },
+ "Sprinkler": {
+  "parts": [
+   {
+    "name": "Body__Concrete",
+    "tris": 190
+   },
+   {
+    "name": "Body__Copper",
+    "tris": 374
+   },
+   {
+    "name": "Body__Red",
+    "tris": 804
+   },
+   {
+    "name": "Head__Black@spin_y_180#0,2.2,0",
+    "tris": 380
+   },
+   {
+    "name": "Head__Chrome@spin_y_180#0,2.2,0",
+    "tris": 1000
+   },
+   {
+    "name": "Head__Water@spin_y_180#0,2.2,0",
+    "tris": 3880
+   },
+   {
+    "name": "Head__Yellow@spin_y_180#0,2.2,0",
+    "tris": 318
+   }
+  ],
+  "tris": 6946
+ },
+ "WateringCan": {
+  "parts": [
+   {
+    "name": "Body__Black",
+    "tris": 108
+   },
+   {
+    "name": "Body__MetalDark",
+    "tris": 108
+   },
+   {
+    "name": "Body__White",
+    "tris": 108
+   },
+   {
+    "name": "Body__Wood",
+    "tris": 648
+   },
+   {
+    "name": "Body__WoodDark",
+    "tris": 108
+   },
+   {
+    "name": "Body__WoodLight",
+    "tris": 648
+   },
+   {
+    "name": "Can__Chrome@sway_z_-10_3.14#0.35,0.95,0",
+    "tris": 190
+   },
+   {
+    "name": "Can__Green@sway_z_-10_3.14#0.35,0.95,0",
+    "tris": 1012
+   },
+   {
+    "name": "Can__GreenDark@sway_z_-10_3.14#0.35,0.95,0",
+    "tris": 1244
+   },
+   {
+    "name": "Can__Water@sway_z_-10_3.14#0.35,0.95,0",
+    "tris": 2940
+   },
+   {
+    "name": "TimerLed__NeonCyan@pulse_3",
+    "tris": 190
+   }
+  ],
+  "tris": 7304
+ },
+ "WindSmall": {
+  "parts": [
+   {
+    "name": "Body__Concrete",
+    "tris": 108
+   },
+   {
+    "name": "Body__MetalDark",
+    "tris": 432
+   },
+   {
+    "name": "Body__Steel",
+    "tris": 176
+   },
+   {
+    "name": "Body__White",
+    "tris": 880
+   },
+   {
+    "name": "Head__MetalDark@sway_y_6_3.14#0,8.75,0",
+    "tris": 190
+   },
+   {
+    "name": "Head__Red@sway_y_6_3.14#0,8.75,0",
+    "tris": 360
+   },
+   {
+    "name": "Head__Steel@sway_y_6_3.14#0,8.75,0",
+    "tris": 44
+   },
+   {
+    "name": "Head__White@sway_y_6_3.14#0,8.75,0",
+    "tris": 448
+   },
+   {
+    "name": "Head/Rotor__MetalDark@spin_z_-180#0,9.3,0.64",
+    "tris": 126
+   },
+   {
+    "name": "Head/Rotor__Red@spin_z_-180#0,9.3,0.64",
+    "tris": 132
+   },
+   {
+    "name": "Head/Rotor__White@spin_z_-180#0,9.3,0.64",
+    "tris": 738
+   }
+  ],
+  "tris": 3634
+ }
+}
