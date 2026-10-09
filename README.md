@@ -98,7 +98,7 @@ python3 tools/render_layout.py luau    # перерисовать docs/layout.pn
 ```bash
 selene src tools                                       # линтер
 stylua --check src tools                               # форматирование
-rojo build default.project.json -o build/PotatoTycoon.rbxlx
+mkdir -p build && rojo build default.project.json -o build/PotatoTycoon.rbxlx
 lune run tools/smoke_test.luau build/PotatoTycoon.rbxlx
 ```
 

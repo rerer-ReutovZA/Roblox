@@ -35,7 +35,9 @@ jobs:
         run: luau tools/simulate.luau
 
       - name: Сборка места (Rojo)
-        run: rojo build default.project.json -o build/PotatoTycoon.rbxlx
+        run: |
+          mkdir -p build
+          rojo build default.project.json -o build/PotatoTycoon.rbxlx
 
       - name: Смоук-тест (Lune)
         run: lune run tools/smoke_test.luau build/PotatoTycoon.rbxlx

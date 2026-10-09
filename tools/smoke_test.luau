@@ -5,7 +5,7 @@
 --   * покупки, исследования, найм, жуки и Rebirth проходят на «фейковом» игроке.
 --
 -- Запуск:
---   rojo build default.project.json -o build/PotatoTycoon.rbxlx
+--   mkdir -p build && rojo build default.project.json -o build/PotatoTycoon.rbxlx
 --   lune run tools/smoke_test.luau build/PotatoTycoon.rbxlx
 
 local fs = require("@lune/fs")
