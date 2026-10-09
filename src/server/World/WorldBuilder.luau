@@ -6,6 +6,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Config = require(ReplicatedStorage.Shared.Config)
 local Kit = require(script.Parent.ModelKit)
 local Misc = require(script.Parent.Models.Misc)
+local Templates = require(script.Parent.Templates)
 
 local V = Vector3.new
 local C = Kit.C
@@ -151,6 +152,7 @@ end
 local function hubObject(builderName: string, parent: Instance, cf: CFrame, ...)
 	local b = Kit.new(builderName, cf)
 	Misc[builderName](b, ...)
+	Templates.dress(b.model, builderName, cf)
 	return b:finish(parent)
 end
 
@@ -159,6 +161,7 @@ local function tree(parent: Instance, pos: Vector3, scale: number)
 	b:cyl(5 * scale, 1.2 * scale, V(0, 2.5 * scale, 0), C.woodDark, M.Wood)
 	b:ellipsoid(V(7, 6, 7) * scale, V(0, 6.5 * scale, 0), C.leafDark, M.Grass)
 	b:ellipsoid(V(5, 4.5, 5) * scale, V(0.8 * scale, 9 * scale, 0.5 * scale), C.leaf, M.Grass)
+	Templates.dress(b.model, "Tree", CFrame.new(pos), { scale = scale * 1.3 })
 	b:finish(parent)
 end
 

@@ -8,4 +8,5 @@ return {
 	StarTech = require(script.StarTech),
 	GamePasses = require(script.GamePasses),
 	Sounds = require(script.Sounds),
+	Palette = require(script.Palette),
 }

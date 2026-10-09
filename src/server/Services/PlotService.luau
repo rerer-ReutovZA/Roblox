@@ -12,6 +12,7 @@ local World = require(WorldFolder.WorldBuilder)
 local Library = require(WorldFolder.ModelLibrary)
 local Kit = require(WorldFolder.ModelKit)
 local Misc = require(WorldFolder.Models.Misc)
+local Templates = require(WorldFolder.Templates)
 
 local Sessions = require(script.Parent.Sessions)
 
@@ -267,6 +268,7 @@ function PlotService.spawnStaff(session: Session, staff, n: number, animate: boo
 		local z = 18 + (k * 7) % 18
 		b = Kit.new(staff.id .. "_" .. n, World.localCFrame(info, x, z, 0, 10 + (k % 3)))
 		Misc.Drone(b, color, if staff.id == "drone_hexa" then 6 else 4)
+		Templates.dress(b.model, "Drone", b.origin * CFrame.new(0, -1.6, 0), { tint = { White = color } })
 		b:tag(b.model, "Hover", { Radius = 3 + (k % 4), Speed = 0.4 + (k % 5) * 0.08, Phase = k })
 	else
 		local spots = STAFF_SPOTS[staff.id] or { { 0, 0 } }
@@ -275,6 +277,7 @@ function PlotService.spawnStaff(session: Session, staff, n: number, animate: boo
 		b = Kit.new(staff.id .. "_" .. n, World.localCFrame(info, spot[1], spot[2], rot))
 		if staff.visual == "Robot" then
 			Misc.Robot(b, color)
+			Templates.dress(b.model, "Robot", b.origin, { tint = { Blue = color } })
 			b:tag(b.model, "Roam", { Radius = 1.5, Speed = 0.5 + n * 0.1 })
 		else
 			Misc.StaffNpc(b, color, staff.name)

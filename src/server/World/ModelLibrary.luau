@@ -1,6 +1,7 @@
 -- Реестр всех моделей построек: ключ из Config.Items[...].model → функция-строитель
 
 local Kit = require(script.Parent.ModelKit)
+local Templates = require(script.Parent.Templates)
 
 local Library = {}
 
@@ -30,6 +31,8 @@ function Library.build(item, origin: CFrame, parent: Instance): Model
 		b:box(Vector3.new(item.size[1], 2, item.size[2]), Vector3.new(0, 1, 0), Kit.C.metal, Enum.Material.Metal)
 	end
 	b.model:SetAttribute("ItemId", item.id)
+	-- модель из Blender, если она импортирована в ServerStorage.Assets
+	Templates.dress(b.model, item.model, origin)
 	return b:finish(parent)
 end
 

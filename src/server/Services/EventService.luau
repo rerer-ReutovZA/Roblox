@@ -11,6 +11,7 @@ local Remotes = require(ReplicatedStorage.Shared.Remotes)
 
 local Kit = require(script.Parent.Parent.World.ModelKit)
 local Misc = require(script.Parent.Parent.World.Models.Misc)
+local Templates = require(script.Parent.Parent.World.Templates)
 local World = require(script.Parent.Parent.World.WorldBuilder)
 local Sessions = require(script.Parent.Sessions)
 
@@ -40,6 +41,7 @@ local function spawnBug(session: Session, boss: boolean)
 	bugSerial += 1
 	local b = Kit.new("Bug" .. bugSerial, cf)
 	Misc.Bug(b, boss)
+	Templates.dress(b.model, "Bug", cf, { scale = if boss then 3 else 1 })
 	local health = if boss then Config.Game.Events.Bugs.BossHealth else 1
 	b.model:SetAttribute("Bug", true)
 	b.model:SetAttribute("Boss", boss)

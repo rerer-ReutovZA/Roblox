@@ -595,6 +595,7 @@ function Models.ForceDome(b: Builder, item)
 		{ collide = false, shadow = false, name = "Dome" }
 	)
 	dome.CanQuery = false
+	dome:SetAttribute("KeepVisible", true) -- купол остаётся и у модели из Blender
 end
 
 function Models.Flagpole(b: Builder)

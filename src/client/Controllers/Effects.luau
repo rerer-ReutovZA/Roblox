@@ -222,6 +222,8 @@ local function launch(plotIndex: number)
 	for _, d in ipairs(stack:GetDescendants()) do
 		if d:IsA("Fire") or d:IsA("Smoke") then
 			d.Enabled = true
+		elseif d:IsA("BasePart") and d:GetAttribute("LaunchOnly") then
+			d.Transparency = 0 -- пламя модели из Blender
 		end
 	end
 	if plot:GetAttribute("OwnerUserId") == player.UserId then

@@ -259,6 +259,105 @@ check("Кнопки, жуки, персонал, лопата", function()
 	assert(tool:FindFirstChild("Handle"), "у лопаты нет Handle")
 end)
 
+check("Модели из Blender: имена деталей и шаблоны", function()
+	local AssetName = requireModule(Shared.AssetName)
+	local Palette = requireModule(Shared.Config.Palette)
+	local info = AssetName.parse("Bush/Plant0__LeafDark@sway_x_2.5_3.14_0.15#-0.05,0.85,-2")
+	assert(info and info.key == "LeafDark" and #info.path == 2 and info.path[2] == "Plant0", "parse: путь/ключ")
+	assert(
+		info.anim == "sway_x_2.5_3.14_0.15" and info.pivot and info.pivot.Z == -2,
+		"parse: анимация/точка"
+	)
+	local body = AssetName.parse("Body__Wood")
+	assert(body and #body.path == 0 and body.anim == nil and body.pivot == nil, "parse: Body")
+	local tag, attrs = AssetName.animation("spin_z_-180")
+	assert(tag == "Spin" and attrs.Axis == "Z" and attrs.Speed == -180, "spin")
+	tag, attrs = AssetName.animation("bob_0.12_3.14")
+	assert(tag == "Bob" and math.abs(attrs.Speed - 1.57) < 1e-6 and attrs.Amplitude == 0.12, "bob")
+	tag, attrs = AssetName.animation("sway_z_14_12.57_0.5")
+	assert(tag == "Sway" and attrs.Phase == 0.5 and attrs.Amplitude == 14, "sway")
+
+	-- «импорт» в сантиметрах (маркер 100x100x100) со сдвигом — как бывает после 3D Importer
+	local assets = Instance.new("Folder")
+	assets.Name = "Assets"
+	assets.Parent = getService("ServerStorage")
+	local tpl = Instance.new("Model")
+	tpl.Name = "BedWood"
+	tpl.Parent = assets
+	local off = Vector3.new(50, 3, 50)
+	local function part(name: string, size, pos)
+		local p = Instance.new("Part")
+		p.Name = name
+		p.Size = size
+		p.CFrame = CFrame.new(off + pos)
+		p.Parent = tpl
+	end
+	part("Origin__Pivot", Vector3.new(100, 100, 100), Vector3.zero)
+	part("Body__Wood", Vector3.new(400, 90, 600), Vector3.new(0, 45, 0))
+	part("Bush/Plant0__Leaf@sway_x_2.5_3.14_0.15#0,0.8,-2", Vector3.new(120, 100, 120), Vector3.new(0, 130, -200))
+	part("Tubers__Potato", Vector3.new(50, 30, 40), Vector3.new(70, 90, -200))
+	part("Lamp__NeonRed@pulse_1.5", Vector3.new(10, 10, 10), Vector3.new(150, 60, 290))
+	local Templates = requireModule(Server.World.Templates)
+	Templates.reset()
+	local item
+	for _, it in ipairs(Config.Items.List) do
+		if it.model == "BedWood" then
+			item = it
+			break
+		end
+	end
+	local folder = Instance.new("Folder")
+	folder.Parent = workspace
+	local model = Library.build(item, CFrame.new(10, 0, 0), folder)
+	assert(model:GetAttribute("Template") == "BedWood", "шаблон не применён")
+	local plant = model:FindFirstChild("Bush") and model.Bush:FindFirstChild("Plant0")
+	assert(
+		plant and plant:HasTag("Sway") and plant:GetAttribute("Axis") == "X",
+		"куст без покачивания"
+	)
+	assert(
+		(plant.WorldPivot.Position - Vector3.new(10, 0.8, -2)).Magnitude < 1e-3,
+		"точка вращения куста"
+	)
+	local leaf = plant:FindFirstChildWhichIsA("BasePart")
+	assert(leaf and (leaf.CFrame.Position - Vector3.new(10, 1.3, -2)).Magnitude < 1e-3, "позиция листа")
+	assert(
+		math.abs(leaf.Size.X - 1.2) < 1e-3 and leaf.Color == Palette.Leaf.color,
+		"масштаб/цвет листа"
+	)
+	assert(leaf.Material == Palette.Leaf.material and not leaf.CanCollide, "материал/коллизия")
+	local lamp = model:FindFirstChild("Lamp") and model.Lamp:FindFirstChildWhichIsA("BasePart")
+	assert(lamp and lamp:HasTag("Pulse"), "лампа не мигает")
+	local soil = model:FindFirstChild("Soil") :: any
+	assert(
+		soil and soil.Transparency == 1 and soil:FindFirstChild("Prompt"),
+		"подсказка грядки потерялась"
+	)
+	assert(not soil.CanCollide, "невидимая почва осталась стеной")
+	local bodyPart = model:FindFirstChild("Body__Wood") :: any
+	assert(bodyPart and bodyPart.CanCollide, "корпус из Blender без коллизии")
+	assert(model.Tubers:FindFirstChildWhichIsA("BasePart"), "нет клубней")
+	-- жук-босс: шаблон в 3 раза крупнее
+	local bugTpl = Instance.new("Model")
+	bugTpl.Name = "Bug"
+	bugTpl.Parent = assets
+	tpl = bugTpl
+	off = Vector3.zero
+	part("Origin__Pivot", Vector3.new(1, 1, 1), Vector3.zero)
+	part("Hip0-1__BugOrange@sway_z_14_12.57_0#-0.5,0.32,0.72", Vector3.new(0.5, 0.2, 0.2), Vector3.new(-0.7, 0.3, 0.7))
+	Templates.reset()
+	local boss = Kit.new("Boss", CFrame.new())
+	Misc.Bug(boss, true)
+	Templates.dress(boss.model, "Bug", CFrame.new(), { scale = 3 })
+	local hip = boss.model:FindFirstChild("Hip0-1")
+	assert(hip and hip:GetAttribute("Phase") ~= nil, "фаза лапы не задана")
+	assert((hip.WorldPivot.Position - Vector3.new(-1.5, 0.96, 2.16)).Magnitude < 1e-3, "масштаб босса")
+	assert(boss.model:FindFirstChild("Hitbox"), "хитбокс жука удалён")
+	folder:Destroy()
+	assets:Destroy()
+	Templates.reset()
+end)
+
 -- Сервисы на фейковом игроке
 local Sessions, PlotService, ManualFarm, PurchaseService, EventService, RebirthService
 check("Загрузка сервисов", function()

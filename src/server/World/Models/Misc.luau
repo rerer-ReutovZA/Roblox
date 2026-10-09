@@ -203,6 +203,7 @@ function Models.FounderStatue(b: Builder)
 	b:cyl(1.2, 9, V(0, 0.6, 0), C.stone, M.Marble)
 	b:cyl(1.6, 6.5, V(0, 2, 0), C.stoneDark, M.Marble)
 	local fig = b:figure(V(0, 2.8, 0), { shirt = C.stone, pants = C.stone, skin = C.stone, hat = C.stone }, 0, 1.8)
+	fig.Name = "Statue" -- у модели из Blender статуя своя, эту фигуру прячем
 	for _, d in ipairs(fig:GetDescendants()) do
 		if d:IsA("BasePart") then
 			d.Material = M.Marble
@@ -266,6 +267,7 @@ function Models.RebirthGate(b: Builder)
 	b:box(V(9, 1.2, 1.4), V(0, 9.4, 0), C.black, M.Marble)
 	local portal = b:box(V(6.4, 8.4, 0.2), V(0, 4.7, 0), C.purple, M.ForceField, { collide = false })
 	portal.CanQuery = false
+	portal:SetAttribute("KeepVisible", true) -- силовое поле портала остаётся и у модели из Blender
 	local swirl = b:group("Swirl", V(0, 4.7, 0))
 	for i = 0, 5 do
 		swirl:box(

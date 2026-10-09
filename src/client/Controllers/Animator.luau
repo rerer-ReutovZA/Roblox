@@ -141,18 +141,21 @@ local function step()
 		end
 		local speed = inst:GetAttribute("Speed") or 1
 		local tag = e.tag
+		-- Phase (доля цикла) согласует детали одной модели, например лапы жука; иначе фаза случайная
+		local phase = inst:GetAttribute("Phase")
+		local offset = if tag ~= "Hover" and phase then phase * math.pi * 2 else e.seed
 		local cf: CFrame? = nil
 		if tag == "Spin" then
 			local angle = math.rad(t * speed + e.seed * 10)
 			cf = base * axisRotation(inst:GetAttribute("Axis"), angle)
 		elseif tag == "Slide" then
-			local offset = math.sin(t * speed * 2 + e.seed) * (inst:GetAttribute("Amplitude") or 1)
-			cf = base * CFrame.new(axisVector(inst:GetAttribute("Axis")) * offset)
+			local shift = math.sin(t * speed * 2 + offset) * (inst:GetAttribute("Amplitude") or 1)
+			cf = base * CFrame.new(axisVector(inst:GetAttribute("Axis")) * shift)
 		elseif tag == "Bob" then
-			local offset = math.sin(t * speed * 2 + e.seed) * (inst:GetAttribute("Amplitude") or 0.3)
-			cf = base * CFrame.new(0, offset, 0)
+			local shift = math.sin(t * speed * 2 + offset) * (inst:GetAttribute("Amplitude") or 0.3)
+			cf = base * CFrame.new(0, shift, 0)
 		elseif tag == "Sway" then
-			local angle = math.rad(math.sin(t * speed + e.seed) * (inst:GetAttribute("Amplitude") or 10))
+			local angle = math.rad(math.sin(t * speed + offset) * (inst:GetAttribute("Amplitude") or 10))
 			cf = base * axisRotation(inst:GetAttribute("Axis"), angle)
 		elseif tag == "Pulse" then
 			if inst:IsA("BasePart") then
@@ -161,9 +164,9 @@ local function step()
 			end
 		elseif tag == "Hover" then
 			local r = inst:GetAttribute("Radius") or 3
-			local phase = inst:GetAttribute("Phase") or 0
-			local a = t * speed + phase
-			local pos = Vector3.new(math.cos(a) * r, math.sin(t * 2 + phase) * 0.4, math.sin(a) * r)
+			local hoverPhase = phase or 0
+			local a = t * speed + hoverPhase
+			local pos = Vector3.new(math.cos(a) * r, math.sin(t * 2 + hoverPhase) * 0.4, math.sin(a) * r)
 			local facing = math.atan2(-math.cos(a), math.sin(a))
 			cf = base * CFrame.new(pos) * CFrame.Angles(0, facing, math.sin(t * 3) * 0.08)
 		elseif tag == "Roam" then

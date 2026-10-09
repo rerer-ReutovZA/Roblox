@@ -4,9 +4,19 @@ local RunService = game:GetService("RunService")
 
 local Beds = {}
 
+type PartRec = {
+	part: BasePart,
+	size: Vector3,
+	cframe: CFrame,
+	bottom: number,
+	-- куст из Blender: деталь растёт от основания своего куста (группа Plant с покачиванием)
+	scope: Model?,
+	rel: CFrame?,
+}
+
 type BedInfo = {
 	model: Model,
-	parts: { { part: BasePart, size: Vector3, cframe: CFrame, bottom: number } },
+	parts: { PartRec },
 	tubers: { BasePart },
 	last: number,
 }
@@ -31,11 +41,14 @@ local function track(model: Model)
 	local info: BedInfo = { model = model, parts = {}, tubers = {}, last = -1 }
 	for _, p in ipairs(bush:GetDescendants()) do
 		if p:IsA("BasePart") then
+			local scope = if p.Parent ~= bush and p.Parent and p.Parent:IsA("Model") then p.Parent :: Model else nil
 			table.insert(info.parts, {
 				part = p,
 				size = p.Size,
 				cframe = p.CFrame,
 				bottom = p.CFrame.Position.Y - halfHeight(p.CFrame, p.Size),
+				scope = scope,
+				rel = if scope then scope:GetPivot():ToObjectSpace(p.CFrame) else nil,
 			})
 		end
 	end
@@ -81,9 +94,14 @@ local function update()
 			for _, rec in ipairs(info.parts) do
 				local size = rec.size * k
 				rec.part.Size = size
-				local pos = rec.cframe.Position
-				local half = halfHeight(rec.cframe, size)
-				rec.part.CFrame = rec.cframe - pos + Vector3.new(pos.X, rec.bottom + half, pos.Z)
+				if rec.scope and rec.rel then
+					-- относительно текущей точки группы: не сбивает покачивание от Animator
+					rec.part.CFrame = rec.scope:GetPivot() * (CFrame.new(rec.rel.Position * k) * rec.rel.Rotation)
+				else
+					local pos = rec.cframe.Position
+					local half = halfHeight(rec.cframe, size)
+					rec.part.CFrame = rec.cframe - pos + Vector3.new(pos.X, rec.bottom + half, pos.Z)
+				end
 			end
 			local ripe = f >= 0.97 and not auto
 			for _, t in ipairs(info.tubers) do
