@@ -203,7 +203,7 @@ function Models.LaunchTower(b: Builder)
 			b:box(V(0.35, h, 0.35), V(x, h / 2, z), C.red, M.Metal)
 		end
 	end
-	for y = 2, h, 2 do
+	for y = 2, h - 2, 2 do
 		b:box(
 			V(2.6, 0.2, 0.2),
 			V(0, y, 1.2),

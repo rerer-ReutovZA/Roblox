@@ -5,3 +5,4 @@ sourcemap.json
 *.rbxlx.lock
 .DS_Store
 __pycache__/
+node_modules/

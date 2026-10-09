@@ -1,0 +1,13 @@
+{
+  "name": "potato-tycoon-render",
+  "private": true,
+  "description": "Рендеры моделей Potato Tycoon (three.js + Playwright)",
+  "type": "module",
+  "scripts": {
+    "render": "node render.mjs"
+  },
+  "dependencies": {
+    "playwright": "1.56.1",
+    "three": "0.160.0"
+  }
+}
