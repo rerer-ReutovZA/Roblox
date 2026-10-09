@@ -152,10 +152,13 @@ local function group(parent: Instance, name: string, origin: CFrame): Model
 	return m
 end
 
-local function applyAnimation(inst: Instance, anim: string, phaseOffset: number)
+local function applyAnimation(inst: Instance, anim: string, phaseOffset: number, scale: number)
 	local tag, attrs = AssetName.animation(anim)
 	if not tag or inst:HasTag(tag) then
 		return
+	end
+	if (tag == "Bob" or tag == "Slide") and attrs.Amplitude then
+		attrs.Amplitude *= scale -- ход в стадах растёт вместе с моделью
 	end
 	if attrs.Phase then
 		-- общий сдвиг на модель: лапы одного жука согласованы, а разные жуки — нет
@@ -224,11 +227,11 @@ function Templates.dress(model: Model, key: string, origin: CFrame, opts: DressO
 				animated[container] = true
 				local m = container :: Model
 				m.WorldPivot = pivot
-				applyAnimation(m, info.anim, phaseOffset)
+				applyAnimation(m, info.anim, phaseOffset, userScale)
 			end
 		end
 		if info.anim and not info.pivot then
-			applyAnimation(part, info.anim, phaseOffset)
+			applyAnimation(part, info.anim, phaseOffset, userScale)
 		end
 		if table.find(info.path, "Flames") then
 			-- пламя шаттла видно только во время старта (Effects.launch)
