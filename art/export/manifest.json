@@ -964,6 +964,12 @@
   "tris": 15668
  },
  "FenceWood": {
+  "labels": {
+   "1": {
+    "face": "Back",
+    "text": "FARM"
+   }
+  },
   "parts": [
    {
     "name": "Body__Wood",
@@ -987,14 +993,18 @@
    },
    {
     "name": "GateSign__WoodDark@sway_z_-2_3.14#0,3.35,12.85",
-    "tris": 2092
+    "tris": 108
+   },
+   {
+    "name": "GateSign__WoodDark@sway_z_-2_3.14#0,3.35,12.85!1",
+    "tris": 12
    },
    {
     "name": "GateSign__WoodLight@sway_z_-2_3.14#0,3.35,12.85",
     "tris": 108
    }
   ],
-  "tris": 13752
+  "tris": 11780
  },
  "Fertilizer": {
   "parts": [
@@ -1030,6 +1040,7 @@
   "tris": 1612
  },
  "Flagpole": {
+  "labels": {},
   "parts": [
    {
     "name": "Body__Chrome",
@@ -1745,7 +1756,124 @@
   ],
   "tris": 5468
  },
+ "Office": {
+  "labels": {
+   "1": {
+    "face": "Back",
+    "text": "OFFICE"
+   },
+   "2": {
+    "face": "Back",
+    "text": "MARKET"
+   }
+  },
+  "parts": [
+   {
+    "name": "Body__Black",
+    "tris": 324
+   },
+   {
+    "name": "Body__Black!2",
+    "tris": 12
+   },
+   {
+    "name": "Body__Blue",
+    "tris": 216
+   },
+   {
+    "name": "Body__Chrome",
+    "tris": 126
+   },
+   {
+    "name": "Body__Concrete",
+    "tris": 108
+   },
+   {
+    "name": "Body__Glass",
+    "tris": 12
+   },
+   {
+    "name": "Body__Grey",
+    "tris": 108
+   },
+   {
+    "name": "Body__MetalDark",
+    "tris": 432
+   },
+   {
+    "name": "Body__MetalDark",
+    "tris": 108
+   },
+   {
+    "name": "Body__NeonGreen",
+    "tris": 12
+   },
+   {
+    "name": "Body__Red",
+    "tris": 126
+   },
+   {
+    "name": "Body__StoneLight",
+    "tris": 12
+   },
+   {
+    "name": "Body__Water",
+    "tris": 192
+   },
+   {
+    "name": "Body__White",
+    "tris": 108
+   },
+   {
+    "name": "Body__White",
+    "tris": 108
+   },
+   {
+    "name": "Body__White",
+    "tris": 108
+   },
+   {
+    "name": "Body__White",
+    "tris": 108
+   },
+   {
+    "name": "Body__White",
+    "tris": 108
+   },
+   {
+    "name": "Body__White",
+    "tris": 108
+   },
+   {
+    "name": "Body__White",
+    "tris": 108
+   },
+   {
+    "name": "Body__White",
+    "tris": 126
+   },
+   {
+    "name": "Body__White!1",
+    "tris": 12
+   },
+   {
+    "name": "Body__WoodDark",
+    "tris": 324
+   }
+  ],
+  "tris": 3006
+ },
  "SellStand": {
+  "labels": {
+   "1": {
+    "face": "Back",
+    "text": "POTATO BUYER"
+   },
+   "2": {
+    "face": "Back",
+    "text": "$1 EACH"
+   }
+  },
   "parts": [
    {
     "name": "Body__Black",
@@ -1793,7 +1921,11 @@
    },
    {
     "name": "Body__White",
-    "tris": 1244
+    "tris": 648
+   },
+   {
+    "name": "Body__White!2",
+    "tris": 12
    },
    {
     "name": "Body__Wood",
@@ -1801,7 +1933,11 @@
    },
    {
     "name": "Body__WoodDark",
-    "tris": 4902
+    "tris": 784
+   },
+   {
+    "name": "Body__WoodDark!1",
+    "tris": 12
    },
    {
     "name": "Body__WoodLight",
@@ -1820,7 +1956,7 @@
     "tris": 504
    }
   ],
-  "tris": 28884
+  "tris": 24194
  },
  "Shuttle": {
   "parts": [
@@ -2046,6 +2182,81 @@
    }
   ],
   "tris": 6946
+ },
+ "Washer": {
+  "labels": {
+   "1": {
+    "face": "Back",
+    "text": "WASHER x1.5"
+   }
+  },
+  "parts": [
+   {
+    "name": "Body__Black",
+    "tris": 384
+   },
+   {
+    "name": "Body__Blue",
+    "tris": 188
+   },
+   {
+    "name": "Body__Chrome",
+    "tris": 132
+   },
+   {
+    "name": "Body__MetalDark",
+    "tris": 1044
+   },
+   {
+    "name": "Body__NeonCyan",
+    "tris": 108
+   },
+   {
+    "name": "Body__NeonCyan!1",
+    "tris": 12
+   },
+   {
+    "name": "Body__NeonGreen",
+    "tris": 298
+   },
+   {
+    "name": "Body__NeonRed",
+    "tris": 190
+   },
+   {
+    "name": "Body__Plate",
+    "tris": 108
+   },
+   {
+    "name": "Body__Red",
+    "tris": 254
+   },
+   {
+    "name": "Body__Rubber",
+    "tris": 760
+   },
+   {
+    "name": "Body__Steel",
+    "tris": 154
+   },
+   {
+    "name": "Body__Yellow",
+    "tris": 108
+   },
+   {
+    "name": "Drum__Blue@spin_x_90#-0.3,4.39,-0.2",
+    "tris": 1008
+   },
+   {
+    "name": "Drum__BlueDark@spin_x_90#-0.3,4.39,-0.2",
+    "tris": 864
+   },
+   {
+    "name": "Drum__Steel@spin_x_90#-0.3,4.39,-0.2",
+    "tris": 384
+   }
+  ],
+  "tris": 5996
  },
  "WateringCan": {
   "parts": [
