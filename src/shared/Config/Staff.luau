@@ -14,7 +14,7 @@
 local Staff = {
 	{
 		id = "robo_inspector",
-		name = "Робот-инспектор целостности грядок",
+		name = "Bed Integrity Inspector Bot",
 		asset = 112,
 		requires = "tower",
 		cost = 3100,
@@ -26,7 +26,7 @@ local Staff = {
 	},
 	{
 		id = "robo_cleaner",
-		name = "Напольный робот-уборщик отходов",
+		name = "Floor Waste Cleaning Robot",
 		asset = 111,
 		requires = "factory_building",
 		cost = 100_000,
@@ -38,7 +38,7 @@ local Staff = {
 	},
 	{
 		id = "agronomist",
-		name = "Бот-агроном с планшетом",
+		name = "Agronomist Bot with Tablet",
 		asset = 121,
 		requires = "office",
 		cost = 280_000,
@@ -50,7 +50,7 @@ local Staff = {
 	},
 	{
 		id = "palletizer",
-		name = "Робо-рука паллетайзер",
+		name = "Palletizer Robot Arm",
 		asset = 113,
 		requires = "office",
 		cost = 380_000,
@@ -62,7 +62,7 @@ local Staff = {
 	},
 	{
 		id = "engineer",
-		name = "Главный инженер цеха",
+		name = "Chief Plant Engineer",
 		asset = 116,
 		requires = "office",
 		cost = 750_000,
@@ -74,7 +74,7 @@ local Staff = {
 	},
 	{
 		id = "truck_driver",
-		name = "Водитель оптового грузовика",
+		name = "Wholesale Truck Driver",
 		asset = 126,
 		requires = "office",
 		cost = 1_100_000,
@@ -86,7 +86,7 @@ local Staff = {
 	},
 	{
 		id = "exchange_manager",
-		name = "Менеджер биржи картофеля",
+		name = "Potato Exchange Manager",
 		asset = 117,
 		requires = "office",
 		cost = 1_700_000,
@@ -98,7 +98,7 @@ local Staff = {
 	},
 	{
 		id = "technician",
-		name = "Дежурный техник подстанции",
+		name = "Substation Duty Technician",
 		asset = 120,
 		requires = "substation",
 		cost = 1_200_000,
@@ -110,7 +110,7 @@ local Staff = {
 	},
 	{
 		id = "drone_harvester",
-		name = "Дрон-сборщик Tier 1 (квадрокоптер с клешней)",
+		name = "Harvester Drone Tier 1 (Claw Quadcopter)",
 		asset = 106,
 		requires = "drone_station",
 		cost = 2_500_000,
@@ -122,7 +122,7 @@ local Staff = {
 	},
 	{
 		id = "drone_pollinator",
-		name = "Дрон-опылитель с ультразвуком",
+		name = "Ultrasonic Pollinator Drone",
 		asset = 107,
 		requires = "drone_station",
 		cost = 6_300_000,
@@ -134,7 +134,7 @@ local Staff = {
 	},
 	{
 		id = "guard_dog",
-		name = "Механическая сторожевая собака-дрон",
+		name = "Mechanical Guard Dog Drone",
 		asset = 125,
 		requires = "drone_station",
 		cost = 3_000_000,
@@ -146,7 +146,7 @@ local Staff = {
 	},
 	{
 		id = "drone_sprayer",
-		name = "Дрон-распылитель стимуляторов роста",
+		name = "Growth Booster Sprayer Drone",
 		asset = 108,
 		requires = "drone_station",
 		cost = 13_000_000,
@@ -158,7 +158,7 @@ local Staff = {
 	},
 	{
 		id = "profit_counter",
-		name = "Робот-счетчик прибыли",
+		name = "Profit Counter Robot",
 		asset = 129,
 		requires = "drone_station",
 		cost = 20_000_000,
@@ -170,7 +170,7 @@ local Staff = {
 	},
 	{
 		id = "drone_hexa",
-		name = "Тяжелый грузовой гексакоптер обслуживания",
+		name = "Heavy Cargo Service Hexacopter",
 		asset = 109,
 		requires = "drone_station",
 		cost = 38_000_000,
@@ -182,7 +182,7 @@ local Staff = {
 	},
 	{
 		id = "professor",
-		name = "Профессор генетики",
+		name = "Professor of Genetics",
 		asset = 118,
 		requires = "lab",
 		cost = 140_000_000,
@@ -194,7 +194,7 @@ local Staff = {
 	},
 	{
 		id = "holo_assistant",
-		name = "Голографический помощник-консультант",
+		name = "Holographic Advisor Assistant",
 		asset = 130,
 		requires = "lab",
 		cost = 370_000_000,
@@ -206,7 +206,7 @@ local Staff = {
 	},
 	{
 		id = "trade_agent",
-		name = "Торговый агент межпланетной сети",
+		name = "Interplanetary Trade Agent",
 		asset = 119,
 		requires = "launch_pad",
 		cost = 590_000_000,
@@ -218,7 +218,7 @@ local Staff = {
 	},
 	{
 		id = "shuttle_pilot",
-		name = "Пилот экспортного шаттла",
+		name = "Export Shuttle Pilot",
 		asset = 127,
 		requires = "launch_tower",
 		cost = 280_000_000,
@@ -230,7 +230,7 @@ local Staff = {
 	},
 	{
 		id = "vip_droid",
-		name = "Сервисный дроид золотого VIP-статуса",
+		name = "Golden VIP Service Droid",
 		asset = 128,
 		requires = "tower",
 		requiresPass = "vip",

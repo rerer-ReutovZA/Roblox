@@ -52,7 +52,7 @@ local function createLeaderstats(player: Player)
 	local stats = Instance.new("Folder")
 	stats.Name = "leaderstats"
 	local cash = Instance.new("StringValue")
-	cash.Name = "Деньги"
+	cash.Name = "Cash"
 	cash.Value = "$0"
 	cash.Parent = stats
 	local rebirths = Instance.new("IntValue")
@@ -102,11 +102,7 @@ local function onPlayerAdded(player: Player)
 	local session = Sessions.create(player, profile, persistent)
 	PassService.load(session)
 	if not persistent then
-		Sessions.notify(
-			player,
-			"Сохранения недоступны — прогресс этой сессии не сохранится",
-			"error"
-		)
+		Sessions.notify(player, "Saving is unavailable — progress from this session won't be saved", "error")
 	end
 
 	Sessions.recompute(session)
@@ -115,11 +111,7 @@ local function onPlayerAdded(player: Player)
 		PlotService.buildAll(session)
 		ManualFarm.setupBeds(session)
 	else
-		Sessions.notify(
-			player,
-			"Все базы заняты — подожди, пока освободится место",
-			"error"
-		)
+		Sessions.notify(player, "All bases are taken — please wait for a free spot", "error")
 	end
 	Sessions.recompute(session)
 	session.loaded = true
@@ -214,7 +206,7 @@ end)
 
 print(
 	string.format(
-		"[Potato Tycoon] сервер запущен: %d баз, %d построек, стартовый капитал %s",
+		"[Potato Tycoon] server started: %d bases, %d buildings, starting cash %s",
 		#World.plots,
 		#Config.Items.List,
 		Format.money(Config.Game.StartCash)

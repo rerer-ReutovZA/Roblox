@@ -64,15 +64,13 @@ function PassService.prompt(player: Player, key: string)
 	end
 	local session = Sessions.get(player)
 	if session and session.passes[key] then
-		Sessions.notify(player, "У тебя уже есть «" .. pass.name .. "»", "info")
+		Sessions.notify(player, "You already own “" .. pass.name .. "”", "info")
 		return
 	end
 	if pass.id <= 0 then
 		Sessions.notify(
 			player,
-			"Геймпасс «"
-				.. pass.name
-				.. "» ещё не настроен (впишите ID в Config/GamePasses)",
+			"Game pass “" .. pass.name .. "” is not set up yet (add its ID to Config/GamePasses)",
 			"error"
 		)
 		return
@@ -95,7 +93,7 @@ local function granted(player: Player, pass)
 		end
 		ManualFarm.giveShovel(session)
 	end
-	Sessions.notify(player, pass.icon .. " Спасибо за покупку «" .. pass.name .. "»!", "gold")
+	Sessions.notify(player, pass.icon .. " Thanks for buying “" .. pass.name .. "”!", "gold")
 	Sessions.effect(player, { type = "Confetti" })
 end
 

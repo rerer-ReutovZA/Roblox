@@ -59,7 +59,4 @@ TextChatService.OnIncomingMessage = function(message: TextChatMessage)
 end
 
 Remotes.get("Ready"):FireServer()
-Toasts.show(
-	"🥔 Добро пожаловать в Potato Tycoon! Поговори с Дедом Матвеем у входа на базу.",
-	"tip"
-)
+Toasts.show("🥔 Welcome to Potato Tycoon! Talk to Grandpa Matvey at the entrance to your base.", "tip")

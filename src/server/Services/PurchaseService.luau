@@ -21,15 +21,11 @@ local function afterChange(session: Session, oldStage: number?)
 	Sessions.sync(session)
 	if oldStage and stats.stage > oldStage then
 		local stage = Config.Game.Stages[stats.stage]
-		Sessions.notify(session.player, string.format("🎉 ЭТАП %d: %s", stats.stage, stage.name), "stage")
+		Sessions.notify(session.player, string.format("🎉 STAGE %d: %s", stats.stage, stage.name), "stage")
 		Sessions.effect(session.player, { type = "Stage", stage = stats.stage })
 	end
 	if stats.overloaded and not session.passes.infiniteEnergy then
-		Sessions.notify(
-			session.player,
-			"⚠ Перегрузка сети! Доход -50%. Построй генератор.",
-			"error"
-		)
+		Sessions.notify(session.player, "⚠ Grid overload! Income -50%. Build a generator.", "error")
 	end
 end
 
@@ -45,7 +41,7 @@ function PurchaseService.buyItem(player: Player, itemId: string): boolean
 	end
 	local cost = Economy.itemCost(item, profile, Config)
 	if not Sessions.trySpend(session, cost) then
-		Sessions.notify(player, "Не хватает " .. Format.money(cost - profile.cash), "error")
+		Sessions.notify(player, "Not enough cash: need " .. Format.money(cost - profile.cash), "error")
 		return false
 	end
 	local oldStage = Economy.stage(profile, Config)
@@ -55,15 +51,11 @@ function PurchaseService.buyItem(player: Player, itemId: string): boolean
 		ManualFarm.setupBeds(session)
 	end
 	Sessions.effect(player, { type = "Purchase", itemId = itemId })
-	Sessions.notify(player, "Построено: " .. item.name, "success")
+	Sessions.notify(player, "Built: " .. item.name, "success")
 	if Config.Items.HasFlag(item, "Tower") then
 		Sessions.recompute(session)
 		ManualFarm.onTower(session)
-		Sessions.notify(
-			player,
-			"🤝 Контракт подписан! Урожай теперь собирается и продаётся сам.",
-			"stage"
-		)
+		Sessions.notify(player, "🤝 Contract signed! The harvest is now collected and sold automatically.", "stage")
 	end
 	afterChange(session, oldStage)
 	return true
@@ -86,20 +78,16 @@ function PurchaseService.buyResearch(player: Player, varietyId: string)
 	end
 	if variety.requires and not profile.owned[variety.requires] then
 		local req = Config.Items.ById[variety.requires]
-		Sessions.notify(
-			player,
-			"Сначала построй: " .. (if req then req.name else variety.requires),
-			"error"
-		)
+		Sessions.notify(player, "Build first: " .. (if req then req.name else variety.requires), "error")
 		return
 	end
 	local cost = Economy.varietyCost(variety, profile, Config)
 	if not Sessions.trySpend(session, cost) then
-		Sessions.notify(player, "Не хватает " .. Format.money(cost - profile.cash), "error")
+		Sessions.notify(player, "Not enough cash: need " .. Format.money(cost - profile.cash), "error")
 		return
 	end
 	profile.varieties[varietyId] = true
-	Sessions.notify(player, "🧬 Открыт сорт «" .. variety.name .. "»", "success")
+	Sessions.notify(player, "🧬 Variety unlocked: “" .. variety.name .. "”", "success")
 	Sessions.effect(player, { type = "Sound", sound = "Golden" })
 	afterChange(session)
 end
@@ -128,25 +116,21 @@ function PurchaseService.hireStaff(player: Player, staffId: string)
 	end
 	if not profile.owned[staff.requires] then
 		local req = Config.Items.ById[staff.requires]
-		Sessions.notify(
-			player,
-			"Сначала построй: " .. (if req then req.name else staff.requires),
-			"error"
-		)
+		Sessions.notify(player, "Build first: " .. (if req then req.name else staff.requires), "error")
 		return
 	end
 	if staff.requiresPass and not session.passes[staff.requiresPass] then
-		Sessions.notify(player, "Доступно только с геймпассом VIP Фермер 👑", "error")
+		Sessions.notify(player, "Only available with the VIP Farmer game pass 👑", "error")
 		return
 	end
 	local cost = Economy.staffCost(staff, profile, Config)
 	if not Sessions.trySpend(session, cost) then
-		Sessions.notify(player, "Не хватает " .. Format.money(cost - profile.cash), "error")
+		Sessions.notify(player, "Not enough cash: need " .. Format.money(cost - profile.cash), "error")
 		return
 	end
 	profile.staff[staffId] = count + 1
 	PlotService.spawnStaff(session, staff, count + 1, true)
-	Sessions.notify(player, "Нанят: " .. staff.name, "success")
+	Sessions.notify(player, "Hired: " .. staff.name, "success")
 	Sessions.effect(player, { type = "Sound", sound = "Cash" })
 	afterChange(session)
 end
@@ -164,12 +148,12 @@ function PurchaseService.buyStarTech(player: Player, techId: string)
 	end
 	local cost = Config.StarTech.CostOf(tech, level)
 	if profile.stars < cost then
-		Sessions.notify(player, "Не хватает ⭐ " .. Format.number(cost - profile.stars), "error")
+		Sessions.notify(player, "Not enough ⭐: need " .. Format.number(cost - profile.stars), "error")
 		return
 	end
 	profile.stars -= cost
 	profile.starTech[techId] = level + 1
-	Sessions.notify(player, string.format("⭐ %s: уровень %d", tech.name, level + 1), "success")
+	Sessions.notify(player, string.format("⭐ %s: level %d", tech.name, level + 1), "success")
 	Sessions.effect(player, { type = "Sound", sound = "Golden" })
 	afterChange(session)
 end

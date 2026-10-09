@@ -32,28 +32,28 @@ World.plots = {} :: { PlotInfo }
 
 local SECTORS = {
 	{
-		name = "СЕКТОР 1: АГРО-БЛОК",
+		name = "SECTOR 1: FARM BLOCK",
 		z0 = 14,
 		z1 = 40,
 		color = Color3.fromRGB(105, 165, 75),
 		material = M.Grass,
 	},
 	{
-		name = "СЕКТОР 3: ЭНЕРГЕТИКА И ДРОН-СЕРВИС",
+		name = "SECTOR 3: ENERGY & DRONE SERVICE",
 		z0 = -2,
 		z1 = 14,
 		color = Color3.fromRGB(80, 82, 88),
 		material = M.Asphalt,
 	},
 	{
-		name = "СЕКТОР 2: ЗАВОД ПЕРЕРАБОТКИ",
+		name = "SECTOR 2: PROCESSING PLANT",
 		z0 = -22,
 		z1 = -2,
 		color = Color3.fromRGB(165, 165, 160),
 		material = M.Concrete,
 	},
 	{
-		name = "СЕКТОР 4: НАУКА, КОСМОДРОМ И REBIRTH",
+		name = "SECTOR 4: SCIENCE, SPACEPORT & REBIRTH",
 		z0 = -40,
 		z1 = -22,
 		color = Color3.fromRGB(215, 222, 235),

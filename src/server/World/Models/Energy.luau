@@ -314,7 +314,7 @@ function Models.Office(b: Builder)
 	b:cyl(1.3, 0.6, V(-2.6, 0.65, -2.2), C.white, M.SmoothPlastic)
 	b:cyl(0.7, 0.55, V(-2.6, 1.65, -2.2), Color3.fromRGB(120, 190, 255), M.Glass, { transparency = 0.3 })
 	b:box(V(1, 2.4, 0.7), V(2.6, 1.35, -2.3), C.metal, M.Metal)
-	openMenu(sign, "Staff", "Нанять персонал", "Офис менеджера")
+	openMenu(sign, "Staff", "Hire Staff", "Manager's Office")
 end
 
 function Models.DroneStation(b: Builder)
@@ -332,7 +332,7 @@ function Models.DroneStation(b: Builder)
 	end
 	local sign = b:box(V(3.2, 0.7, 0.1), V(-1.6, 3.2, 1.2), C.white, M.SmoothPlastic, { collide = false })
 	b:label(sign, Enum.NormalId.Back, "DRONES", { color = C.blue })
-	openMenu(sign, "Staff", "Нанять дронов", "Станция дронов")
+	openMenu(sign, "Staff", "Hire Drones", "Drone Station")
 end
 
 function Models.AiSorter(b: Builder)

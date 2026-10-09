@@ -54,7 +54,7 @@ end
 local function manualBed(b: Builder, item)
 	b.model:SetAttribute("ManualBed", true)
 	local s = b.model:FindFirstChild("Soil") :: BasePart
-	prompt(s, "Dig", "Выкопать", item.name)
+	prompt(s, "Dig", "Dig", item.name)
 end
 
 function Models.BedWood(b: Builder, item)
@@ -121,12 +121,7 @@ function Models.SellStand(b: Builder)
 	-- прилавок
 	local counter = b:box(V(6.6, 1.6, 1.4), V(0, 0.8, 2.2), C.wood, M.WoodPlanks, { name = "Counter" })
 	b:box(V(6.8, 0.2, 1.6), V(0, 1.7, 2.2), C.woodLight, M.Wood)
-	b:label(
-		counter,
-		Enum.NormalId.Back,
-		"СКУПКА КАРТОФЕЛЯ",
-		{ color = C.yellow, background = C.woodDark }
-	)
+	b:label(counter, Enum.NormalId.Back, "POTATO BUYER", { color = C.yellow, background = C.woodDark })
 	-- столбы и навес
 	for _, x in ipairs({ -3.1, 3.1 }) do
 		b:box(V(0.35, 5, 0.35), V(x, 2.5, 2.7), C.woodDark, M.Wood)
@@ -156,7 +151,7 @@ function Models.SellStand(b: Builder)
 		0
 	)
 	b:billboard(counter, "Village Buyer", 6, C.yellow)
-	prompt(counter, "Sell", "Сдать картофель", "Скупщик", 0.2)
+	prompt(counter, "Sell", "Sell Potatoes", "Buyer", 0.2)
 end
 
 function Models.NpcMatvey(b: Builder)
@@ -169,7 +164,7 @@ function Models.NpcMatvey(b: Builder)
 	}, 0, 0.95)
 	local head = fig:FindFirstChild("Head") :: BasePart
 	b:billboard(head, "Grandpa Matvey", 2.2, C.yellow)
-	prompt(head, "Talk", "Поговорить", "Дед Матвей")
+	prompt(head, "Talk", "Talk", "Grandpa Matvey")
 end
 
 function Models.FenceWood(b: Builder)

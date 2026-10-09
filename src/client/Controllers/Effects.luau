@@ -290,7 +290,7 @@ function Effects.handle(data)
 	elseif kind == "Stage" then
 		local stage = Config.Game.Stages[data.stage]
 		if stage then
-			Effects.banner("ЭТАП " .. data.stage, stage.name)
+			Effects.banner("STAGE " .. data.stage, stage.name)
 			Effects.confetti(false)
 		end
 	elseif kind == "Sound" then

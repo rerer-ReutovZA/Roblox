@@ -105,7 +105,7 @@ function Sessions.updateLeaderstats(session: Session)
 	if not stats then
 		return
 	end
-	local cash = stats:FindFirstChild("Деньги") :: StringValue?
+	local cash = stats:FindFirstChild("Cash") :: StringValue?
 	if cash then
 		cash.Value = Format.money(session.profile.cash)
 	end

@@ -177,7 +177,7 @@ function PlotService.createButton(session: Session, item)
 			lastWarn[model] = os.clock()
 			Sessions.notify(
 				session.player,
-				"Не хватает " .. Format.money(cost - session.profile.cash),
+				"Not enough cash: need " .. Format.money(cost - session.profile.cash),
 				"error"
 			)
 		end
@@ -235,8 +235,7 @@ function PlotService.buildVipPads(session: Session)
 		if spot then
 			local b = Kit.new("Vip_" .. pass.key, World.localCFrame(info, spot[1], spot[2]))
 			local owned = session.passes[pass.key] == true
-			local pad =
-				Misc.Button(b, pass.icon .. " " .. pass.name, if owned then "✓ Куплено" else "Robux", "Vip")
+			local pad = Misc.Button(b, pass.icon .. " " .. pass.name, if owned then "✓ Owned" else "Robux", "Vip")
 			b.model:SetAttribute("PassKey", pass.key)
 			b:finish(folder)
 			local busy = false

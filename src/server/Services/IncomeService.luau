@@ -44,11 +44,7 @@ local function goldenRoll()
 				local target = if #sources > 0 then sources[math.random(1, #sources)] else nil
 				local bonus = stats.incomePerSec * G.IncomeSeconds
 				Sessions.addCash(session, bonus)
-				Sessions.notify(
-					session.player,
-					"✨ Золотой клубень на поле! +" .. Format.money(bonus),
-					"gold"
-				)
+				Sessions.notify(session.player, "✨ Golden tuber in the field! +" .. Format.money(bonus), "gold")
 				Sessions.effect(
 					session.player,
 					{ type = "Golden", target = target, amount = bonus, glow = G.GlowSeconds }

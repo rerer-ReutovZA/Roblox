@@ -23,7 +23,7 @@ local Items = {
 	------------------------------------------------------------------
 	{
 		id = "bed_wood_1",
-		name = "Деревянная грядка",
+		name = "Wooden Garden Bed",
 		asset = 1,
 		sector = "Agro",
 		stage = 1,
@@ -37,7 +37,7 @@ local Items = {
 	},
 	{
 		id = "bed_wood_2",
-		name = "Деревянная грядка",
+		name = "Wooden Garden Bed",
 		asset = 1,
 		sector = "Agro",
 		stage = 1,
@@ -51,7 +51,7 @@ local Items = {
 	},
 	{
 		id = "bed_wood_3",
-		name = "Деревянная грядка",
+		name = "Wooden Garden Bed",
 		asset = 1,
 		sector = "Agro",
 		stage = 1,
@@ -65,7 +65,7 @@ local Items = {
 	},
 	{
 		id = "stand",
-		name = "Лоток деревенского скупщика",
+		name = "Village Buyer's Stall",
 		asset = 114,
 		sector = "Agro",
 		stage = 1,
@@ -78,7 +78,7 @@ local Items = {
 	},
 	{
 		id = "matvey",
-		name = "Дед Матвей",
+		name = "Grandpa Matvey",
 		asset = 115,
 		sector = "Agro",
 		stage = 1,
@@ -90,7 +90,7 @@ local Items = {
 	},
 	{
 		id = "fence_wood",
-		name = "Забор фермерский деревянный",
+		name = "Wooden Farm Fence",
 		asset = 167,
 		sector = "Agro",
 		stage = 1,
@@ -107,8 +107,8 @@ local Items = {
 	------------------------------------------------------------------
 	{
 		id = "upg_watering_can",
-		name = "Авто-лейка",
-		desc = "Кусты созревают за 1.5 сек вместо 3",
+		name = "Auto Watering Can",
+		desc = "Bushes ripen in 1.5 s instead of 3",
 		sector = "Agro",
 		stage = 1,
 		cost = 40,
@@ -119,8 +119,8 @@ local Items = {
 	},
 	{
 		id = "bed_stone_1",
-		name = "Каменная утепленная грядка",
-		desc = "2 клубня за копок",
+		name = "Insulated Stone Bed",
+		desc = "2 tubers per dig",
 		asset = 2,
 		sector = "Agro",
 		stage = 1,
@@ -133,8 +133,8 @@ local Items = {
 	},
 	{
 		id = "bed_stone_2",
-		name = "Каменная утепленная грядка",
-		desc = "2 клубня за копок",
+		name = "Insulated Stone Bed",
+		desc = "2 tubers per dig",
 		asset = 2,
 		sector = "Agro",
 		stage = 1,
@@ -148,8 +148,8 @@ local Items = {
 	},
 	{
 		id = "upg_bag_xl",
-		name = "Заплечный мешок XL",
-		desc = "Вместимость мешка 50 клубней",
+		name = "XL Backpack Sack",
+		desc = "Sack holds 50 tubers",
 		asset = 183,
 		sector = "Agro",
 		stage = 1,
@@ -162,8 +162,8 @@ local Items = {
 	},
 	{
 		id = "bed_metal_1",
-		name = "Металлическая грядка с подогревом",
-		desc = "4 клубня за копок",
+		name = "Heated Metal Bed",
+		desc = "4 tubers per dig",
 		asset = 3,
 		sector = "Agro",
 		stage = 1,
@@ -177,8 +177,8 @@ local Items = {
 	},
 	{
 		id = "bed_metal_2",
-		name = "Металлическая грядка с подогревом",
-		desc = "4 клубня за копок",
+		name = "Heated Metal Bed",
+		desc = "4 tubers per dig",
 		asset = 3,
 		sector = "Agro",
 		stage = 1,
@@ -192,8 +192,8 @@ local Items = {
 	},
 	{
 		id = "tower",
-		name = "Авто-вышка сбора + контракт с торговой сетью",
-		desc = "Навсегда убирает ручной труд: урожай собирается и продаётся сам",
+		name = "Auto Harvest Tower + Retail Contract",
+		desc = "Ends manual labor forever: the harvest is collected and sold automatically",
 		sector = "Agro",
 		stage = 1,
 		cost = 1500,
@@ -208,7 +208,7 @@ local Items = {
 	------------------------------------------------------------------
 	{
 		id = "gen_petrol",
-		name = "Бензиновый генератор 10 кВт",
+		name = "10 kW Petrol Generator",
 		asset = 82,
 		sector = "Energy",
 		stage = 2,
@@ -221,7 +221,7 @@ local Items = {
 	},
 	{
 		id = "autobed_t1_1",
-		name = "Авто-грядка Tier 1 (шнековый сбор)",
+		name = "Auto Bed Tier 1 (Auger Harvest)",
 		asset = 4,
 		sector = "Agro",
 		stage = 2,
@@ -235,7 +235,7 @@ local Items = {
 	},
 	{
 		id = "autobed_t1_2",
-		name = "Авто-грядка Tier 1 (шнековый сбор)",
+		name = "Auto Bed Tier 1 (Auger Harvest)",
 		asset = 4,
 		sector = "Agro",
 		stage = 2,
@@ -249,7 +249,7 @@ local Items = {
 	},
 	{
 		id = "autobed_t1_3",
-		name = "Авто-грядка Tier 1 (шнековый сбор)",
+		name = "Auto Bed Tier 1 (Auger Harvest)",
 		asset = 4,
 		sector = "Agro",
 		stage = 2,
@@ -263,8 +263,8 @@ local Items = {
 	},
 	{
 		id = "sprinkler_1",
-		name = "Роторный спринклер полива",
-		desc = "+5% к урожаю",
+		name = "Rotary Sprinkler",
+		desc = "+5% yield",
 		asset = 14,
 		sector = "Agro",
 		stage = 2,
@@ -277,8 +277,8 @@ local Items = {
 	},
 	{
 		id = "phytolamp",
-		name = "Фитолампа накаливания базовая",
-		desc = "+5% к урожаю",
+		name = "Basic Incandescent Grow Lamp",
+		desc = "+5% yield",
 		asset = 17,
 		sector = "Agro",
 		stage = 2,
@@ -292,7 +292,7 @@ local Items = {
 	},
 	{
 		id = "autobed_t2_1",
-		name = "Авто-грядка Tier 2 (вакуумный сборщик)",
+		name = "Auto Bed Tier 2 (Vacuum Harvester)",
 		asset = 5,
 		sector = "Agro",
 		stage = 2,
@@ -306,7 +306,7 @@ local Items = {
 	},
 	{
 		id = "autobed_t2_2",
-		name = "Авто-грядка Tier 2 (вакуумный сборщик)",
+		name = "Auto Bed Tier 2 (Vacuum Harvester)",
 		asset = 5,
 		sector = "Agro",
 		stage = 2,
@@ -320,7 +320,7 @@ local Items = {
 	},
 	{
 		id = "autobed_t2_3",
-		name = "Авто-грядка Tier 2 (вакуумный сборщик)",
+		name = "Auto Bed Tier 2 (Vacuum Harvester)",
 		asset = 5,
 		sector = "Agro",
 		stage = 2,
@@ -334,8 +334,8 @@ local Items = {
 	},
 	{
 		id = "neon_sign",
-		name = "Неоновая вывеска «POTATO TYCOON»",
-		desc = "+3% к доходу",
+		name = "“POTATO TYCOON” Neon Sign",
+		desc = "+3% income",
 		asset = 171,
 		sector = "Agro",
 		stage = 2,
@@ -350,7 +350,7 @@ local Items = {
 	},
 	{
 		id = "solar_10",
-		name = "Крышная солнечная батарея 10 кВт",
+		name = "10 kW Rooftop Solar Panel",
 		asset = 87,
 		sector = "Energy",
 		stage = 2,
@@ -363,8 +363,8 @@ local Items = {
 	},
 	{
 		id = "sprinkler_2",
-		name = "Роторный спринклер полива",
-		desc = "+5% к урожаю",
+		name = "Rotary Sprinkler",
+		desc = "+5% yield",
 		asset = 14,
 		sector = "Agro",
 		stage = 2,
@@ -377,8 +377,8 @@ local Items = {
 	},
 	{
 		id = "moletrap",
-		name = "Ультразвуковая ловушка для кротов",
-		desc = "+5% к урожаю",
+		name = "Ultrasonic Mole Trap",
+		desc = "+5% yield",
 		asset = 22,
 		sector = "Agro",
 		stage = 2,
@@ -391,8 +391,8 @@ local Items = {
 	},
 	{
 		id = "led_1",
-		name = "Промышленная LED-панель полного спектра",
-		desc = "+10% к урожаю",
+		name = "Industrial Full-Spectrum LED Panel",
+		desc = "+10% yield",
 		asset = 18,
 		sector = "Agro",
 		stage = 2,
@@ -406,8 +406,8 @@ local Items = {
 	},
 	{
 		id = "led_board",
-		name = "Светодиодное табло суточной выработки",
-		desc = "+3% к доходу",
+		name = "LED Daily Output Board",
+		desc = "+3% income",
 		asset = 172,
 		sector = "Agro",
 		stage = 2,
@@ -420,7 +420,7 @@ local Items = {
 	},
 	{
 		id = "wind_small",
-		name = "Ветрогенератор фермерский малый",
+		name = "Small Farm Wind Turbine",
 		asset = 89,
 		sector = "Energy",
 		stage = 2,
@@ -433,7 +433,7 @@ local Items = {
 	},
 	{
 		id = "autobed_t3_1",
-		name = "Авто-грядка Tier 3 (лазерный срез ботвы)",
+		name = "Auto Bed Tier 3 (Laser Haulm Cutter)",
 		asset = 6,
 		sector = "Agro",
 		stage = 2,
@@ -447,8 +447,8 @@ local Items = {
 	},
 	{
 		id = "drip",
-		name = "Капельная система подземного орошения",
-		desc = "+10% к урожаю",
+		name = "Underground Drip Irrigation",
+		desc = "+10% yield",
 		asset = 15,
 		sector = "Agro",
 		stage = 2,
@@ -461,7 +461,7 @@ local Items = {
 	},
 	{
 		id = "autobed_t3_2",
-		name = "Авто-грядка Tier 3 (лазерный срез ботвы)",
+		name = "Auto Bed Tier 3 (Laser Haulm Cutter)",
 		asset = 6,
 		sector = "Agro",
 		stage = 2,
@@ -475,8 +475,8 @@ local Items = {
 	},
 	{
 		id = "led_2",
-		name = "Промышленная LED-панель полного спектра",
-		desc = "+10% к урожаю",
+		name = "Industrial Full-Spectrum LED Panel",
+		desc = "+10% yield",
 		asset = 18,
 		sector = "Agro",
 		stage = 2,
@@ -490,7 +490,7 @@ local Items = {
 	},
 	{
 		id = "autobed_t3_3",
-		name = "Авто-грядка Tier 3 (лазерный срез ботвы)",
+		name = "Auto Bed Tier 3 (Laser Haulm Cutter)",
 		asset = 6,
 		sector = "Agro",
 		stage = 2,
@@ -508,8 +508,8 @@ local Items = {
 	------------------------------------------------------------------
 	{
 		id = "factory_building",
-		name = "Фабричный корпус (Северный сектор)",
-		desc = "Открывает цеха-множители",
+		name = "Factory Hall (North Sector)",
+		desc = "Unlocks multiplier workshops",
 		asset = 158,
 		sector = "Factory",
 		stage = 2,
@@ -524,8 +524,8 @@ local Items = {
 	},
 	{
 		id = "washer",
-		name = "Моечно-калибровочный комплекс",
-		desc = "Множитель x1.5",
+		name = "Washing & Grading Line",
+		desc = "Multiplier x1.5",
 		asset = 51,
 		sector = "Factory",
 		stage = 3,
@@ -539,7 +539,7 @@ local Items = {
 	},
 	{
 		id = "diesel_25",
-		name = "Шумозащитный дизель-генератор 25 кВт",
+		name = "25 kW Silent Diesel Generator",
 		asset = 83,
 		sector = "Energy",
 		stage = 3,
@@ -552,8 +552,8 @@ local Items = {
 	},
 	{
 		id = "peeler",
-		name = "Паровой пилер снятия кожуры",
-		desc = "+0.5 к множителю",
+		name = "Steam Peeler",
+		desc = "+0.5 multiplier",
 		asset = 53,
 		sector = "Factory",
 		stage = 3,
@@ -567,8 +567,8 @@ local Items = {
 	},
 	{
 		id = "slicer",
-		name = "Слайсер-цех чипсов",
-		desc = "Множитель x2.5",
+		name = "Chips Slicer Line",
+		desc = "Multiplier x2.5",
 		asset = 55,
 		sector = "Factory",
 		stage = 3,
@@ -583,8 +583,8 @@ local Items = {
 	},
 	{
 		id = "biogas",
-		name = "Биогазовый метантенк",
-		desc = "Перерабатывает очистки в энергию",
+		name = "Biogas Digester",
+		desc = "Turns peelings into energy",
 		asset = 85,
 		sector = "Energy",
 		stage = 3,
@@ -597,8 +597,8 @@ local Items = {
 	},
 	{
 		id = "office",
-		name = "Офис менеджера завода",
-		desc = "Открывает найм персонала",
+		name = "Plant Manager's Office",
+		desc = "Unlocks staff hiring",
 		asset = 173,
 		sector = "Energy",
 		stage = 3,
@@ -611,7 +611,7 @@ local Items = {
 	},
 	{
 		id = "hydro_tray_1",
-		name = "Одиночный гидропонный лоток",
+		name = "Single Hydroponic Tray",
 		asset = 7,
 		sector = "Agro",
 		stage = 3,
@@ -625,8 +625,8 @@ local Items = {
 	},
 	{
 		id = "fryer",
-		name = "Фритюрная станция",
-		desc = "Множитель x4",
+		name = "Frying Station",
+		desc = "Multiplier x4",
 		asset = 59,
 		sector = "Factory",
 		stage = 3,
@@ -641,7 +641,7 @@ local Items = {
 	},
 	{
 		id = "hydro_tray_2",
-		name = "Одиночный гидропонный лоток",
+		name = "Single Hydroponic Tray",
 		asset = 7,
 		sector = "Agro",
 		stage = 3,
@@ -655,8 +655,8 @@ local Items = {
 	},
 	{
 		id = "fertilizer",
-		name = "Дозатор жидкого удобрения",
-		desc = "+15% к урожаю",
+		name = "Liquid Fertilizer Doser",
+		desc = "+15% yield",
 		asset = 20,
 		sector = "Agro",
 		stage = 3,
@@ -669,7 +669,7 @@ local Items = {
 	},
 	{
 		id = "solar_mono_1",
-		name = "Монокристаллическая солнечная панель",
+		name = "Monocrystalline Solar Panel",
 		asset = 88,
 		sector = "Energy",
 		stage = 3,
@@ -682,8 +682,8 @@ local Items = {
 	},
 	{
 		id = "breaker",
-		name = "Главный рубильник и шкаф автоматики",
-		desc = "+5% к генерации",
+		name = "Main Breaker & Control Cabinet",
+		desc = "+5% generation",
 		asset = 105,
 		sector = "Energy",
 		stage = 3,
@@ -696,8 +696,8 @@ local Items = {
 	},
 	{
 		id = "spices",
-		name = "Барабан специй и трав",
-		desc = "Множитель x6",
+		name = "Spice & Herb Drum",
+		desc = "Multiplier x6",
 		asset = 61,
 		sector = "Factory",
 		stage = 3,
@@ -711,8 +711,8 @@ local Items = {
 	},
 	{
 		id = "puree_vat",
-		name = "Варочный чан пюре непрерывного действия",
-		desc = "+1 к множителю",
+		name = "Continuous Puree Cooking Vat",
+		desc = "+1 multiplier",
 		asset = 67,
 		sector = "Factory",
 		stage = 3,
@@ -726,7 +726,7 @@ local Items = {
 	},
 	{
 		id = "seed_greenhouse",
-		name = "Стеклянный парник для семян",
+		name = "Glass Seed Greenhouse",
 		asset = 12,
 		sector = "Agro",
 		stage = 3,
@@ -739,8 +739,8 @@ local Items = {
 	},
 	{
 		id = "substation",
-		name = "Трансформаторная подстанция",
-		desc = "+15% к генерации",
+		name = "Transformer Substation",
+		desc = "+15% generation",
 		asset = 95,
 		sector = "Energy",
 		stage = 3,
@@ -753,7 +753,7 @@ local Items = {
 	},
 	{
 		id = "hydro_rack2",
-		name = "Стойка гидропоники 2 яруса",
+		name = "2-Tier Hydroponic Rack",
 		asset = 8,
 		sector = "Agro",
 		stage = 3,
@@ -767,8 +767,8 @@ local Items = {
 	},
 	{
 		id = "packer",
-		name = "Автоматический вакуумный упаковщик",
-		desc = "+0.5 к множителю",
+		name = "Automatic Vacuum Packer",
+		desc = "+0.5 multiplier",
 		asset = 78,
 		sector = "Factory",
 		stage = 3,
@@ -782,8 +782,8 @@ local Items = {
 	},
 	{
 		id = "flagpole",
-		name = "Флагшток с корпоративным флагом",
-		desc = "+2% к доходу",
+		name = "Corporate Flagpole",
+		desc = "+2% income",
 		asset = 170,
 		sector = "Agro",
 		stage = 3,
@@ -796,8 +796,8 @@ local Items = {
 	},
 	{
 		id = "biohumus",
-		name = "Бак для питательного биогумуса",
-		desc = "+10% к урожаю",
+		name = "Vermicompost Tank",
+		desc = "+10% yield",
 		asset = 21,
 		sector = "Agro",
 		stage = 3,
@@ -810,8 +810,8 @@ local Items = {
 	},
 	{
 		id = "mascot",
-		name = "Плюшевый маскот картошки в кепке",
-		desc = "+2% к доходу",
+		name = "Plush Potato Mascot in a Cap",
+		desc = "+2% income",
 		asset = 185,
 		sector = "Agro",
 		stage = 3,
@@ -824,8 +824,8 @@ local Items = {
 	},
 	{
 		id = "soil_sensor",
-		name = "Датчик влажности и кислотности почвы",
-		desc = "+5% к урожаю",
+		name = "Soil Moisture & pH Sensor",
+		desc = "+5% yield",
 		asset = 24,
 		sector = "Agro",
 		stage = 3,
@@ -838,7 +838,7 @@ local Items = {
 	},
 	{
 		id = "solar_mono_2",
-		name = "Монокристаллическая солнечная панель",
+		name = "Monocrystalline Solar Panel",
 		asset = 88,
 		sector = "Energy",
 		stage = 3,
@@ -851,8 +851,8 @@ local Items = {
 	},
 	{
 		id = "fogger",
-		name = "Ультразвуковой туманообразователь",
-		desc = "+10% к урожаю",
+		name = "Ultrasonic Fogger",
+		desc = "+10% yield",
 		asset = 16,
 		sector = "Agro",
 		stage = 3,
@@ -866,7 +866,7 @@ local Items = {
 	},
 	{
 		id = "hydro_rack3",
-		name = "Стойка гидропоники 3 яруса",
+		name = "3-Tier Hydroponic Rack",
 		asset = 9,
 		sector = "Agro",
 		stage = 3,
@@ -884,8 +884,8 @@ local Items = {
 	------------------------------------------------------------------
 	{
 		id = "drone_station",
-		name = "Станция логистических дронов",
-		desc = "Открывает найм дронов",
+		name = "Logistics Drone Station",
+		desc = "Unlocks drone hiring",
 		asset = 110,
 		sector = "Energy",
 		stage = 3,
@@ -899,7 +899,7 @@ local Items = {
 	},
 	{
 		id = "diesel_100",
-		name = "Промышленный дизель-генератор 100 кВт",
+		name = "100 kW Industrial Diesel Generator",
 		asset = 84,
 		sector = "Energy",
 		stage = 4,
@@ -912,8 +912,8 @@ local Items = {
 	},
 	{
 		id = "cryo",
-		name = "Крио-туннель шоковой заморозки фри",
-		desc = "Множитель x10",
+		name = "Fries Blast-Freeze Cryo Tunnel",
+		desc = "Multiplier x10",
 		asset = 66,
 		sector = "Factory",
 		stage = 4,
@@ -928,8 +928,8 @@ local Items = {
 	},
 	{
 		id = "ai_sorter",
-		name = "ИИ-сортировщик отходов",
-		desc = "Брак → биотопливо: +40 кВт и +5% к доходу",
+		name = "AI Waste Sorter",
+		desc = "Rejects → biofuel: +40 kW and +5% income",
 		asset = 111,
 		sector = "Energy",
 		stage = 4,
@@ -943,7 +943,7 @@ local Items = {
 	},
 	{
 		id = "battery",
-		name = "Блок литий-ионных аккумуляторов",
+		name = "Lithium-Ion Battery Block",
 		asset = 96,
 		sector = "Energy",
 		stage = 4,
@@ -956,7 +956,7 @@ local Items = {
 	},
 	{
 		id = "hydro_tower",
-		name = "Вертикальная гидропонная башня 5м",
+		name = "5 m Vertical Hydroponic Tower",
 		asset = 10,
 		sector = "Agro",
 		stage = 4,
@@ -970,8 +970,8 @@ local Items = {
 	},
 	{
 		id = "autoclave",
-		name = "Автоклав стерилизации снеков",
-		desc = "+1.5 к множителю",
+		name = "Snack Sterilization Autoclave",
+		desc = "+1.5 multiplier",
 		asset = 79,
 		sector = "Factory",
 		stage = 4,
@@ -985,8 +985,8 @@ local Items = {
 	},
 	{
 		id = "sublimator",
-		name = "Вакуумный сублиматор пюре",
-		desc = "Множитель x18",
+		name = "Vacuum Puree Freeze-Dryer",
+		desc = "Multiplier x18",
 		asset = 69,
 		sector = "Factory",
 		stage = 4,
@@ -1000,7 +1000,7 @@ local Items = {
 	},
 	{
 		id = "wind_50",
-		name = "Промышленный ветряк 50 кВт",
+		name = "50 kW Industrial Wind Turbine",
 		asset = 90,
 		sector = "Energy",
 		stage = 4,
@@ -1013,8 +1013,8 @@ local Items = {
 	},
 	{
 		id = "starch_mill",
-		name = "Мельница и пресс очищенного крахмала",
-		desc = "+2 к множителю",
+		name = "Refined Starch Mill & Press",
+		desc = "+2 multiplier",
 		asset = 70,
 		sector = "Factory",
 		stage = 4,
@@ -1028,7 +1028,7 @@ local Items = {
 	},
 	{
 		id = "aeroponic_1",
-		name = "Аэропонная закрытая ростовая капсула",
+		name = "Sealed Aeroponic Grow Pod",
 		asset = 11,
 		sector = "Agro",
 		stage = 4,
@@ -1042,8 +1042,8 @@ local Items = {
 	},
 	{
 		id = "bioreactor",
-		name = "Биореактор крахмала и этанола",
-		desc = "Множитель x35",
+		name = "Starch & Ethanol Bioreactor",
+		desc = "Multiplier x35",
 		asset = 76,
 		sector = "Factory",
 		stage = 4,
@@ -1057,7 +1057,7 @@ local Items = {
 	},
 	{
 		id = "biogas_turbine",
-		name = "Когенерационная биогазовая турбина 250 кВт",
+		name = "250 kW Biogas Cogeneration Turbine",
 		asset = 86,
 		sector = "Energy",
 		stage = 4,
@@ -1070,7 +1070,7 @@ local Items = {
 	},
 	{
 		id = "aeroponic_2",
-		name = "Аэропонная закрытая ростовая капсула",
+		name = "Sealed Aeroponic Grow Pod",
 		asset = 11,
 		sector = "Agro",
 		stage = 4,
@@ -1084,8 +1084,8 @@ local Items = {
 	},
 	{
 		id = "extruder",
-		name = "Экструдер хрустящих картофельных палочек",
-		desc = "+1 к множителю",
+		name = "Crispy Potato Stick Extruder",
+		desc = "+1 multiplier",
 		asset = 72,
 		sector = "Factory",
 		stage = 4,
@@ -1099,8 +1099,8 @@ local Items = {
 	},
 	{
 		id = "cooling_tower",
-		name = "Охладительная градирня фабрики",
-		desc = "+10% к генерации",
+		name = "Factory Cooling Tower",
+		desc = "+10% generation",
 		asset = 104,
 		sector = "Energy",
 		stage = 4,
@@ -1113,7 +1113,7 @@ local Items = {
 	},
 	{
 		id = "greenhouse_pro",
-		name = "Промышленная поликарбонатная теплица",
+		name = "Industrial Polycarbonate Greenhouse",
 		asset = 13,
 		sector = "Agro",
 		stage = 4,
@@ -1126,8 +1126,8 @@ local Items = {
 	},
 	{
 		id = "ionizer",
-		name = "Почвенный ионизатор корневой зоны",
-		desc = "+10% к урожаю",
+		name = "Root Zone Soil Ionizer",
+		desc = "+10% yield",
 		asset = 25,
 		sector = "Agro",
 		stage = 4,
@@ -1141,7 +1141,7 @@ local Items = {
 	},
 	{
 		id = "megapack",
-		name = "Контейнер накопителей Megapack",
+		name = "Megapack Storage Container",
 		asset = 97,
 		sector = "Energy",
 		stage = 4,
@@ -1158,8 +1158,8 @@ local Items = {
 	------------------------------------------------------------------
 	{
 		id = "lab",
-		name = "Лаборатория ДНК",
-		desc = "Открывает сорта конца игры",
+		name = "DNA Lab",
+		desc = "Unlocks endgame varieties",
 		asset = 131,
 		sector = "Science",
 		stage = 4,
@@ -1173,7 +1173,7 @@ local Items = {
 	},
 	{
 		id = "geothermal",
-		name = "Геотермальный тепловой насос",
+		name = "Geothermal Heat Pump",
 		asset = 91,
 		sector = "Energy",
 		stage = 5,
@@ -1186,8 +1186,8 @@ local Items = {
 	},
 	{
 		id = "centrifuge",
-		name = "Скоростная генная центрифуга",
-		desc = "+3% к урожаю",
+		name = "High-Speed Gene Centrifuge",
+		desc = "+3% yield",
 		asset = 133,
 		sector = "Science",
 		stage = 5,
@@ -1201,7 +1201,7 @@ local Items = {
 	},
 	{
 		id = "launch_pad",
-		name = "Стартовая железобетонная площадка",
+		name = "Reinforced Concrete Launch Pad",
 		asset = 144,
 		sector = "Science",
 		stage = 5,
@@ -1213,8 +1213,8 @@ local Items = {
 	},
 	{
 		id = "incubator",
-		name = "Инкубатор ГМ-проростков",
-		desc = "+10% к урожаю",
+		name = "GM Sprout Incubator",
+		desc = "+10% yield",
 		asset = 135,
 		sector = "Science",
 		stage = 5,
@@ -1228,8 +1228,8 @@ local Items = {
 	},
 	{
 		id = "research_terminal",
-		name = "Голографический терминал древа технологий",
-		desc = "+5% к доходу",
+		name = "Holographic Tech Tree Terminal",
+		desc = "+5% income",
 		asset = 137,
 		sector = "Science",
 		stage = 5,
@@ -1242,7 +1242,7 @@ local Items = {
 	},
 	{
 		id = "mutagenesis",
-		name = "Камера радиационного мутагенеза",
+		name = "Radiation Mutagenesis Chamber",
 		asset = 134,
 		sector = "Science",
 		stage = 5,
@@ -1255,7 +1255,7 @@ local Items = {
 	},
 	{
 		id = "potato_reactor",
-		name = "Картофельный мини-реактор на электролитах",
+		name = "Electrolyte Potato Mini-Reactor",
 		asset = 92,
 		sector = "Energy",
 		stage = 5,
@@ -1268,8 +1268,8 @@ local Items = {
 	},
 	{
 		id = "seed_vault",
-		name = "Крио-хранилище семенного генофонда",
-		desc = "+5% к урожаю",
+		name = "Cryo Seed Vault",
+		desc = "+5% yield",
 		asset = 136,
 		sector = "Science",
 		stage = 5,
@@ -1282,7 +1282,7 @@ local Items = {
 	},
 	{
 		id = "launch_tower",
-		name = "Пусковая вышка с кабелями заправки",
+		name = "Launch Tower with Fuel Lines",
 		asset = 147,
 		sector = "Science",
 		stage = 5,
@@ -1294,8 +1294,8 @@ local Items = {
 	},
 	{
 		id = "quantum_irradiator",
-		name = "Квантовый ускоритель созревания",
-		desc = "+10% к урожаю",
+		name = "Quantum Ripening Accelerator",
+		desc = "+10% yield",
 		asset = 142,
 		sector = "Science",
 		stage = 5,
@@ -1309,8 +1309,8 @@ local Items = {
 	},
 	{
 		id = "god_monument",
-		name = "Монумент Картофельного Бога",
-		desc = "+10% к доходу",
+		name = "Potato God Monument",
+		desc = "+10% income",
 		sector = "Science",
 		stage = 5,
 		cost = 220_000_000,
@@ -1322,8 +1322,8 @@ local Items = {
 	},
 	{
 		id = "beacon",
-		name = "Маяк космической навигации",
-		desc = "+2% к доходу",
+		name = "Space Navigation Beacon",
+		desc = "+2% income",
 		asset = 154,
 		sector = "Science",
 		stage = 5,
@@ -1336,7 +1336,7 @@ local Items = {
 	},
 	{
 		id = "fusion",
-		name = "Термоядерный микрореактор фабрики",
+		name = "Factory Fusion Micro-Reactor",
 		asset = 93,
 		sector = "Energy",
 		stage = 5,
@@ -1349,8 +1349,8 @@ local Items = {
 	},
 	{
 		id = "quantum_lamp",
-		name = "Неоновая квантовая лампа фотосинтеза",
-		desc = "+15% к урожаю",
+		name = "Neon Quantum Photosynthesis Lamp",
+		desc = "+15% yield",
 		asset = 19,
 		sector = "Agro",
 		stage = 5,
@@ -1364,8 +1364,8 @@ local Items = {
 	},
 	{
 		id = "satellite",
-		name = "Флагманский спутник картофельной связи",
-		desc = "+3% к доходу",
+		name = "Flagship Potato Comms Satellite",
+		desc = "+3% income",
 		asset = 155,
 		sector = "Science",
 		stage = 5,
@@ -1378,8 +1378,8 @@ local Items = {
 	},
 	{
 		id = "quantum_converter",
-		name = "Квантовый преобразователь",
-		desc = "Множитель x100",
+		name = "Quantum Converter",
+		desc = "Multiplier x100",
 		asset = 80,
 		sector = "Factory",
 		stage = 5,
@@ -1393,8 +1393,8 @@ local Items = {
 	},
 	{
 		id = "force_dome",
-		name = "Защитный силовой метеокупол",
-		desc = "+10% к урожаю",
+		name = "Protective Weather Force Dome",
+		desc = "+10% yield",
 		asset = 23,
 		sector = "Agro",
 		stage = 5,
@@ -1407,8 +1407,8 @@ local Items = {
 	},
 	{
 		id = "shuttle",
-		name = "Экспортный шаттл «Галактический Картофель»",
-		desc = "Открывает Rebirth",
+		name = "“Galactic Potato” Export Shuttle",
+		desc = "Unlocks Rebirth",
 		asset = 146,
 		sector = "Science",
 		stage = 5,
@@ -1426,7 +1426,7 @@ local Items = {
 	-- Терминал обмена Картофельных Звезд: появляется сам после первого Rebirth
 	{
 		id = "star_terminal",
-		name = "Терминал обмена Картофельных Звезд",
+		name = "Potato Star Exchange Terminal",
 		asset = 152,
 		sector = "Science",
 		stage = 1,

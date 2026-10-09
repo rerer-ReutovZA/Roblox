@@ -128,7 +128,7 @@ function Hud.init()
 		Size = UDim2.new(1, -12, 0, 20),
 		Font = Theme.FontRegular,
 		TextColor3 = C.Muted,
-		Text = "Лопатой кликай по созревшим кустам, сдавай урожай скупщику",
+		Text = "Click ripe bushes with the shovel and sell the harvest to the buyer",
 		Parent = bag,
 	})
 
@@ -147,13 +147,13 @@ function Hud.init()
 		}),
 	})
 	local MENU = {
-		{ "Research", "🧬", "Сорта" },
-		{ "Staff", "🤖", "Персонал" },
-		{ "StarTech", "⭐", "Звёзды" },
+		{ "Research", "🧬", "Varieties" },
+		{ "Staff", "🤖", "Staff" },
+		{ "StarTech", "⭐", "Stars" },
 		{ "Rebirth", "🚀", "Rebirth" },
-		{ "Shop", "💎", "Магазин" },
-		{ "Stats", "📊", "Доход" },
-		{ "Home", "🏠", "Домой" },
+		{ "Shop", "💎", "Shop" },
+		{ "Stats", "📊", "Income" },
+		{ "Home", "🏠", "Home" },
 	}
 	for i, entry in ipairs(MENU) do
 		local button = Theme.button({
@@ -186,15 +186,15 @@ function Hud.init()
 		cashLabel.Text = "💰 " .. Format.money(cash)
 		local manual = State.attr("Manual") == true
 		if manual then
-			incomeLabel.Text = "🥔 ручной сбор"
+			incomeLabel.Text = "🥔 manual harvest"
 			incomeLabel.TextColor3 = C.Muted
 		else
-			incomeLabel.Text = "+" .. Format.money(State.num("Income")) .. "/с"
+			incomeLabel.Text = "+" .. Format.money(State.num("Income")) .. "/s"
 			incomeLabel.TextColor3 = C.Cash
 		end
 		local gen, use = State.num("EnergyGen"), State.num("EnergyUse")
 		local over = State.attr("Overloaded") == true
-		energyLabel.Text = string.format("⚡ %s/%s кВт", Format.number(use), Format.number(gen))
+		energyLabel.Text = string.format("⚡ %s/%s kW", Format.number(use), Format.number(gen))
 		energyLabel.TextColor3 = if over then C.Danger else C.Energy
 		local stroke = energyFrame:FindFirstChildOfClass("UIStroke")
 		if stroke then
@@ -202,12 +202,12 @@ function Hud.init()
 		end
 		starsLabel.Text = "⭐ " .. Format.number(State.num("Stars"))
 		local stage = math.max(1, State.num("Stage"))
-		stageLabel.Text = "Этап " .. stage
+		stageLabel.Text = "Stage " .. stage
 
 		local info = Config.Game.Stages[stage]
 		local text = if info then "🎯 " .. info.goal else ""
 		if over then
-			text = "⚠ ПЕРЕГРУЗКА СЕТИ: доход -50%! Купи генератор ⚡"
+			text = "⚠ GRID OVERLOAD: income -50%! Buy a generator ⚡"
 			goal.TextColor3 = C.Danger
 		else
 			goal.TextColor3 = Color3.fromRGB(255, 240, 200)
@@ -217,7 +217,7 @@ function Hud.init()
 		bag.Visible = manual
 		local capacity = math.max(1, State.num("BagCapacity"))
 		local count = State.num("Bag")
-		bagLabel.Text = string.format("🥔 Мешок: %d / %d", count, capacity)
+		bagLabel.Text = string.format("🥔 Sack: %d / %d", count, capacity)
 		bagFill.Size = UDim2.new(math.clamp(count / capacity, 0, 1), -12, 0, 22)
 		bagFill.BackgroundColor3 = if count >= capacity then C.Danger else Color3.fromRGB(190, 140, 70)
 	end
@@ -244,7 +244,7 @@ function Hud.init()
 			table.insert(
 				lines,
 				string.format(
-					"🪲 Жуки: %d / %d — %s",
+					"🪲 Beetles: %d / %d — %s",
 					player:GetAttribute("BugsCaught") or 0,
 					Config.Game.Events.Bugs.Goal,
 					Format.time(bugsEnd - now)
@@ -252,17 +252,17 @@ function Hud.init()
 			)
 		end
 		if boomEnd > now then
-			table.insert(lines, "📈 БУМ НА БИРЖЕ x3 — " .. Format.time(boomEnd - now))
+			table.insert(lines, "📈 MARKET BOOM x3 — " .. Format.time(boomEnd - now))
 		end
 		eventLine.Text = table.concat(lines, "   ")
 		local nextBugs = (GameState:GetAttribute("NextBugsAt") or 0) - now
 		local nextBoom = (GameState:GetAttribute("NextBoomAt") or 0) - now
 		local parts = {}
 		if nextBugs > 0 and nextBugs < 7200 then
-			table.insert(parts, "🪲 жуки через " .. Format.time(nextBugs))
+			table.insert(parts, "🪲 beetles in " .. Format.time(nextBugs))
 		end
 		if nextBoom > 0 and nextBoom < 7200 then
-			table.insert(parts, "📈 бум через " .. Format.time(nextBoom))
+			table.insert(parts, "📈 boom in " .. Format.time(nextBoom))
 		end
 		timers.Text = table.concat(parts, "  ·  ")
 	end)

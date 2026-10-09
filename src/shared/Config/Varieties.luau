@@ -6,7 +6,7 @@
 return {
 	{
 		id = "wild",
-		name = "Дикий полевой",
+		name = "Wild Field",
 		price = 1,
 		growth = 1,
 		cost = 0,
@@ -16,7 +16,7 @@ return {
 	},
 	{
 		id = "nevsky",
-		name = "Невский",
+		name = "Nevsky",
 		price = 3,
 		growth = 1,
 		cost = 390,
@@ -27,7 +27,7 @@ return {
 	},
 	{
 		id = "gala",
-		name = "Гала",
+		name = "Gala",
 		price = 8,
 		growth = 1,
 		cost = 3100,
@@ -38,7 +38,7 @@ return {
 	},
 	{
 		id = "siney",
-		name = "Синеглазка",
+		name = "Blue-Eyed",
 		price = 20,
 		growth = 1,
 		cost = 23_000,
@@ -49,7 +49,7 @@ return {
 	},
 	{
 		id = "red",
-		name = "Ред Скарлетт",
+		name = "Red Scarlett",
 		price = 50,
 		growth = 0.6,
 		cost = 3_800_000,
@@ -60,7 +60,7 @@ return {
 	},
 	{
 		id = "vitelot",
-		name = "Фиолетовый Вителот",
+		name = "Purple Vitelotte",
 		price = 150,
 		growth = 0.24,
 		cost = 13_000_000,
@@ -71,7 +71,7 @@ return {
 	},
 	{
 		id = "batat",
-		name = "Сладкий Батат",
+		name = "Sweet Potato",
 		price = 400,
 		growth = 0.105,
 		cost = 38_000_000,
@@ -82,7 +82,7 @@ return {
 	},
 	{
 		id = "truffle",
-		name = "Трюфельный",
+		name = "Truffle",
 		price = 1_200,
 		growth = 0.04,
 		cost = 100_000_000,
@@ -93,7 +93,7 @@ return {
 	},
 	{
 		id = "golden",
-		name = "Золотой клубень",
+		name = "Golden Tuber",
 		price = 5_000,
 		growth = 0.012,
 		cost = 44_000_000,
@@ -104,7 +104,7 @@ return {
 	},
 	{
 		id = "diamond",
-		name = "Алмазный картофель",
+		name = "Diamond Potato",
 		price = 20_000,
 		growth = 0.0036,
 		cost = 73_000_000,
@@ -115,7 +115,7 @@ return {
 	},
 	{
 		id = "radio",
-		name = "Радиоактивный",
+		name = "Radioactive",
 		price = 75_000,
 		growth = 0.00112,
 		cost = 100_000_000,
@@ -126,7 +126,7 @@ return {
 	},
 	{
 		id = "quantum",
-		name = "Квантовый клубень",
+		name = "Quantum Tuber",
 		price = 300_000,
 		growth = 0.000333,
 		cost = 180_000_000,
@@ -137,7 +137,7 @@ return {
 	},
 	{
 		id = "void",
-		name = "Картофель Пустоты",
+		name = "Void Potato",
 		price = 1_500_000,
 		growth = 0.0000767,
 		cost = 590_000_000,

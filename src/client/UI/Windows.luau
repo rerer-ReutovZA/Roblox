@@ -164,7 +164,7 @@ end
 -- Исследования семян
 ------------------------------------------------------------------
 defs.Research = {
-	title = "Исследования семян",
+	title = "Seed Research",
 	icon = "🧬",
 	signature = function()
 		local p = shadowProfile()
@@ -183,19 +183,13 @@ defs.Research = {
 			return
 		end
 		local active = Economy.activeVariety(p, Config)
-		header(
-			list,
-			"Сейчас растёт: "
-				.. active.name
-				.. (if p.activeVariety then "" else " (авто: самый выгодный)"),
-			0
-		)
+		header(list, "Now growing: " .. active.name .. (if p.activeVariety then "" else " (auto: most profitable)"), 0)
 		if p.activeVariety then
 			card(list, 1, {
 				icon = "⚙",
-				title = "Автовыбор сорта",
-				subtitle = "Всегда сажать самый доходный из открытых сортов",
-				button = "Включить авто",
+				title = "Auto-Select Variety",
+				subtitle = "Always plant the most profitable unlocked variety",
+				button = "Enable Auto",
 				onClick = function()
 					Remotes.get("SelectVariety"):FireServer(nil)
 				end,
@@ -205,35 +199,32 @@ defs.Research = {
 		for i, v in ipairs(Config.Varieties) do
 			local color = Color3.fromRGB(v.color[1], v.color[2], v.color[3])
 			local value = v.price * v.growth / (wild.price * wild.growth)
-			local subtitle = string.format(
-				"Урожайность %s · Доход с поля ×%s к дикому",
-				Format.percent(v.growth),
-				Format.number(value)
-			)
+			local subtitle =
+				string.format("Yield %s · Field income ×%s vs. wild", Format.percent(v.growth), Format.number(value))
 			local opts: any = {
 				icon = "🥔",
 				iconColor = color,
-				title = string.format("%s — $%s/кг", v.name, Format.number(v.price)),
+				title = string.format("%s — $%s/kg", v.name, Format.number(v.price)),
 				subtitle = subtitle,
 			}
 			if p.varieties[v.id] then
 				if active.id == v.id then
-					opts.button = "✓ Растёт"
+					opts.button = "✓ Growing"
 					opts.buttonColor = Color3.fromRGB(150, 110, 20)
 				else
-					opts.button = "Посадить"
+					opts.button = "Plant"
 					opts.buttonColor = C.Energy
 					opts.onClick = function()
 						Remotes.get("SelectVariety"):FireServer(v.id)
 					end
 				end
 			elseif v.requires and not p.owned[v.requires] then
-				opts.subtitle = subtitle .. "\n🔒 Нужно построить: " .. itemName(v.requires)
-				opts.button = "🔒 Закрыто"
+				opts.subtitle = subtitle .. "\n🔒 Requires: " .. itemName(v.requires)
+				opts.button = "🔒 Locked"
 				opts.buttonColor = Color3.fromRGB(120, 50, 50)
 			else
 				local cost = Economy.varietyCost(v, p, Config)
-				opts.button = "Исследовать " .. Format.money(cost)
+				opts.button = "Research " .. Format.money(cost)
 				if p.cash >= cost then
 					opts.onClick = function()
 						Remotes.get("BuyResearch"):FireServer(v.id)
@@ -253,34 +244,34 @@ local VISUAL_ICON = { Drone = "🚁", Robot = "🤖", Npc = "👷" }
 local function staffEffect(s): string
 	local parts = {}
 	if s.yieldBoost then
-		table.insert(parts, "+" .. Format.percent(s.yieldBoost) .. " к урожаю")
+		table.insert(parts, "+" .. Format.percent(s.yieldBoost) .. " yield")
 	end
 	if s.factoryAdd then
-		table.insert(parts, "+" .. s.factoryAdd .. " к множителю цехов")
+		table.insert(parts, "+" .. s.factoryAdd .. " workshop multiplier")
 	end
 	if s.factoryBoost then
-		table.insert(parts, "+" .. Format.percent(s.factoryBoost) .. " к множителю цехов")
+		table.insert(parts, "+" .. Format.percent(s.factoryBoost) .. " workshop multiplier")
 	end
 	if s.powerGen then
-		table.insert(parts, "+" .. s.powerGen .. " кВт")
+		table.insert(parts, "+" .. s.powerGen .. " kW")
 	end
 	if s.powerBoost then
-		table.insert(parts, "+" .. Format.percent(s.powerBoost) .. " к генерации")
+		table.insert(parts, "+" .. Format.percent(s.powerBoost) .. " generation")
 	end
 	if s.incomeBoost then
-		table.insert(parts, "+" .. Format.percent(s.incomeBoost) .. " к доходу")
+		table.insert(parts, "+" .. Format.percent(s.incomeBoost) .. " income")
 	end
 	if s.priceBoost then
-		table.insert(parts, "+" .. Format.percent(s.priceBoost) .. " к цене картофеля")
+		table.insert(parts, "+" .. Format.percent(s.priceBoost) .. " potato price")
 	end
 	if s.bugBoost then
-		table.insert(parts, "+" .. Format.percent(s.bugBoost) .. " к награде за жуков")
+		table.insert(parts, "+" .. Format.percent(s.bugBoost) .. " beetle reward")
 	end
-	return table.concat(parts, ", ") .. " за единицу"
+	return table.concat(parts, ", ") .. " per unit"
 end
 
 defs.Staff = {
-	title = "Найм персонала и дронов",
+	title = "Hire Staff & Drones",
 	icon = "🤖",
 	signature = function()
 		local p = shadowProfile()
@@ -307,14 +298,14 @@ defs.Staff = {
 				subtitle = staffEffect(s),
 			}
 			if count >= s.max then
-				opts.button = "✓ Максимум"
+				opts.button = "✓ Maxed"
 				opts.buttonColor = Color3.fromRGB(150, 110, 20)
 			elseif not p.owned[s.requires] then
-				opts.subtitle ..= "\n🔒 Нужно построить: " .. itemName(s.requires)
-				opts.button = "🔒 Закрыто"
+				opts.subtitle ..= "\n🔒 Requires: " .. itemName(s.requires)
+				opts.button = "🔒 Locked"
 				opts.buttonColor = Color3.fromRGB(120, 50, 50)
 			elseif s.requiresPass and not passes[s.requiresPass] then
-				opts.subtitle ..= "\n👑 Только для VIP Фермеров"
+				opts.subtitle ..= "\n👑 VIP Farmers only"
 				opts.button = "👑 VIP"
 				opts.buttonColor = Color3.fromRGB(150, 110, 20)
 				opts.onClick = function()
@@ -322,7 +313,7 @@ defs.Staff = {
 				end
 			else
 				local cost = Economy.staffCost(s, p, Config)
-				opts.button = "Нанять " .. Format.money(cost)
+				opts.button = "Hire " .. Format.money(cost)
 				if p.cash >= cost then
 					opts.onClick = function()
 						Remotes.get("HireStaff"):FireServer(s.id)
@@ -338,7 +329,7 @@ defs.Staff = {
 -- Звёздные технологии
 ------------------------------------------------------------------
 defs.StarTech = {
-	title = "Древо звёздных технологий",
+	title = "Star Tech Tree",
 	icon = "⭐",
 	signature = function()
 		return tostring(State.num("Stars"))
@@ -348,20 +339,13 @@ defs.StarTech = {
 		if not p then
 			return
 		end
-		header(
-			list,
-			string.format(
-				"У тебя ⭐ %s Картофельных Звезд (даются за Rebirth)",
-				Format.number(p.stars)
-			),
-			0
-		)
+		header(list, string.format("You have ⭐ %s Potato Stars (earned through Rebirth)", Format.number(p.stars)), 0)
 		for i, t in ipairs(Config.StarTech.List) do
 			local level = p.starTech[t.id] or 0
 			local opts: any = {
 				icon = "⭐",
 				iconColor = Color3.fromRGB(110, 80, 20),
-				title = string.format("%s  (ур. %d/%d)", t.name, level, t.max),
+				title = string.format("%s  (lvl %d/%d)", t.name, level, t.max),
 				subtitle = t.desc,
 			}
 			if level >= t.max then
@@ -386,7 +370,7 @@ defs.StarTech = {
 -- Rebirth
 ------------------------------------------------------------------
 defs.Rebirth = {
-	title = "Подтверждение Rebirth",
+	title = "Confirm Rebirth",
 	icon = "🚀",
 	signature = function()
 		local d = State.data
@@ -404,22 +388,22 @@ defs.Rebirth = {
 		line(
 			list,
 			1,
-			"Множитель всех доходов",
+			"All-income multiplier",
 			string.format("x%s → x%s", Format.number(State.num("RebirthMult")), Format.number(d.nextMult)),
 			C.Gold
 		)
-		line(list, 2, "Картофельные Звезды", "+" .. Format.number(d.nextStars) .. " ⭐", C.Star)
-		line(list, 3, "Нужно накопить", Format.money(d.rebirthCost), if enough then C.Cash else C.Danger)
+		line(list, 2, "Potato Stars", "+" .. Format.number(d.nextStars) .. " ⭐", C.Star)
+		line(list, 3, "Required savings", Format.money(d.rebirthCost), if enough then C.Cash else C.Danger)
 		line(
 			list,
 			4,
-			"Экспортный шаттл «Галактический Картофель»",
-			if hasShuttle then "✓ построен" else "✗ не построен",
+			"“Galactic Potato” Export Shuttle",
+			if hasShuttle then "✓ built" else "✗ not built",
 			if hasShuttle then C.Cash else C.Danger
 		)
 		local warn = Theme.label({
 			Size = UDim2.new(1, -8, 0, 54),
-			Text = "Сбросятся: деньги, постройки, сорта и персонал.\nОстанутся: Звёзды, звёздные технологии и множитель Rebirth.",
+			Text = "Resets: cash, buildings, varieties and staff.\nKept: Stars, star tech and the Rebirth multiplier.",
 			Font = Theme.FontRegular,
 			TextColor3 = C.Muted,
 			TextWrapped = true,
@@ -432,7 +416,7 @@ defs.Rebirth = {
 			Size = UDim2.new(1, -8, 0, 56),
 			BackgroundColor3 = if ready then C.Purple else C.ButtonOff,
 			AutoButtonColor = ready,
-			Text = if ready then "🚀 ЗАПУСТИТЬ REBIRTH" else "🔒 Условия не выполнены",
+			Text = if ready then "🚀 LAUNCH REBIRTH" else "🔒 Requirements not met",
 			LayoutOrder = 6,
 			Parent = list,
 		}, function()
@@ -449,7 +433,7 @@ defs.Rebirth = {
 -- Магазин геймпассов
 ------------------------------------------------------------------
 defs.Shop = {
-	title = "Магазин",
+	title = "Shop",
 	icon = "💎",
 	signature = function()
 		return ""
@@ -464,7 +448,7 @@ defs.Shop = {
 				iconColor = Color3.fromRGB(110, 80, 20),
 				title = pass.name,
 				subtitle = pass.desc,
-				button = if owned then "✓ Куплено" else (if price then "R$ " .. price else "Купить"),
+				button = if owned then "✓ Owned" else (if price then "R$ " .. price else "Buy"),
 				buttonColor = if owned then Color3.fromRGB(150, 110, 20) else Color3.fromRGB(0, 160, 90),
 				onClick = if owned
 					then nil
@@ -484,7 +468,7 @@ defs.Shop = {
 -- Разбор дохода по формуле ГДД 2.1
 ------------------------------------------------------------------
 defs.Stats = {
-	title = "Доход фабрики",
+	title = "Factory Income",
 	icon = "📊",
 	render = function(list)
 		local d = State.data
@@ -498,62 +482,53 @@ defs.Stats = {
 			end
 		end
 		local s = d.stats
-		header(
-			list,
-			"Доход = Урожай × Цена × Цеха × Энергия × Rebirth × Бонусы",
-			0
-		)
+		header(list, "Income = Yield × Price × Workshops × Energy × Rebirth × Bonuses", 0)
 		line(
 			list,
 			1,
 			string.format(
-				"🌱 Урожай (%d полей, бонус +%s, сорт %s)",
+				"🌱 Yield (%d fields, bonus +%s, variety %s)",
 				s.plots,
 				Format.percent(s.yieldBoost),
 				if variety then Format.percent(variety.growth) else "?"
 			),
-			Format.mass(State.num("YieldKg")) .. "/с"
+			Format.mass(State.num("YieldKg")) .. "/s"
 		)
 		line(
 			list,
 			2,
-			"🥔 Цена сорта «" .. (if variety then variety.name else "?") .. "»",
-			Format.money(State.num("Price")) .. "/кг"
+			"🥔 Price of “" .. (if variety then variety.name else "?") .. "”",
+			Format.money(State.num("Price")) .. "/kg"
 		)
-		line(
-			list,
-			3,
-			"🏭 Суммарный множитель цехов",
-			"x" .. Format.number(State.num("FactoryMult"))
-		)
+		line(list, 3, "🏭 Total workshop multiplier", "x" .. Format.number(State.num("FactoryMult")))
 		local over = State.attr("Overloaded") == true
 		line(
 			list,
 			4,
 			string.format(
-				"⚡ Энергия %s / %s кВт",
+				"⚡ Energy %s / %s kW",
 				Format.number(State.num("EnergyUse")),
 				Format.number(State.num("EnergyGen"))
 			),
-			if over then "x0.5 ПЕРЕГРУЗКА" else "x1",
+			if over then "x0.5 OVERLOAD" else "x1",
 			if over then C.Danger else C.Energy
 		)
-		line(list, 5, "🚀 Множитель Rebirth", "x" .. Format.number(State.num("RebirthMult")), C.Gold)
+		line(list, 5, "🚀 Rebirth multiplier", "x" .. Format.number(State.num("RebirthMult")), C.Gold)
 		line(
 			list,
 			6,
-			"🎁 Бонусы (постройки, персонал, звёзды, геймпассы, бум)",
+			"🎁 Bonuses (buildings, staff, stars, game passes, boom)",
 			"x" .. string.format("%.2f", State.num("BonusMult"))
 		)
-		line(list, 7, "💰 Итого", "+" .. Format.money(State.num("Income")) .. "/с", C.Cash)
-		header(list, "Статистика", 8)
-		line(list, 9, "Всего заработано", Format.money(d.totalEarned or 0))
-		line(list, 10, "Всего собрано картофеля", Format.mass(State.num("TotalKg")))
+		line(list, 7, "💰 Total", "+" .. Format.money(State.num("Income")) .. "/s", C.Cash)
+		header(list, "Statistics", 8)
+		line(list, 9, "Total earned", Format.money(d.totalEarned or 0))
+		line(list, 10, "Total potatoes harvested", Format.mass(State.num("TotalKg")))
 		line(
 			list,
 			11,
-			"Офлайн-доход",
-			string.format("%s дохода до %d ч", Format.percent(s.offlineRate), s.offlineHours)
+			"Offline income",
+			string.format("%s of income for up to %d h", Format.percent(s.offlineRate), s.offlineHours)
 		)
 		line(list, 12, "Rebirth", tostring(d.rebirths))
 	end,
@@ -652,7 +627,7 @@ function Windows.offline(seconds: number, amount: number)
 	Theme.label({
 		Position = UDim2.fromOffset(16, 14),
 		Size = UDim2.new(1, -32, 0, 40),
-		Text = "🌙 С возвращением, магнат!",
+		Text = "🌙 Welcome back, tycoon!",
 		Font = Theme.FontBlack,
 		TextColor3 = C.Gold,
 		Parent = frame,
@@ -661,7 +636,7 @@ function Windows.offline(seconds: number, amount: number)
 		Position = UDim2.fromOffset(16, 62),
 		Size = UDim2.new(1, -32, 0, 70),
 		Text = string.format(
-			"Пока тебя не было (%s), ферма заработала\n%s",
+			"While you were away (%s), your farm earned\n%s",
 			Format.time(seconds),
 			Format.money(amount)
 		),
@@ -672,7 +647,7 @@ function Windows.offline(seconds: number, amount: number)
 		AnchorPoint = Vector2.new(0.5, 1),
 		Position = UDim2.new(0.5, 0, 1, -14),
 		Size = UDim2.fromOffset(200, 48),
-		Text = "Забрать",
+		Text = "Collect",
 		Parent = frame,
 	}, function()
 		Sound.play("Cash")

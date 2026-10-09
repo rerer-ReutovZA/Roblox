@@ -35,11 +35,11 @@ end
 -- Масса: граммы, килограммы, тонны
 function Format.mass(kg: number): string
 	if kg < 1 then
-		return string.format("%d г", math.floor(kg * 1000 + 0.5))
+		return string.format("%d g", math.floor(kg * 1000 + 0.5))
 	elseif kg < 1000 then
-		return string.format("%.1f кг", kg)
+		return string.format("%.1f kg", kg)
 	end
-	return Format.number(kg / 1000) .. " т"
+	return Format.number(kg / 1000) .. " t"
 end
 
 function Format.time(seconds: number): string

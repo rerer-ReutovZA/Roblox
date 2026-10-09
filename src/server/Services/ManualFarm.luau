@@ -108,7 +108,7 @@ function ManualFarm.dig(session: Session, itemId: string, requireShovel: boolean
 		return
 	end
 	if (root.Position - model:GetPivot().Position).Magnitude > Config.Game.Manual.DigDistance then
-		Sessions.notify(player, "Подойди ближе к грядке", "error")
+		Sessions.notify(player, "Get closer to the bed", "error")
 		return
 	end
 	local tool = character:FindFirstChildOfClass("Tool")
@@ -127,7 +127,7 @@ function ManualFarm.dig(session: Session, itemId: string, requireShovel: boolean
 	local stats = session.stats
 	local capacity = stats.bagCapacity
 	if profile.bag >= capacity then
-		Sessions.notify(player, "Мешок полон! Отнеси картофель скупщику 🧺", "error")
+		Sessions.notify(player, "Your sack is full! Take the potatoes to the buyer 🧺", "error")
 		Sessions.effect(player, { type = "Sound", sound = "Error" })
 		return
 	end
@@ -161,7 +161,7 @@ function ManualFarm.dig(session: Session, itemId: string, requireShovel: boolean
 		local bonus = Config.Game.Manual.GoldenValue * stats.manualPrice
 		Sessions.addCash(session, bonus)
 		Sessions.updateLeaderstats(session)
-		Sessions.notify(player, "✨ Золотой клубень! +" .. Format.money(bonus), "gold")
+		Sessions.notify(player, "✨ Golden tuber! +" .. Format.money(bonus), "gold")
 		Sessions.effect(player, { type = "Golden", target = model, amount = bonus })
 	end
 end
@@ -170,7 +170,7 @@ function ManualFarm.sell(session: Session)
 	local profile = session.profile
 	local player = session.player
 	if profile.bag <= 0 then
-		Sessions.notify(player, "Мешок пуст — накопай картофеля лопатой 🥔", "info")
+		Sessions.notify(player, "Your sack is empty — dig up some potatoes with the shovel 🥔", "info")
 		return
 	end
 	local amount = profile.bag * session.stats.manualPrice
@@ -197,16 +197,16 @@ function ManualFarm.onTower(session: Session)
 end
 
 local TIPS = {
-	[1] = "Бери лопату, копай созревшие кусты и сдавай картошку скупщику. Копи $1,500 на Авто-вышку — и ручной труд закончится!",
-	[2] = "Теперь урожай продаётся сам. Ставь авто-грядки, следи за энергией ⚡ и открывай новые сорта в меню 🧬.",
-	[3] = "Каждый цех — множитель выручки. Не забывай про генераторы: при перегрузке доход падает вдвое!",
-	[4] = "Нанимай дронов в меню персонала и открывай премиальные сорта. Скоро — Лаборатория ДНК!",
-	[5] = "Построй шаттл и накопи на Rebirth: x3 ко всем доходам навсегда и Картофельные Звезды!",
+	[1] = "Grab the shovel, dig up ripe bushes and sell the potatoes to the buyer. Save $1,500 for the Auto Harvest Tower — and the manual labor is over!",
+	[2] = "Now the harvest sells itself. Build auto beds, watch your energy ⚡ and unlock new varieties in the 🧬 menu.",
+	[3] = "Every workshop multiplies your revenue. Don't forget generators: an overload halves your income!",
+	[4] = "Hire drones in the staff menu and unlock premium varieties. The DNA Lab is next!",
+	[5] = "Build the shuttle and save up for Rebirth: x3 to all income forever, plus Potato Stars!",
 }
 
 function ManualFarm.talk(session: Session)
 	local stage = session.stats.stage
-	Sessions.notify(session.player, "👴 Дед Матвей: " .. (TIPS[stage] or TIPS[1]), "tip")
+	Sessions.notify(session.player, "👴 Grandpa Matvey: " .. (TIPS[stage] or TIPS[1]), "tip")
 end
 
 function ManualFarm.init()

@@ -60,7 +60,7 @@ local function reward(session: Session)
 	Sessions.addCash(session, amount)
 	Sessions.updateLeaderstats(session)
 	session.profile.bugEventsWon += 1
-	Sessions.notify(session.player, "🪲 Жуки побеждены! Бонус " .. Format.money(amount), "gold")
+	Sessions.notify(session.player, "🪲 Beetles defeated! Bonus " .. Format.money(amount), "gold")
 	Sessions.effect(session.player, { type = "Confetti" })
 	Sessions.effect(session.player, { type = "Sound", sound = "Cash" })
 end
@@ -87,7 +87,7 @@ function EventService.startBugs()
 		end
 	end
 	Sessions.notifyAll(
-		"🪲 НАШЕСТВИЕ ЖУКОВ! Кликай по жукам на своём поле: 15 за 45 сек = 10 минут дохода!",
+		"🪲 BEETLE INVASION! Click the beetles in your field: 15 in 45 sec = 10 minutes of income!",
 		"event"
 	)
 	Sessions.effectAll({ type = "Sound", sound = "BugBuzz" })
@@ -95,11 +95,7 @@ function EventService.startBugs()
 		bugsActive = false
 		for _, session in pairs(Sessions.all) do
 			if session.plot and #session.plot.bugs:GetChildren() > 0 and not session.bugs.rewarded then
-				Sessions.notify(
-					session.player,
-					"Жуки улетели... Попробуй в следующий раз!",
-					"info"
-				)
+				Sessions.notify(session.player, "The beetles flew away... Better luck next time!", "info")
 			end
 			clearBugs(session)
 			session.player:SetAttribute("BugsCaught", nil)
@@ -140,20 +136,14 @@ function EventService.startBoom()
 	for _, session in pairs(Sessions.all) do
 		Sessions.recompute(session)
 	end
-	Sessions.notifyAll(
-		"📈 КАРТОФЕЛЬНЫЙ БУМ НА БИРЖЕ! Чипсы и фри в цене — доход x3 на 3 минуты!",
-		"event"
-	)
+	Sessions.notifyAll("📈 POTATO MARKET BOOM! Chips and fries are in demand — income x3 for 3 minutes!", "event")
 	Sessions.effectAll({ type = "Sound", sound = "Cash" })
 	task.delay(B.Duration + 0.1, function()
 		GameState:SetAttribute("NextBoomAt", now() + B.Interval - B.Duration)
 		for _, session in pairs(Sessions.all) do
 			Sessions.recompute(session)
 		end
-		Sessions.notifyAll(
-			"Биржевой бум закончился. Следующий — через 27 минут.",
-			"info"
-		)
+		Sessions.notifyAll("The market boom is over. The next one is in 27 minutes.", "info")
 	end)
 end
 

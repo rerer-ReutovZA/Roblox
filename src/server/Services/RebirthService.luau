@@ -26,12 +26,12 @@ function RebirthService.request(player: Player)
 	end
 	local profile = session.profile
 	if not profile.owned.shuttle then
-		Sessions.notify(player, "Для Rebirth нужен Экспортный шаттл (сектор 4)", "error")
+		Sessions.notify(player, "Rebirth requires the Export Shuttle (sector 4)", "error")
 		return
 	end
 	local cost = Economy.rebirthCost(profile.rebirths, Config)
 	if profile.cash < cost then
-		Sessions.notify(player, "Для Rebirth нужно накопить " .. Format.money(cost), "error")
+		Sessions.notify(player, "Rebirth requires " .. Format.money(cost), "error")
 		return
 	end
 	session.rebirthing = true
@@ -67,18 +67,10 @@ function RebirthService.request(player: Player)
 	Sessions.effect(player, { type = "Confetti", big = true })
 	Sessions.notify(
 		player,
-		string.format(
-			"🚀 REBIRTH %d! Доход x%s навсегда, +%d ⭐",
-			profile.rebirths,
-			Format.number(mult),
-			stars
-		),
+		string.format("🚀 REBIRTH %d! Income x%s forever, +%d ⭐", profile.rebirths, Format.number(mult), stars),
 		"stage"
 	)
-	Sessions.notifyAll(
-		string.format("🚀 %s совершает Rebirth #%d!", player.DisplayName, profile.rebirths),
-		"event"
-	)
+	Sessions.notifyAll(string.format("🚀 %s just did Rebirth #%d!", player.DisplayName, profile.rebirths), "event")
 	session.rebirthing = false
 	RebirthService.onRebirth(session)
 end

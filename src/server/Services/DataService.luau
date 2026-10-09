@@ -24,10 +24,7 @@ local function getStore(): DataStore?
 		store = result
 	else
 		storeFailed = true
-		warn(
-			"[DataService] DataStore недоступен, прогресс не будет сохраняться: "
-				.. tostring(result)
-		)
+		warn("[DataService] DataStore unavailable, progress will not be saved: " .. tostring(result))
 	end
 	return store
 end
@@ -42,14 +39,7 @@ local function retry<T>(label: string, attempts: number, fn: () -> T): (boolean,
 		if ok then
 			return true, result
 		end
-		warn(
-			string.format(
-				"[DataService] %s: попытка %d не удалась: %s",
-				label,
-				attempt,
-				tostring(result)
-			)
-		)
+		warn(string.format("[DataService] %s: attempt %d failed: %s", label, attempt, tostring(result)))
 		if attempt < attempts then
 			task.wait(attempt * 1.5)
 		end
@@ -137,15 +127,13 @@ function DataService.load(player: Player)
 	end
 	-- в Studio без доступа к API не ждём повторов, сразу играем без сохранений
 	local attempts = if RunService:IsStudio() then 1 else 3
-	local ok, data = retry("загрузка " .. player.Name, attempts, function()
+	local ok, data = retry("load " .. player.Name, attempts, function()
 		return s:GetAsync(key(player))
 	end)
 	if not ok and RunService:IsStudio() then
 		storeFailed = true
 		store = nil
-		warn(
-			"[DataService] Включите Game Settings → Security → Enable Studio Access to API Services, чтобы проверить сохранения"
-		)
+		warn("[DataService] Turn on Game Settings → Security → Enable Studio Access to API Services to test saving")
 	end
 	if not ok then
 		-- не перезаписываем сохранение, которое не смогли прочитать
@@ -166,7 +154,7 @@ function DataService.save(player: Player, profile, persistent: boolean): boolean
 		return false
 	end
 	local payload = serialize(profile)
-	local ok = retry("сохранение " .. player.Name, 3, function()
+	local ok = retry("save " .. player.Name, 3, function()
 		return s:UpdateAsync(key(player), function()
 			return payload
 		end)

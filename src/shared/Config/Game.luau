@@ -80,13 +80,13 @@ return {
 	},
 
 	Stages = {
-		{ name = "Ручной огород", goal = "Накопи $1,500 на Авто-вышку сбора" },
-		{ name = "Автономные агро-поля", goal = "Построй Фабричный корпус" },
-		{ name = "Фабрика снеков", goal = "Разверни Станцию дронов" },
-		{ name = "Индустриальный гигант", goal = "Построй Лабораторию ДНК" },
+		{ name = "Hand-Tended Garden", goal = "Save $1,500 for the Auto Harvest Tower" },
+		{ name = "Autonomous Farm Fields", goal = "Build the Factory Hall" },
+		{ name = "Snack Factory", goal = "Set up the Drone Station" },
+		{ name = "Industrial Giant", goal = "Build the DNA Lab" },
 		{
-			name = "НИИ и Космо-экспорт",
-			goal = "Построй шаттл и накопи на Rebirth",
+			name = "Research & Space Export",
+			goal = "Build the shuttle and save up for Rebirth",
 		},
 	},
 }

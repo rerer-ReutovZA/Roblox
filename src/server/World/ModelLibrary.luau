@@ -27,7 +27,7 @@ function Library.build(item, origin: CFrame, parent: Instance): Model
 	if builder then
 		builder(b, item)
 	else
-		warn("[ModelLibrary] нет модели " .. tostring(item.model) .. ", ставлю заглушку")
+		warn("[ModelLibrary] no model " .. tostring(item.model) .. ", using a placeholder")
 		b:box(Vector3.new(item.size[1], 2, item.size[2]), Vector3.new(0, 1, 0), Kit.C.metal, Enum.Material.Metal)
 	end
 	b.model:SetAttribute("ItemId", item.id)

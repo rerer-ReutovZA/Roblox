@@ -155,8 +155,8 @@ end
 -- Лопата (инструмент этапа 1)
 function Models.Shovel(golden: boolean): Tool
 	local tool = Instance.new("Tool")
-	tool.Name = "Лопата"
-	tool.ToolTip = "Кликни по созревшей грядке"
+	tool.Name = "Shovel"
+	tool.ToolTip = "Click a ripe bed"
 	tool.CanBeDropped = false
 	tool.RequiresHandle = true
 	tool:SetAttribute("Shovel", true)

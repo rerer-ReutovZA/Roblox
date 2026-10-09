@@ -60,7 +60,7 @@ function Models.Lab(b: Builder)
 	local terminal = b:box(V(1.6, 1.2, 0.2), V(0, 1.8, 1.4), C.black, M.SmoothPlastic, { rot = V(-20, 0, 0) })
 	b:label(terminal, Enum.NormalId.Back, "VARIETIES", { color = C.green, background = C.black })
 	b:box(V(0.3, 1.2, 0.3), V(0, 0.75, 1.4), C.metal, M.Metal)
-	Energy.openMenu(terminal, "Research", "Исследования семян", "Терминал")
+	Energy.openMenu(terminal, "Research", "Seed Research", "Terminal")
 end
 
 function Models.Centrifuge(b: Builder)
@@ -266,7 +266,7 @@ function Models.Shuttle(b: Builder)
 	stack:groupModel():SetAttribute("Shuttle", true)
 	local plaque = b:box(V(0.1, 0.1, 0.1), V(0, 14.5, 0), white, M.SmoothPlastic, { collide = false, transparency = 1 })
 	b:billboard(plaque, "🚀 Shuttle ready for Rebirth", 2, C.yellow, 80)
-	Energy.openMenu(plaque, "Rebirth", "Запуск Rebirth", "Шаттл")
+	Energy.openMenu(plaque, "Rebirth", "Launch Rebirth", "Shuttle")
 	local prompt = plaque:FindFirstChildOfClass("ProximityPrompt")
 	if prompt then
 		prompt.MaxActivationDistance = 22
@@ -299,7 +299,7 @@ function Models.StarTerminal(b: Builder)
 	local star = b:ball(0.7, V(0, 3.4, -0.3), C.yellow, M.Neon, { collide = false })
 	b:tag(star, "Bob", { Amplitude = 0.3, Speed = 2 })
 	b:light(star, C.yellow, 10, 2)
-	Energy.openMenu(screen, "StarTech", "Звёздные технологии", "Терминал звёзд")
+	Energy.openMenu(screen, "StarTech", "Star Tech", "Star Terminal")
 end
 
 return Models
