@@ -370,6 +370,51 @@ check("Модели из Blender: имена деталей и шаблоны", 
 	Templates.reset()
 end)
 
+check("Звуки: каждый ключ из кода есть в Config.Sounds", function()
+	local used = {}
+	local function scan(dir: string)
+		for _, name in ipairs(fs.readDir(dir)) do
+			local path = dir .. "/" .. name
+			if fs.isDir(path) then
+				scan(path)
+			elseif string.match(name, "%.luau$") then
+				local text = fs.readFile(path)
+				for _, pattern in ipairs({
+					'Sound%.play%("(%w+)"',
+					'sound = "(%w+)"',
+					'SetAttribute%("Sound", "(%w+)"%)',
+				}) do
+					for key in string.gmatch(text, pattern) do
+						used[key] = path
+					end
+				end
+			end
+		end
+	end
+	scan("src")
+	assert(next(used), "в коде не найдено ни одного звука")
+	for key, path in pairs(used) do
+		assert(Config.Sounds[key], "нет звука " .. key .. " (" .. path .. ")")
+	end
+	local music = 0
+	for key, def in pairs(Config.Sounds) do
+		assert(
+			string.match(def.id, "^rbxassetid://%d+$"),
+			key .. ": id должен быть rbxassetid://<число>"
+		)
+		assert(def.volume > 0 and def.volume <= 10, key .. ": громкость 0..10")
+		assert((def.start or 0) >= 0 and (def.length or 0) >= 0, key .. ": start/length")
+		for _, v in ipairs(def.variants or {}) do
+			local id = if type(v) == "string" then v else v.id
+			assert(string.match(id, "^rbxassetid://%d+$"), key .. ": id варианта")
+		end
+		if string.match(key, "^Music%d+$") then
+			music += 1
+		end
+	end
+	assert(music > 0, "нет фоновой музыки")
+end)
+
 -- Сервисы на фейковом игроке
 local Sessions, PlotService, ManualFarm, PurchaseService, EventService, RebirthService
 check("Загрузка сервисов", function()
@@ -568,6 +613,12 @@ roblox.implementMethod("TweenService", "Create", function(_, inst, _info, goal)
 	}
 end)
 roblox.implementMethod("SoundService", "PlayLocalSound", function() end)
+roblox.implementProperty("Sound", "Ended", function(self)
+	return signal(self, "Ended")
+end)
+roblox.implementMethod("Sound", "Play", function() end)
+roblox.implementMethod("Sound", "Stop", function() end)
+roblox.implementMethod("ContentProvider", "PreloadAsync", function() end)
 roblox.implementMethod("ParticleEmitter", "Emit", function() end)
 roblox.implementMethod("MarketplaceService", "PromptGamePassPurchase", function() end)
 roblox.implementMethod("RemoteEvent", "FireServer", function() end)

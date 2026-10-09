@@ -38,7 +38,8 @@ rojo build default.project.json -o PotatoTycoon.rbxlx
 3. **Game Settings → Places → Max Players = 6** (на сервере 6 баз).
 4. Создайте 4 геймпасса (Creator Hub → Monetization → Passes) и впишите их ID в
    [`src/shared/Config/GamePasses.luau`](src/shared/Config/GamePasses.luau).
-5. Замените звуки-заглушки на свои ID в [`src/shared/Config/Sounds.luau`](src/shared/Config/Sounds.luau).
+5. Звуки и музыка уже подключены из бесплатных библиотек Roblox (Pro Sound Effects, APM Music) —
+   список и запасные варианты в [`docs/SOUNDS.md`](docs/SOUNDS.md).
 
 ## Как играть
 

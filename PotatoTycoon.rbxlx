@@ -68,6 +68,84 @@
       </Properties>
       <Item class="ModuleScript" referent="7">
         <Properties>
+          <string name="Name">AssetName</string>
+          <string name="Source"><![CDATA[-- Разбор имён деталей, экспортированных из Blender (art/blender/build.py):
+--   «Путь/Групп__КлючПалитры[@анимация][#x,y,z][!номер надписи]»
+-- Путь — вложенные группы (Bush/Plant0); ключ — цвет и материал из Config.Palette;
+-- анимация — spin_<ось>_<град/с>, sway_<ось>_<град>_<рад/с>[_фаза], bob_<амплитуда>_<рад/с>[_фаза],
+-- slide_<ось>_<расстояние>_<рад/с>[_фаза], pulse_<скорость>;
+-- #x,y,z — точка вращения группы в координатах модели (тогда анимируется группа, а не деталь);
+-- !n — метка надписи: текст берётся из Config.ModelText и рисуется на детали как текст Roblox.
+
+local AssetName = {}
+
+export type Parsed = {
+	path: { string },
+	key: string,
+	anim: string?,
+	pivot: Vector3?,
+	label: number?,
+}
+
+function AssetName.parse(name: string): Parsed?
+	local base, rest = string.match(name, "^(.-)__(.+)$")
+	if not base or not rest then
+		return nil
+	end
+	local key = string.match(rest, "^[^@#!]+")
+	if not key then
+		return nil
+	end
+	local anim = string.match(rest, "@([^#!]+)")
+	local pivotText = string.match(rest, "#([^!]+)")
+	local label = tonumber(string.match(rest, "!(%d+)$"))
+	local pivot = nil
+	if pivotText then
+		local parts = string.split(pivotText, ",")
+		local x, y, z = tonumber(parts[1]), tonumber(parts[2]), tonumber(parts[3])
+		if x and y and z then
+			pivot = Vector3.new(x, y, z)
+		end
+	end
+	local path = {}
+	if base ~= "" and base ~= "Body" then
+		for _, segment in ipairs(string.split(base, "/")) do
+			if segment ~= "" then
+				table.insert(path, segment)
+			end
+		end
+	end
+	return { path = path, key = key, anim = anim, pivot = pivot, label = label }
+end
+
+-- Анимация → тег CollectionService и атрибуты для клиентского Animator.
+-- Animator: Spin — град/с; Sway — sin(t·Speed); Bob/Slide — sin(t·Speed·2), поэтому скорость делим на 2.
+function AssetName.animation(anim: string): (string?, { [string]: any })
+	local p = string.split(anim, "_")
+	local kind = p[1]
+	local n = function(i: number): number?
+		return tonumber(p[i])
+	end
+	if kind == "spin" and n(3) then
+		return "Spin", { Axis = string.upper(p[2]), Speed = n(3) }
+	elseif kind == "sway" and n(3) and n(4) then
+		return "Sway", { Axis = string.upper(p[2]), Amplitude = n(3), Speed = n(4), Phase = n(5) }
+	elseif kind == "bob" and n(2) and n(3) then
+		return "Bob", { Amplitude = n(2), Speed = (n(3) :: number) / 2, Phase = n(4) }
+	elseif kind == "slide" and n(3) and n(4) then
+		return "Slide", { Axis = string.upper(p[2]), Amplitude = n(3), Speed = (n(4) :: number) / 2, Phase = n(5) }
+	elseif kind == "pulse" then
+		return "Pulse", { Speed = n(2) or 1 }
+	end
+	return nil, {}
+end
+
+return AssetName
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="8">
+        <Properties>
           <string name="Name">Config</string>
           <string name="Source"><![CDATA[-- Сборный конфиг: require(ReplicatedStorage.Shared.Config)
 
@@ -79,10 +157,11 @@ return {
 	StarTech = require(script.StarTech),
 	GamePasses = require(script.GamePasses),
 	Sounds = require(script.Sounds),
+	Palette = require(script.Palette),
 }
 ]]></string>
         </Properties>
-        <Item class="ModuleScript" referent="8">
+        <Item class="ModuleScript" referent="9">
           <Properties>
             <string name="Name">Game</string>
             <string name="Source"><![CDATA[-- Общие константы игры. Модуль «чистый» (без API Roblox), его читает и симулятор баланса.
@@ -167,20 +246,20 @@ return {
 	},
 
 	Stages = {
-		{ name = "Ручной огород", goal = "Накопи $1,500 на Авто-вышку сбора" },
-		{ name = "Автономные агро-поля", goal = "Построй Фабричный корпус" },
-		{ name = "Фабрика снеков", goal = "Разверни Станцию дронов" },
-		{ name = "Индустриальный гигант", goal = "Построй Лабораторию ДНК" },
+		{ name = "Hand-Tended Garden", goal = "Save $1,500 for the Auto Harvest Tower" },
+		{ name = "Autonomous Farm Fields", goal = "Build the Factory Hall" },
+		{ name = "Snack Factory", goal = "Set up the Drone Station" },
+		{ name = "Industrial Giant", goal = "Build the DNA Lab" },
 		{
-			name = "НИИ и Космо-экспорт",
-			goal = "Построй шаттл и накопи на Rebirth",
+			name = "Research & Space Export",
+			goal = "Build the shuttle and save up for Rebirth",
 		},
 	},
 }
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="9">
+        <Item class="ModuleScript" referent="10">
           <Properties>
             <string name="Name">GamePasses</string>
             <string name="Source"><![CDATA[-- Геймпассы (ГДД, раздел 6).
@@ -193,28 +272,28 @@ return {
 			key = "x2cash",
 			id = 0,
 			name = "x2 Cash Forever",
-			desc = "Постоянное удвоение всей выручки ($/сек)",
+			desc = "Permanently doubles all income ($/sec)",
 			icon = "💰",
 		},
 		{
 			key = "infiniteEnergy",
 			id = 0,
-			name = "Бесконечная Энергия",
-			desc = "Энергосеть никогда не падает ниже 100%",
+			name = "Infinite Energy",
+			desc = "The power grid never drops below 100%",
 			icon = "⚡",
 		},
 		{
 			key = "magnateDrone",
 			id = 0,
-			name = "Авто-дрон Магната",
-			desc = "Шанс золотых клубней x3",
+			name = "Tycoon's Auto-Drone",
+			desc = "Golden tuber chance x3",
 			icon = "🚁",
 		},
 		{
 			key = "vip",
 			id = 0,
-			name = "VIP Фермер",
-			desc = "Золотая лопата, золотое сияние, чат-тег [VIP] и +25% скорости тиков",
+			name = "VIP Farmer",
+			desc = "Golden shovel, golden glow, [VIP] chat tag and +25% tick speed",
 			icon = "👑",
 		},
 	},
@@ -225,7 +304,7 @@ return {
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="10">
+        <Item class="ModuleScript" referent="11">
           <Properties>
             <string name="Name">Items</string>
             <string name="Source"><![CDATA[-- Каталог построек тайкона (напольные кнопки). Модуль «чистый» — его читает и симулятор баланса.
@@ -253,7 +332,7 @@ local Items = {
 	------------------------------------------------------------------
 	{
 		id = "bed_wood_1",
-		name = "Деревянная грядка",
+		name = "Wooden Garden Bed",
 		asset = 1,
 		sector = "Agro",
 		stage = 1,
@@ -267,7 +346,7 @@ local Items = {
 	},
 	{
 		id = "bed_wood_2",
-		name = "Деревянная грядка",
+		name = "Wooden Garden Bed",
 		asset = 1,
 		sector = "Agro",
 		stage = 1,
@@ -281,7 +360,7 @@ local Items = {
 	},
 	{
 		id = "bed_wood_3",
-		name = "Деревянная грядка",
+		name = "Wooden Garden Bed",
 		asset = 1,
 		sector = "Agro",
 		stage = 1,
@@ -295,7 +374,7 @@ local Items = {
 	},
 	{
 		id = "stand",
-		name = "Лоток деревенского скупщика",
+		name = "Village Buyer's Stall",
 		asset = 114,
 		sector = "Agro",
 		stage = 1,
@@ -308,7 +387,7 @@ local Items = {
 	},
 	{
 		id = "matvey",
-		name = "Дед Матвей",
+		name = "Grandpa Matvey",
 		asset = 115,
 		sector = "Agro",
 		stage = 1,
@@ -320,7 +399,7 @@ local Items = {
 	},
 	{
 		id = "fence_wood",
-		name = "Забор фермерский деревянный",
+		name = "Wooden Farm Fence",
 		asset = 167,
 		sector = "Agro",
 		stage = 1,
@@ -337,8 +416,8 @@ local Items = {
 	------------------------------------------------------------------
 	{
 		id = "upg_watering_can",
-		name = "Авто-лейка",
-		desc = "Кусты созревают за 1.5 сек вместо 3",
+		name = "Auto Watering Can",
+		desc = "Bushes ripen in 1.5 s instead of 3",
 		sector = "Agro",
 		stage = 1,
 		cost = 40,
@@ -349,8 +428,8 @@ local Items = {
 	},
 	{
 		id = "bed_stone_1",
-		name = "Каменная утепленная грядка",
-		desc = "2 клубня за копок",
+		name = "Insulated Stone Bed",
+		desc = "2 tubers per dig",
 		asset = 2,
 		sector = "Agro",
 		stage = 1,
@@ -363,8 +442,8 @@ local Items = {
 	},
 	{
 		id = "bed_stone_2",
-		name = "Каменная утепленная грядка",
-		desc = "2 клубня за копок",
+		name = "Insulated Stone Bed",
+		desc = "2 tubers per dig",
 		asset = 2,
 		sector = "Agro",
 		stage = 1,
@@ -378,8 +457,8 @@ local Items = {
 	},
 	{
 		id = "upg_bag_xl",
-		name = "Заплечный мешок XL",
-		desc = "Вместимость мешка 50 клубней",
+		name = "XL Backpack Sack",
+		desc = "Sack holds 50 tubers",
 		asset = 183,
 		sector = "Agro",
 		stage = 1,
@@ -392,8 +471,8 @@ local Items = {
 	},
 	{
 		id = "bed_metal_1",
-		name = "Металлическая грядка с подогревом",
-		desc = "4 клубня за копок",
+		name = "Heated Metal Bed",
+		desc = "4 tubers per dig",
 		asset = 3,
 		sector = "Agro",
 		stage = 1,
@@ -407,8 +486,8 @@ local Items = {
 	},
 	{
 		id = "bed_metal_2",
-		name = "Металлическая грядка с подогревом",
-		desc = "4 клубня за копок",
+		name = "Heated Metal Bed",
+		desc = "4 tubers per dig",
 		asset = 3,
 		sector = "Agro",
 		stage = 1,
@@ -422,8 +501,8 @@ local Items = {
 	},
 	{
 		id = "tower",
-		name = "Авто-вышка сбора + контракт с торговой сетью",
-		desc = "Навсегда убирает ручной труд: урожай собирается и продаётся сам",
+		name = "Auto Harvest Tower + Retail Contract",
+		desc = "Ends manual labor forever: the harvest is collected and sold automatically",
 		sector = "Agro",
 		stage = 1,
 		cost = 1500,
@@ -438,7 +517,7 @@ local Items = {
 	------------------------------------------------------------------
 	{
 		id = "gen_petrol",
-		name = "Бензиновый генератор 10 кВт",
+		name = "10 kW Petrol Generator",
 		asset = 82,
 		sector = "Energy",
 		stage = 2,
@@ -451,7 +530,7 @@ local Items = {
 	},
 	{
 		id = "autobed_t1_1",
-		name = "Авто-грядка Tier 1 (шнековый сбор)",
+		name = "Auto Bed Tier 1 (Auger Harvest)",
 		asset = 4,
 		sector = "Agro",
 		stage = 2,
@@ -465,7 +544,7 @@ local Items = {
 	},
 	{
 		id = "autobed_t1_2",
-		name = "Авто-грядка Tier 1 (шнековый сбор)",
+		name = "Auto Bed Tier 1 (Auger Harvest)",
 		asset = 4,
 		sector = "Agro",
 		stage = 2,
@@ -479,7 +558,7 @@ local Items = {
 	},
 	{
 		id = "autobed_t1_3",
-		name = "Авто-грядка Tier 1 (шнековый сбор)",
+		name = "Auto Bed Tier 1 (Auger Harvest)",
 		asset = 4,
 		sector = "Agro",
 		stage = 2,
@@ -493,8 +572,8 @@ local Items = {
 	},
 	{
 		id = "sprinkler_1",
-		name = "Роторный спринклер полива",
-		desc = "+5% к урожаю",
+		name = "Rotary Sprinkler",
+		desc = "+5% yield",
 		asset = 14,
 		sector = "Agro",
 		stage = 2,
@@ -507,8 +586,8 @@ local Items = {
 	},
 	{
 		id = "phytolamp",
-		name = "Фитолампа накаливания базовая",
-		desc = "+5% к урожаю",
+		name = "Basic Incandescent Grow Lamp",
+		desc = "+5% yield",
 		asset = 17,
 		sector = "Agro",
 		stage = 2,
@@ -522,7 +601,7 @@ local Items = {
 	},
 	{
 		id = "autobed_t2_1",
-		name = "Авто-грядка Tier 2 (вакуумный сборщик)",
+		name = "Auto Bed Tier 2 (Vacuum Harvester)",
 		asset = 5,
 		sector = "Agro",
 		stage = 2,
@@ -536,7 +615,7 @@ local Items = {
 	},
 	{
 		id = "autobed_t2_2",
-		name = "Авто-грядка Tier 2 (вакуумный сборщик)",
+		name = "Auto Bed Tier 2 (Vacuum Harvester)",
 		asset = 5,
 		sector = "Agro",
 		stage = 2,
@@ -550,7 +629,7 @@ local Items = {
 	},
 	{
 		id = "autobed_t2_3",
-		name = "Авто-грядка Tier 2 (вакуумный сборщик)",
+		name = "Auto Bed Tier 2 (Vacuum Harvester)",
 		asset = 5,
 		sector = "Agro",
 		stage = 2,
@@ -564,8 +643,8 @@ local Items = {
 	},
 	{
 		id = "neon_sign",
-		name = "Неоновая вывеска «POTATO TYCOON»",
-		desc = "+3% к доходу",
+		name = "“POTATO TYCOON” Neon Sign",
+		desc = "+3% income",
 		asset = 171,
 		sector = "Agro",
 		stage = 2,
@@ -580,7 +659,7 @@ local Items = {
 	},
 	{
 		id = "solar_10",
-		name = "Крышная солнечная батарея 10 кВт",
+		name = "10 kW Rooftop Solar Panel",
 		asset = 87,
 		sector = "Energy",
 		stage = 2,
@@ -593,8 +672,8 @@ local Items = {
 	},
 	{
 		id = "sprinkler_2",
-		name = "Роторный спринклер полива",
-		desc = "+5% к урожаю",
+		name = "Rotary Sprinkler",
+		desc = "+5% yield",
 		asset = 14,
 		sector = "Agro",
 		stage = 2,
@@ -607,8 +686,8 @@ local Items = {
 	},
 	{
 		id = "moletrap",
-		name = "Ультразвуковая ловушка для кротов",
-		desc = "+5% к урожаю",
+		name = "Ultrasonic Mole Trap",
+		desc = "+5% yield",
 		asset = 22,
 		sector = "Agro",
 		stage = 2,
@@ -621,8 +700,8 @@ local Items = {
 	},
 	{
 		id = "led_1",
-		name = "Промышленная LED-панель полного спектра",
-		desc = "+10% к урожаю",
+		name = "Industrial Full-Spectrum LED Panel",
+		desc = "+10% yield",
 		asset = 18,
 		sector = "Agro",
 		stage = 2,
@@ -636,8 +715,8 @@ local Items = {
 	},
 	{
 		id = "led_board",
-		name = "Светодиодное табло суточной выработки",
-		desc = "+3% к доходу",
+		name = "LED Daily Output Board",
+		desc = "+3% income",
 		asset = 172,
 		sector = "Agro",
 		stage = 2,
@@ -650,7 +729,7 @@ local Items = {
 	},
 	{
 		id = "wind_small",
-		name = "Ветрогенератор фермерский малый",
+		name = "Small Farm Wind Turbine",
 		asset = 89,
 		sector = "Energy",
 		stage = 2,
@@ -663,7 +742,7 @@ local Items = {
 	},
 	{
 		id = "autobed_t3_1",
-		name = "Авто-грядка Tier 3 (лазерный срез ботвы)",
+		name = "Auto Bed Tier 3 (Laser Haulm Cutter)",
 		asset = 6,
 		sector = "Agro",
 		stage = 2,
@@ -677,8 +756,8 @@ local Items = {
 	},
 	{
 		id = "drip",
-		name = "Капельная система подземного орошения",
-		desc = "+10% к урожаю",
+		name = "Underground Drip Irrigation",
+		desc = "+10% yield",
 		asset = 15,
 		sector = "Agro",
 		stage = 2,
@@ -691,7 +770,7 @@ local Items = {
 	},
 	{
 		id = "autobed_t3_2",
-		name = "Авто-грядка Tier 3 (лазерный срез ботвы)",
+		name = "Auto Bed Tier 3 (Laser Haulm Cutter)",
 		asset = 6,
 		sector = "Agro",
 		stage = 2,
@@ -705,8 +784,8 @@ local Items = {
 	},
 	{
 		id = "led_2",
-		name = "Промышленная LED-панель полного спектра",
-		desc = "+10% к урожаю",
+		name = "Industrial Full-Spectrum LED Panel",
+		desc = "+10% yield",
 		asset = 18,
 		sector = "Agro",
 		stage = 2,
@@ -720,7 +799,7 @@ local Items = {
 	},
 	{
 		id = "autobed_t3_3",
-		name = "Авто-грядка Tier 3 (лазерный срез ботвы)",
+		name = "Auto Bed Tier 3 (Laser Haulm Cutter)",
 		asset = 6,
 		sector = "Agro",
 		stage = 2,
@@ -738,8 +817,8 @@ local Items = {
 	------------------------------------------------------------------
 	{
 		id = "factory_building",
-		name = "Фабричный корпус (Северный сектор)",
-		desc = "Открывает цеха-множители",
+		name = "Factory Hall (North Sector)",
+		desc = "Unlocks multiplier workshops",
 		asset = 158,
 		sector = "Factory",
 		stage = 2,
@@ -754,8 +833,8 @@ local Items = {
 	},
 	{
 		id = "washer",
-		name = "Моечно-калибровочный комплекс",
-		desc = "Множитель x1.5",
+		name = "Washing & Grading Line",
+		desc = "Multiplier x1.5",
 		asset = 51,
 		sector = "Factory",
 		stage = 3,
@@ -769,7 +848,7 @@ local Items = {
 	},
 	{
 		id = "diesel_25",
-		name = "Шумозащитный дизель-генератор 25 кВт",
+		name = "25 kW Silent Diesel Generator",
 		asset = 83,
 		sector = "Energy",
 		stage = 3,
@@ -782,8 +861,8 @@ local Items = {
 	},
 	{
 		id = "peeler",
-		name = "Паровой пилер снятия кожуры",
-		desc = "+0.5 к множителю",
+		name = "Steam Peeler",
+		desc = "+0.5 multiplier",
 		asset = 53,
 		sector = "Factory",
 		stage = 3,
@@ -797,8 +876,8 @@ local Items = {
 	},
 	{
 		id = "slicer",
-		name = "Слайсер-цех чипсов",
-		desc = "Множитель x2.5",
+		name = "Chips Slicer Line",
+		desc = "Multiplier x2.5",
 		asset = 55,
 		sector = "Factory",
 		stage = 3,
@@ -813,8 +892,8 @@ local Items = {
 	},
 	{
 		id = "biogas",
-		name = "Биогазовый метантенк",
-		desc = "Перерабатывает очистки в энергию",
+		name = "Biogas Digester",
+		desc = "Turns peelings into energy",
 		asset = 85,
 		sector = "Energy",
 		stage = 3,
@@ -827,8 +906,8 @@ local Items = {
 	},
 	{
 		id = "office",
-		name = "Офис менеджера завода",
-		desc = "Открывает найм персонала",
+		name = "Plant Manager's Office",
+		desc = "Unlocks staff hiring",
 		asset = 173,
 		sector = "Energy",
 		stage = 3,
@@ -841,7 +920,7 @@ local Items = {
 	},
 	{
 		id = "hydro_tray_1",
-		name = "Одиночный гидропонный лоток",
+		name = "Single Hydroponic Tray",
 		asset = 7,
 		sector = "Agro",
 		stage = 3,
@@ -855,8 +934,8 @@ local Items = {
 	},
 	{
 		id = "fryer",
-		name = "Фритюрная станция",
-		desc = "Множитель x4",
+		name = "Frying Station",
+		desc = "Multiplier x4",
 		asset = 59,
 		sector = "Factory",
 		stage = 3,
@@ -871,7 +950,7 @@ local Items = {
 	},
 	{
 		id = "hydro_tray_2",
-		name = "Одиночный гидропонный лоток",
+		name = "Single Hydroponic Tray",
 		asset = 7,
 		sector = "Agro",
 		stage = 3,
@@ -885,8 +964,8 @@ local Items = {
 	},
 	{
 		id = "fertilizer",
-		name = "Дозатор жидкого удобрения",
-		desc = "+15% к урожаю",
+		name = "Liquid Fertilizer Doser",
+		desc = "+15% yield",
 		asset = 20,
 		sector = "Agro",
 		stage = 3,
@@ -899,7 +978,7 @@ local Items = {
 	},
 	{
 		id = "solar_mono_1",
-		name = "Монокристаллическая солнечная панель",
+		name = "Monocrystalline Solar Panel",
 		asset = 88,
 		sector = "Energy",
 		stage = 3,
@@ -912,8 +991,8 @@ local Items = {
 	},
 	{
 		id = "breaker",
-		name = "Главный рубильник и шкаф автоматики",
-		desc = "+5% к генерации",
+		name = "Main Breaker & Control Cabinet",
+		desc = "+5% generation",
 		asset = 105,
 		sector = "Energy",
 		stage = 3,
@@ -926,8 +1005,8 @@ local Items = {
 	},
 	{
 		id = "spices",
-		name = "Барабан специй и трав",
-		desc = "Множитель x6",
+		name = "Spice & Herb Drum",
+		desc = "Multiplier x6",
 		asset = 61,
 		sector = "Factory",
 		stage = 3,
@@ -941,8 +1020,8 @@ local Items = {
 	},
 	{
 		id = "puree_vat",
-		name = "Варочный чан пюре непрерывного действия",
-		desc = "+1 к множителю",
+		name = "Continuous Puree Cooking Vat",
+		desc = "+1 multiplier",
 		asset = 67,
 		sector = "Factory",
 		stage = 3,
@@ -956,7 +1035,7 @@ local Items = {
 	},
 	{
 		id = "seed_greenhouse",
-		name = "Стеклянный парник для семян",
+		name = "Glass Seed Greenhouse",
 		asset = 12,
 		sector = "Agro",
 		stage = 3,
@@ -969,8 +1048,8 @@ local Items = {
 	},
 	{
 		id = "substation",
-		name = "Трансформаторная подстанция",
-		desc = "+15% к генерации",
+		name = "Transformer Substation",
+		desc = "+15% generation",
 		asset = 95,
 		sector = "Energy",
 		stage = 3,
@@ -983,7 +1062,7 @@ local Items = {
 	},
 	{
 		id = "hydro_rack2",
-		name = "Стойка гидропоники 2 яруса",
+		name = "2-Tier Hydroponic Rack",
 		asset = 8,
 		sector = "Agro",
 		stage = 3,
@@ -997,8 +1076,8 @@ local Items = {
 	},
 	{
 		id = "packer",
-		name = "Автоматический вакуумный упаковщик",
-		desc = "+0.5 к множителю",
+		name = "Automatic Vacuum Packer",
+		desc = "+0.5 multiplier",
 		asset = 78,
 		sector = "Factory",
 		stage = 3,
@@ -1012,8 +1091,8 @@ local Items = {
 	},
 	{
 		id = "flagpole",
-		name = "Флагшток с корпоративным флагом",
-		desc = "+2% к доходу",
+		name = "Corporate Flagpole",
+		desc = "+2% income",
 		asset = 170,
 		sector = "Agro",
 		stage = 3,
@@ -1026,8 +1105,8 @@ local Items = {
 	},
 	{
 		id = "biohumus",
-		name = "Бак для питательного биогумуса",
-		desc = "+10% к урожаю",
+		name = "Vermicompost Tank",
+		desc = "+10% yield",
 		asset = 21,
 		sector = "Agro",
 		stage = 3,
@@ -1040,8 +1119,8 @@ local Items = {
 	},
 	{
 		id = "mascot",
-		name = "Плюшевый маскот картошки в кепке",
-		desc = "+2% к доходу",
+		name = "Plush Potato Mascot in a Cap",
+		desc = "+2% income",
 		asset = 185,
 		sector = "Agro",
 		stage = 3,
@@ -1054,8 +1133,8 @@ local Items = {
 	},
 	{
 		id = "soil_sensor",
-		name = "Датчик влажности и кислотности почвы",
-		desc = "+5% к урожаю",
+		name = "Soil Moisture & pH Sensor",
+		desc = "+5% yield",
 		asset = 24,
 		sector = "Agro",
 		stage = 3,
@@ -1068,7 +1147,7 @@ local Items = {
 	},
 	{
 		id = "solar_mono_2",
-		name = "Монокристаллическая солнечная панель",
+		name = "Monocrystalline Solar Panel",
 		asset = 88,
 		sector = "Energy",
 		stage = 3,
@@ -1081,8 +1160,8 @@ local Items = {
 	},
 	{
 		id = "fogger",
-		name = "Ультразвуковой туманообразователь",
-		desc = "+10% к урожаю",
+		name = "Ultrasonic Fogger",
+		desc = "+10% yield",
 		asset = 16,
 		sector = "Agro",
 		stage = 3,
@@ -1096,7 +1175,7 @@ local Items = {
 	},
 	{
 		id = "hydro_rack3",
-		name = "Стойка гидропоники 3 яруса",
+		name = "3-Tier Hydroponic Rack",
 		asset = 9,
 		sector = "Agro",
 		stage = 3,
@@ -1114,8 +1193,8 @@ local Items = {
 	------------------------------------------------------------------
 	{
 		id = "drone_station",
-		name = "Станция логистических дронов",
-		desc = "Открывает найм дронов",
+		name = "Logistics Drone Station",
+		desc = "Unlocks drone hiring",
 		asset = 110,
 		sector = "Energy",
 		stage = 3,
@@ -1129,7 +1208,7 @@ local Items = {
 	},
 	{
 		id = "diesel_100",
-		name = "Промышленный дизель-генератор 100 кВт",
+		name = "100 kW Industrial Diesel Generator",
 		asset = 84,
 		sector = "Energy",
 		stage = 4,
@@ -1142,8 +1221,8 @@ local Items = {
 	},
 	{
 		id = "cryo",
-		name = "Крио-туннель шоковой заморозки фри",
-		desc = "Множитель x10",
+		name = "Fries Blast-Freeze Cryo Tunnel",
+		desc = "Multiplier x10",
 		asset = 66,
 		sector = "Factory",
 		stage = 4,
@@ -1158,8 +1237,8 @@ local Items = {
 	},
 	{
 		id = "ai_sorter",
-		name = "ИИ-сортировщик отходов",
-		desc = "Брак → биотопливо: +40 кВт и +5% к доходу",
+		name = "AI Waste Sorter",
+		desc = "Rejects → biofuel: +40 kW and +5% income",
 		asset = 111,
 		sector = "Energy",
 		stage = 4,
@@ -1173,7 +1252,7 @@ local Items = {
 	},
 	{
 		id = "battery",
-		name = "Блок литий-ионных аккумуляторов",
+		name = "Lithium-Ion Battery Block",
 		asset = 96,
 		sector = "Energy",
 		stage = 4,
@@ -1186,7 +1265,7 @@ local Items = {
 	},
 	{
 		id = "hydro_tower",
-		name = "Вертикальная гидропонная башня 5м",
+		name = "5 m Vertical Hydroponic Tower",
 		asset = 10,
 		sector = "Agro",
 		stage = 4,
@@ -1200,8 +1279,8 @@ local Items = {
 	},
 	{
 		id = "autoclave",
-		name = "Автоклав стерилизации снеков",
-		desc = "+1.5 к множителю",
+		name = "Snack Sterilization Autoclave",
+		desc = "+1.5 multiplier",
 		asset = 79,
 		sector = "Factory",
 		stage = 4,
@@ -1215,8 +1294,8 @@ local Items = {
 	},
 	{
 		id = "sublimator",
-		name = "Вакуумный сублиматор пюре",
-		desc = "Множитель x18",
+		name = "Vacuum Puree Freeze-Dryer",
+		desc = "Multiplier x18",
 		asset = 69,
 		sector = "Factory",
 		stage = 4,
@@ -1230,7 +1309,7 @@ local Items = {
 	},
 	{
 		id = "wind_50",
-		name = "Промышленный ветряк 50 кВт",
+		name = "50 kW Industrial Wind Turbine",
 		asset = 90,
 		sector = "Energy",
 		stage = 4,
@@ -1243,8 +1322,8 @@ local Items = {
 	},
 	{
 		id = "starch_mill",
-		name = "Мельница и пресс очищенного крахмала",
-		desc = "+2 к множителю",
+		name = "Refined Starch Mill & Press",
+		desc = "+2 multiplier",
 		asset = 70,
 		sector = "Factory",
 		stage = 4,
@@ -1258,7 +1337,7 @@ local Items = {
 	},
 	{
 		id = "aeroponic_1",
-		name = "Аэропонная закрытая ростовая капсула",
+		name = "Sealed Aeroponic Grow Pod",
 		asset = 11,
 		sector = "Agro",
 		stage = 4,
@@ -1272,8 +1351,8 @@ local Items = {
 	},
 	{
 		id = "bioreactor",
-		name = "Биореактор крахмала и этанола",
-		desc = "Множитель x35",
+		name = "Starch & Ethanol Bioreactor",
+		desc = "Multiplier x35",
 		asset = 76,
 		sector = "Factory",
 		stage = 4,
@@ -1287,7 +1366,7 @@ local Items = {
 	},
 	{
 		id = "biogas_turbine",
-		name = "Когенерационная биогазовая турбина 250 кВт",
+		name = "250 kW Biogas Cogeneration Turbine",
 		asset = 86,
 		sector = "Energy",
 		stage = 4,
@@ -1300,7 +1379,7 @@ local Items = {
 	},
 	{
 		id = "aeroponic_2",
-		name = "Аэропонная закрытая ростовая капсула",
+		name = "Sealed Aeroponic Grow Pod",
 		asset = 11,
 		sector = "Agro",
 		stage = 4,
@@ -1314,8 +1393,8 @@ local Items = {
 	},
 	{
 		id = "extruder",
-		name = "Экструдер хрустящих картофельных палочек",
-		desc = "+1 к множителю",
+		name = "Crispy Potato Stick Extruder",
+		desc = "+1 multiplier",
 		asset = 72,
 		sector = "Factory",
 		stage = 4,
@@ -1329,8 +1408,8 @@ local Items = {
 	},
 	{
 		id = "cooling_tower",
-		name = "Охладительная градирня фабрики",
-		desc = "+10% к генерации",
+		name = "Factory Cooling Tower",
+		desc = "+10% generation",
 		asset = 104,
 		sector = "Energy",
 		stage = 4,
@@ -1343,7 +1422,7 @@ local Items = {
 	},
 	{
 		id = "greenhouse_pro",
-		name = "Промышленная поликарбонатная теплица",
+		name = "Industrial Polycarbonate Greenhouse",
 		asset = 13,
 		sector = "Agro",
 		stage = 4,
@@ -1356,8 +1435,8 @@ local Items = {
 	},
 	{
 		id = "ionizer",
-		name = "Почвенный ионизатор корневой зоны",
-		desc = "+10% к урожаю",
+		name = "Root Zone Soil Ionizer",
+		desc = "+10% yield",
 		asset = 25,
 		sector = "Agro",
 		stage = 4,
@@ -1371,7 +1450,7 @@ local Items = {
 	},
 	{
 		id = "megapack",
-		name = "Контейнер накопителей Megapack",
+		name = "Megapack Storage Container",
 		asset = 97,
 		sector = "Energy",
 		stage = 4,
@@ -1388,8 +1467,8 @@ local Items = {
 	------------------------------------------------------------------
 	{
 		id = "lab",
-		name = "Лаборатория ДНК",
-		desc = "Открывает сорта конца игры",
+		name = "DNA Lab",
+		desc = "Unlocks endgame varieties",
 		asset = 131,
 		sector = "Science",
 		stage = 4,
@@ -1403,7 +1482,7 @@ local Items = {
 	},
 	{
 		id = "geothermal",
-		name = "Геотермальный тепловой насос",
+		name = "Geothermal Heat Pump",
 		asset = 91,
 		sector = "Energy",
 		stage = 5,
@@ -1416,8 +1495,8 @@ local Items = {
 	},
 	{
 		id = "centrifuge",
-		name = "Скоростная генная центрифуга",
-		desc = "+3% к урожаю",
+		name = "High-Speed Gene Centrifuge",
+		desc = "+3% yield",
 		asset = 133,
 		sector = "Science",
 		stage = 5,
@@ -1431,7 +1510,7 @@ local Items = {
 	},
 	{
 		id = "launch_pad",
-		name = "Стартовая железобетонная площадка",
+		name = "Reinforced Concrete Launch Pad",
 		asset = 144,
 		sector = "Science",
 		stage = 5,
@@ -1443,8 +1522,8 @@ local Items = {
 	},
 	{
 		id = "incubator",
-		name = "Инкубатор ГМ-проростков",
-		desc = "+10% к урожаю",
+		name = "GM Sprout Incubator",
+		desc = "+10% yield",
 		asset = 135,
 		sector = "Science",
 		stage = 5,
@@ -1458,8 +1537,8 @@ local Items = {
 	},
 	{
 		id = "research_terminal",
-		name = "Голографический терминал древа технологий",
-		desc = "+5% к доходу",
+		name = "Holographic Tech Tree Terminal",
+		desc = "+5% income",
 		asset = 137,
 		sector = "Science",
 		stage = 5,
@@ -1472,7 +1551,7 @@ local Items = {
 	},
 	{
 		id = "mutagenesis",
-		name = "Камера радиационного мутагенеза",
+		name = "Radiation Mutagenesis Chamber",
 		asset = 134,
 		sector = "Science",
 		stage = 5,
@@ -1485,7 +1564,7 @@ local Items = {
 	},
 	{
 		id = "potato_reactor",
-		name = "Картофельный мини-реактор на электролитах",
+		name = "Electrolyte Potato Mini-Reactor",
 		asset = 92,
 		sector = "Energy",
 		stage = 5,
@@ -1498,8 +1577,8 @@ local Items = {
 	},
 	{
 		id = "seed_vault",
-		name = "Крио-хранилище семенного генофонда",
-		desc = "+5% к урожаю",
+		name = "Cryo Seed Vault",
+		desc = "+5% yield",
 		asset = 136,
 		sector = "Science",
 		stage = 5,
@@ -1512,7 +1591,7 @@ local Items = {
 	},
 	{
 		id = "launch_tower",
-		name = "Пусковая вышка с кабелями заправки",
+		name = "Launch Tower with Fuel Lines",
 		asset = 147,
 		sector = "Science",
 		stage = 5,
@@ -1524,8 +1603,8 @@ local Items = {
 	},
 	{
 		id = "quantum_irradiator",
-		name = "Квантовый ускоритель созревания",
-		desc = "+10% к урожаю",
+		name = "Quantum Ripening Accelerator",
+		desc = "+10% yield",
 		asset = 142,
 		sector = "Science",
 		stage = 5,
@@ -1539,8 +1618,8 @@ local Items = {
 	},
 	{
 		id = "god_monument",
-		name = "Монумент Картофельного Бога",
-		desc = "+10% к доходу",
+		name = "Potato God Monument",
+		desc = "+10% income",
 		sector = "Science",
 		stage = 5,
 		cost = 220_000_000,
@@ -1552,8 +1631,8 @@ local Items = {
 	},
 	{
 		id = "beacon",
-		name = "Маяк космической навигации",
-		desc = "+2% к доходу",
+		name = "Space Navigation Beacon",
+		desc = "+2% income",
 		asset = 154,
 		sector = "Science",
 		stage = 5,
@@ -1566,7 +1645,7 @@ local Items = {
 	},
 	{
 		id = "fusion",
-		name = "Термоядерный микрореактор фабрики",
+		name = "Factory Fusion Micro-Reactor",
 		asset = 93,
 		sector = "Energy",
 		stage = 5,
@@ -1579,8 +1658,8 @@ local Items = {
 	},
 	{
 		id = "quantum_lamp",
-		name = "Неоновая квантовая лампа фотосинтеза",
-		desc = "+15% к урожаю",
+		name = "Neon Quantum Photosynthesis Lamp",
+		desc = "+15% yield",
 		asset = 19,
 		sector = "Agro",
 		stage = 5,
@@ -1594,8 +1673,8 @@ local Items = {
 	},
 	{
 		id = "satellite",
-		name = "Флагманский спутник картофельной связи",
-		desc = "+3% к доходу",
+		name = "Flagship Potato Comms Satellite",
+		desc = "+3% income",
 		asset = 155,
 		sector = "Science",
 		stage = 5,
@@ -1608,8 +1687,8 @@ local Items = {
 	},
 	{
 		id = "quantum_converter",
-		name = "Квантовый преобразователь",
-		desc = "Множитель x100",
+		name = "Quantum Converter",
+		desc = "Multiplier x100",
 		asset = 80,
 		sector = "Factory",
 		stage = 5,
@@ -1623,8 +1702,8 @@ local Items = {
 	},
 	{
 		id = "force_dome",
-		name = "Защитный силовой метеокупол",
-		desc = "+10% к урожаю",
+		name = "Protective Weather Force Dome",
+		desc = "+10% yield",
 		asset = 23,
 		sector = "Agro",
 		stage = 5,
@@ -1637,8 +1716,8 @@ local Items = {
 	},
 	{
 		id = "shuttle",
-		name = "Экспортный шаттл «Галактический Картофель»",
-		desc = "Открывает Rebirth",
+		name = "“Galactic Potato” Export Shuttle",
+		desc = "Unlocks Rebirth",
 		asset = 146,
 		sector = "Science",
 		stage = 5,
@@ -1656,7 +1735,7 @@ local Items = {
 	-- Терминал обмена Картофельных Звезд: появляется сам после первого Rebirth
 	{
 		id = "star_terminal",
-		name = "Терминал обмена Картофельных Звезд",
+		name = "Potato Star Exchange Terminal",
 		asset = 152,
 		sector = "Science",
 		stage = 1,
@@ -1704,32 +1783,278 @@ return {
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="11">
+        <Item class="ModuleScript" referent="12">
+          <Properties>
+            <string name="Name">ModelText</string>
+            <string name="Source"><![CDATA[-- Надписи на моделях из Blender: ключ модели → номер метки → текст и грань детали.
+-- Исходный язык — английский; TextLabel с AutoLocalize переводит автоперевод Roblox.
+-- Сгенерировано art/blender/build.py — правьте тексты в art/blender/assets/*.py.
+
+export type Label = { text: string, face: string }
+
+local ModelText: { [string]: { [number]: Label } } = {
+	AiSorter = {
+		[1] = { text = "AI QC", face = "Back" },
+	},
+	Autoclave = {
+		[1] = { text = "AUTOCLAVE +1.5", face = "Back" },
+	},
+	Battery = {
+		[1] = { text = "50 kWh", face = "Back" },
+	},
+	Biogas = {
+		[1] = { text = "BIOGAS", face = "Back" },
+	},
+	BiogasTurbine = {
+		[1] = { text = "250 kW", face = "Back" },
+	},
+	Bioreactor = {
+		[1] = { text = "BIOREACTOR x35", face = "Back" },
+	},
+	Breaker = {
+		[1] = { text = "380 V", face = "Back" },
+	},
+	CryoTunnel = {
+		[1] = { text = "CRYO x10", face = "Back" },
+	},
+	DroneStation = {
+		[1] = { text = "DRONES", face = "Back" },
+	},
+	Extruder = {
+		[1] = { text = "STICKS +1", face = "Back" },
+	},
+	FactoryHall = {
+		[1] = { text = "PROCESSING PLANT", face = "Back" },
+		[2] = { text = "CHIPS", face = "Back" },
+		[3] = { text = "CHIPS", face = "Back" },
+		[4] = { text = "CHIPS", face = "Back" },
+	},
+	FenceWood = {
+		[1] = { text = "FARM", face = "Back" },
+	},
+	FounderStatue = {
+		[1] = { text = "FOUNDER OF THE POTATO EMPIRE", face = "Back" },
+	},
+	Fryer = {
+		[1] = { text = "FRYER x4", face = "Back" },
+	},
+	GenDiesel100 = {
+		[1] = { text = "100 kW", face = "Back" },
+	},
+	GenDiesel25 = {
+		[1] = { text = "25 kW", face = "Back" },
+	},
+	Geothermal = {
+		[1] = { text = "GEOTHERMAL 300 kW", face = "Back" },
+	},
+	GodMonument = {
+		[1] = { text = "POTATO GOD", face = "Back" },
+	},
+	HarvestTower = {
+		[1] = { text = "AUTO-SELL", face = "Back" },
+	},
+	Lab = {
+		[1] = { text = "DNA LAB", face = "Back" },
+		[2] = { text = "VARIETIES", face = "Back" },
+	},
+	Office = {
+		[1] = { text = "OFFICE", face = "Back" },
+		[2] = { text = "MARKET", face = "Back" },
+	},
+	Packer = {
+		[1] = { text = "PACKING +0.5", face = "Back" },
+	},
+	Peeler = {
+		[1] = { text = "PEELER +0.5", face = "Back" },
+	},
+	PureeVat = {
+		[1] = { text = "PUREE +1", face = "Back" },
+	},
+	QuantumConverter = {
+		[1] = { text = "QUANTUM x100", face = "Back" },
+	},
+	SeedVault = {
+		[1] = { text = "SEED VAULT", face = "Back" },
+	},
+	SellStand = {
+		[1] = { text = "POTATO BUYER", face = "Back" },
+		[2] = { text = "$1 EACH", face = "Back" },
+	},
+	Slicer = {
+		[1] = { text = "CHIPS x2.5", face = "Back" },
+	},
+	SpiceDrum = {
+		[1] = { text = "SPICES x6", face = "Back" },
+	},
+	StarTerminal = {
+		[1] = { text = "STARS", face = "Back" },
+	},
+	StarchMill = {
+		[1] = { text = "STARCH +2", face = "Back" },
+	},
+	Sublimator = {
+		[1] = { text = "FREEZE-DRY x18", face = "Back" },
+	},
+	Substation = {
+		[1] = { text = "DANGER", face = "Back" },
+	},
+	Washer = {
+		[1] = { text = "WASHER x1.5", face = "Back" },
+	},
+}
+
+return ModelText
+]]></string>
+          </Properties>
+        </Item>
+        <Item class="ModuleScript" referent="13">
+          <Properties>
+            <string name="Name">Palette</string>
+            <string name="Source"><![CDATA[-- Палитра моделей из Blender: ключ → цвет и материал Roblox.
+-- Сгенерировано из art/palette.json (art/blender/palette_luau.py) — правьте JSON, а не этот файл.
+
+export type Spec = { color: Color3, material: Enum.Material, transparency: number? }
+
+local Palette: { [string]: Spec } = {
+	WoodLight = { color = Color3.fromRGB(205, 160, 108), material = Enum.Material.WoodPlanks },
+	Wood = { color = Color3.fromRGB(160, 108, 64), material = Enum.Material.WoodPlanks },
+	WoodDark = { color = Color3.fromRGB(104, 68, 42), material = Enum.Material.Wood },
+	Soil = { color = Color3.fromRGB(98, 66, 44), material = Enum.Material.Ground },
+	SoilDark = { color = Color3.fromRGB(72, 48, 33), material = Enum.Material.Ground },
+	Leaf = { color = Color3.fromRGB(92, 170, 74), material = Enum.Material.Grass },
+	LeafDark = { color = Color3.fromRGB(58, 128, 60), material = Enum.Material.Grass },
+	Stem = { color = Color3.fromRGB(76, 124, 54), material = Enum.Material.SmoothPlastic },
+	Potato = { color = Color3.fromRGB(204, 160, 100), material = Enum.Material.SmoothPlastic },
+	PotatoDark = { color = Color3.fromRGB(160, 114, 66), material = Enum.Material.SmoothPlastic },
+	Flower = { color = Color3.fromRGB(246, 240, 232), material = Enum.Material.SmoothPlastic },
+	FlowerCore = { color = Color3.fromRGB(250, 205, 60), material = Enum.Material.SmoothPlastic },
+	Stone = { color = Color3.fromRGB(138, 136, 128), material = Enum.Material.Slate },
+	StoneLight = { color = Color3.fromRGB(166, 163, 152), material = Enum.Material.Slate },
+	StoneDark = { color = Color3.fromRGB(100, 98, 92), material = Enum.Material.Slate },
+	Concrete = { color = Color3.fromRGB(172, 170, 162), material = Enum.Material.Concrete },
+	Metal = { color = Color3.fromRGB(178, 184, 192), material = Enum.Material.Metal },
+	MetalDark = { color = Color3.fromRGB(82, 88, 98), material = Enum.Material.Metal },
+	Steel = { color = Color3.fromRGB(132, 140, 152), material = Enum.Material.Metal },
+	Chrome = { color = Color3.fromRGB(215, 220, 228), material = Enum.Material.Foil },
+	Marble = { color = Color3.fromRGB(236, 236, 238), material = Enum.Material.Marble },
+	Plate = { color = Color3.fromRGB(112, 118, 126), material = Enum.Material.DiamondPlate },
+	Ice = { color = Color3.fromRGB(196, 230, 250), material = Enum.Material.Ice },
+	Copper = { color = Color3.fromRGB(196, 118, 70), material = Enum.Material.Metal },
+	Gold = { color = Color3.fromRGB(255, 200, 50), material = Enum.Material.Foil },
+	Red = { color = Color3.fromRGB(214, 60, 50), material = Enum.Material.SmoothPlastic },
+	RedMetal = { color = Color3.fromRGB(196, 46, 40), material = Enum.Material.Metal },
+	Orange = { color = Color3.fromRGB(242, 138, 36), material = Enum.Material.SmoothPlastic },
+	Yellow = { color = Color3.fromRGB(248, 200, 46), material = Enum.Material.SmoothPlastic },
+	Green = { color = Color3.fromRGB(72, 178, 92), material = Enum.Material.SmoothPlastic },
+	GreenDark = { color = Color3.fromRGB(46, 112, 62), material = Enum.Material.Metal },
+	Blue = { color = Color3.fromRGB(52, 122, 214), material = Enum.Material.SmoothPlastic },
+	BlueDark = { color = Color3.fromRGB(30, 62, 120), material = Enum.Material.SmoothPlastic },
+	White = { color = Color3.fromRGB(240, 240, 242), material = Enum.Material.SmoothPlastic },
+	Grey = { color = Color3.fromRGB(150, 152, 158), material = Enum.Material.SmoothPlastic },
+	Black = { color = Color3.fromRGB(32, 34, 38), material = Enum.Material.SmoothPlastic },
+	Rubber = { color = Color3.fromRGB(42, 42, 46), material = Enum.Material.Rubber },
+	Glass = { color = Color3.fromRGB(190, 225, 245), material = Enum.Material.Glass, transparency = 0.55 },
+	SolarCell = { color = Color3.fromRGB(28, 44, 104), material = Enum.Material.Glass },
+	Water = { color = Color3.fromRGB(130, 196, 255), material = Enum.Material.Glass, transparency = 0.35 },
+	FabricRed = { color = Color3.fromRGB(218, 62, 56), material = Enum.Material.Fabric },
+	FabricWhite = { color = Color3.fromRGB(242, 238, 228), material = Enum.Material.Fabric },
+	Burlap = { color = Color3.fromRGB(166, 134, 88), material = Enum.Material.Fabric },
+	Skin = { color = Color3.fromRGB(236, 188, 150), material = Enum.Material.SmoothPlastic },
+	Denim = { color = Color3.fromRGB(62, 84, 136), material = Enum.Material.Fabric },
+	ShirtBlue = { color = Color3.fromRGB(86, 132, 196), material = Enum.Material.Fabric },
+	ShirtRed = { color = Color3.fromRGB(176, 62, 52), material = Enum.Material.Fabric },
+	Straw = { color = Color3.fromRGB(226, 196, 120), material = Enum.Material.Fabric },
+	Hair = { color = Color3.fromRGB(236, 236, 230), material = Enum.Material.SmoothPlastic },
+	Shell = { color = Color3.fromRGB(244, 212, 124), material = Enum.Material.SmoothPlastic },
+	BugOrange = { color = Color3.fromRGB(232, 128, 42), material = Enum.Material.SmoothPlastic },
+	NeonCyan = { color = Color3.fromRGB(70, 232, 255), material = Enum.Material.Neon },
+	NeonOrange = { color = Color3.fromRGB(255, 142, 40), material = Enum.Material.Neon },
+	NeonRed = { color = Color3.fromRGB(255, 60, 50), material = Enum.Material.Neon },
+	NeonGreen = { color = Color3.fromRGB(110, 255, 90), material = Enum.Material.Neon },
+	NeonPurple = { color = Color3.fromRGB(190, 92, 255), material = Enum.Material.Neon },
+	NeonYellow = { color = Color3.fromRGB(255, 222, 90), material = Enum.Material.Neon },
+	NeonWhite = { color = Color3.fromRGB(255, 250, 235), material = Enum.Material.Neon },
+}
+
+return Palette
+]]></string>
+          </Properties>
+        </Item>
+        <Item class="ModuleScript" referent="14">
           <Properties>
             <string name="Name">Sounds</string>
-            <string name="Source"><![CDATA[-- Звуки (ГДД, ассеты 196–204). Сейчас стоят встроенные звуки Roblox (rbxasset://) как заглушки.
--- Замените на звуки из Creator Store: "rbxassetid://<ID>". Пустая строка — звук не играет.
+            <string name="Source"><![CDATA[-- Звуки игры. Все из официальных библиотек каталога Roblox (Pro Sound Effects, APM Music, Roblox) —
+-- бесплатные и разрешены в любом опыте. Подбор и громкость — docs/SOUNDS.md.
+-- id — rbxassetid; volume — громкость; pitch — скорость воспроизведения;
+-- start/length — фрагмент файла в секундах (пропустить тишину, обрезать хвост; 0 — до конца);
+-- variants — другие дубли для разнообразия; loop — фоновая петля на постройке; range — слышимость, стады.
 
 return {
-	Dig = { id = "rbxasset://sounds/collide.wav", volume = 0.6, pitch = 0.7 }, -- 196 Dig Dirt
-	Dump = { id = "rbxasset://sounds/swoosh.wav", volume = 0.5, pitch = 0.8 }, -- 197 Wood Dump
-	Cash = { id = "rbxasset://sounds/electronicpingshort.wav", volume = 0.5, pitch = 1.2 }, -- 198 Cha-ching
-	Sizzle = { id = "", volume = 0.4, pitch = 1 }, -- 199 Sizzle (фритюр)
-	Blade = { id = "", volume = 0.4, pitch = 1 }, -- 200 Whir Blade (слайсер)
-	Hum = { id = "", volume = 0.3, pitch = 1 }, -- 201 Hum Electric (подстанция)
-	Alarm = { id = "rbxasset://sounds/clickfast.wav", volume = 0.8, pitch = 0.5 }, -- 202 Klaxon Alarm
-	Rocket = { id = "rbxasset://sounds/Launching rocket.wav", volume = 1, pitch = 1 }, -- 203 Rocket Blast
-	BugBuzz = { id = "", volume = 0.4, pitch = 1 }, -- 204 Bug Buzz
-	Squash = { id = "rbxasset://sounds/splat.wav", volume = 0.6, pitch = 1.2 },
-	Click = { id = "rbxasset://sounds/button.wav", volume = 0.4, pitch = 1 },
-	Error = { id = "rbxasset://sounds/clickfast.wav", volume = 0.4, pitch = 0.8 },
-	Build = { id = "rbxasset://sounds/snap.wav", volume = 0.6, pitch = 0.9 },
-	Golden = { id = "rbxasset://sounds/electronicpingshort.wav", volume = 0.7, pitch = 1.6 },
+	-- Interface
+	-- кнопки интерфейса, клик по незрелой грядке: «Roblox_UI_Bright_Click» (Roblox)
+	Click = { id = "rbxassetid://15675059323", volume = 0.16, pitch = 1 },
+	-- открытие окна: «Roblox_UI_Whoosh_04» (Roblox)
+	Open = { id = "rbxassetid://15675012262", volume = 0.23, pitch = 1, start = 0.01 },
+	-- ошибка / не хватает денег: «Roblox GUI - Negative» (Roblox)
+	Error = { id = "rbxassetid://17208353912", volume = 0.25, pitch = 1 },
+	-- Economy
+	-- продажа, покупка, офлайн-доход: «Roblox GUI - Purchase» (Roblox)
+	Cash = { id = "rbxassetid://17208380755", volume = 0.9, pitch = 1 },
+	-- золотая картошка: «Magical Meetup - Hit2» (APMOfficial)
+	Golden = { id = "rbxassetid://9048764475", volume = 0.95, pitch = 1 },
+	-- картошка высыпается в ящик скупщика: «Crate Of Rocks 10» (ProSoundEffects)
+	Dump = { id = "rbxassetid://9113967337", volume = 0.86, pitch = 1.1, start = 0.92 },
+	-- новый этап, Rebirth, победа в событии: «Glamour Fanfare 4» (APMOfficial)
+	Fanfare = { id = "rbxassetid://1844584807", volume = 0.33, pitch = 1, start = 0.25 },
+	-- Farm
+	-- копание лопатой: «Dirt Scoops 4» (ProSoundEffects)
+	Dig = {
+		id = "rbxassetid://9114116006",
+		volume = 0.7,
+		pitch = 1,
+		start = 0.12,
+		length = 0.5,
+		variants = {
+			{ id = "rbxassetid://9114115952", start = 0.07, volume = 0.55 },
+			{ id = "rbxassetid://9114115823", start = 0.17, volume = 0.38 },
+		},
+	},
+	-- раздавить жука: «Fruit Vegetable Impacts 6» (ProSoundEffects)
+	Squash = { id = "rbxassetid://9114540148", volume = 0.94, pitch = 1.1, start = 0.04, length = 0.4 },
+	-- начало нашествия жуков: «Bee Various Buzzing Actions 10» (ProSoundEffects)
+	BugBuzz = { id = "rbxassetid://9113414621", volume = 1.17, pitch = 0.9, start = 0.11 },
+	-- постройка куплена: «Hammer Nail Into Wood 25» (ProSoundEffects)
+	Build = { id = "rbxassetid://9114756916", volume = 1.12, pitch = 1, start = 0.15, length = 0.63 },
+	-- Events
+	-- перегрузка сети: «Sci- Fi Siren Constant Varied Alarms 1» (ProSoundEffects)
+	Alarm = { id = "rbxassetid://9118781307", volume = 0.32, pitch = 1, start = 0.1, length = 2.75 },
+	-- искры при перегрузке: «Arc Zaps Phasey Short Bursts 1» (ProSoundEffects)
+	Zap = { id = "rbxassetid://9113149296", volume = 0.32, pitch = 1, length = 0.8 },
+	-- старт шаттла: «Tubular Whoosh Explosion Long Constant Roar» (ProSoundEffects)
+	Rocket = { id = "rbxassetid://9126142721", volume = 0.46, pitch = 1, length = 5 },
+	-- Ambient loops (3D, on buildings)
+	-- фритюр (петля): «Fry Or Sizzle 2» (ProSoundEffects)
+	Sizzle = { id = "rbxassetid://9114542880", volume = 0.51, pitch = 1, start = 3, length = 8, loop = true },
+	-- слайсер (петля): «Conveyor Belt 3» (ProSoundEffects)
+	Blade = { id = "rbxassetid://9113910518", volume = 0.26, pitch = 1, start = 1, length = 12, loop = true },
+	-- подстанция (петля): «Transformer Hum 1» (ProSoundEffects)
+	Hum = { id = "rbxassetid://9112889082", volume = 4.5, pitch = 1, start = 1, length = 29, loop = true },
+	-- генераторы (петля): «Lawn Mower Motor 1» (ProSoundEffects)
+	Engine = { id = "rbxassetid://9116244745", volume = 0.11, pitch = 0.9, start = 2, length = 15, loop = true },
+	-- спринклер (петля): «Water Fountain 1» (ProSoundEffects)
+	Water = { id = "rbxassetid://9120557629", volume = 0.74, pitch = 1, start = 11.5, length = 20, loop = true },
+	-- Music (playlist)
+	-- фоновая музыка: «Playful Things (a)» (APMOfficial)
+	Music1 = { id = "rbxassetid://1842106837", volume = 0.1, pitch = 1 },
+	-- фоновая музыка: «Wild West Uke» (APMOfficial)
+	Music2 = { id = "rbxassetid://1843265603", volume = 0.09, pitch = 1 },
+	-- фоновая музыка: «Happy Ways» (APMOfficial)
+	Music3 = { id = "rbxassetid://1843278593", volume = 0.1, pitch = 1 },
 }
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="12">
+        <Item class="ModuleScript" referent="15">
           <Properties>
             <string name="Name">Staff</string>
             <string name="Source"><![CDATA[-- Меню найма персонала и дронов (ГДД: ассет 194, категория 5).
@@ -1748,7 +2073,7 @@ return {
 local Staff = {
 	{
 		id = "robo_inspector",
-		name = "Робот-инспектор целостности грядок",
+		name = "Bed Integrity Inspector Bot",
 		asset = 112,
 		requires = "tower",
 		cost = 3100,
@@ -1760,7 +2085,7 @@ local Staff = {
 	},
 	{
 		id = "robo_cleaner",
-		name = "Напольный робот-уборщик отходов",
+		name = "Floor Waste Cleaning Robot",
 		asset = 111,
 		requires = "factory_building",
 		cost = 100_000,
@@ -1772,7 +2097,7 @@ local Staff = {
 	},
 	{
 		id = "agronomist",
-		name = "Бот-агроном с планшетом",
+		name = "Agronomist Bot with Tablet",
 		asset = 121,
 		requires = "office",
 		cost = 280_000,
@@ -1784,7 +2109,7 @@ local Staff = {
 	},
 	{
 		id = "palletizer",
-		name = "Робо-рука паллетайзер",
+		name = "Palletizer Robot Arm",
 		asset = 113,
 		requires = "office",
 		cost = 380_000,
@@ -1796,7 +2121,7 @@ local Staff = {
 	},
 	{
 		id = "engineer",
-		name = "Главный инженер цеха",
+		name = "Chief Plant Engineer",
 		asset = 116,
 		requires = "office",
 		cost = 750_000,
@@ -1808,7 +2133,7 @@ local Staff = {
 	},
 	{
 		id = "truck_driver",
-		name = "Водитель оптового грузовика",
+		name = "Wholesale Truck Driver",
 		asset = 126,
 		requires = "office",
 		cost = 1_100_000,
@@ -1820,7 +2145,7 @@ local Staff = {
 	},
 	{
 		id = "exchange_manager",
-		name = "Менеджер биржи картофеля",
+		name = "Potato Exchange Manager",
 		asset = 117,
 		requires = "office",
 		cost = 1_700_000,
@@ -1832,7 +2157,7 @@ local Staff = {
 	},
 	{
 		id = "technician",
-		name = "Дежурный техник подстанции",
+		name = "Substation Duty Technician",
 		asset = 120,
 		requires = "substation",
 		cost = 1_200_000,
@@ -1844,7 +2169,7 @@ local Staff = {
 	},
 	{
 		id = "drone_harvester",
-		name = "Дрон-сборщик Tier 1 (квадрокоптер с клешней)",
+		name = "Harvester Drone Tier 1 (Claw Quadcopter)",
 		asset = 106,
 		requires = "drone_station",
 		cost = 2_500_000,
@@ -1856,7 +2181,7 @@ local Staff = {
 	},
 	{
 		id = "drone_pollinator",
-		name = "Дрон-опылитель с ультразвуком",
+		name = "Ultrasonic Pollinator Drone",
 		asset = 107,
 		requires = "drone_station",
 		cost = 6_300_000,
@@ -1868,7 +2193,7 @@ local Staff = {
 	},
 	{
 		id = "guard_dog",
-		name = "Механическая сторожевая собака-дрон",
+		name = "Mechanical Guard Dog Drone",
 		asset = 125,
 		requires = "drone_station",
 		cost = 3_000_000,
@@ -1880,7 +2205,7 @@ local Staff = {
 	},
 	{
 		id = "drone_sprayer",
-		name = "Дрон-распылитель стимуляторов роста",
+		name = "Growth Booster Sprayer Drone",
 		asset = 108,
 		requires = "drone_station",
 		cost = 13_000_000,
@@ -1892,7 +2217,7 @@ local Staff = {
 	},
 	{
 		id = "profit_counter",
-		name = "Робот-счетчик прибыли",
+		name = "Profit Counter Robot",
 		asset = 129,
 		requires = "drone_station",
 		cost = 20_000_000,
@@ -1904,7 +2229,7 @@ local Staff = {
 	},
 	{
 		id = "drone_hexa",
-		name = "Тяжелый грузовой гексакоптер обслуживания",
+		name = "Heavy Cargo Service Hexacopter",
 		asset = 109,
 		requires = "drone_station",
 		cost = 38_000_000,
@@ -1916,7 +2241,7 @@ local Staff = {
 	},
 	{
 		id = "professor",
-		name = "Профессор генетики",
+		name = "Professor of Genetics",
 		asset = 118,
 		requires = "lab",
 		cost = 140_000_000,
@@ -1928,7 +2253,7 @@ local Staff = {
 	},
 	{
 		id = "holo_assistant",
-		name = "Голографический помощник-консультант",
+		name = "Holographic Advisor Assistant",
 		asset = 130,
 		requires = "lab",
 		cost = 370_000_000,
@@ -1940,7 +2265,7 @@ local Staff = {
 	},
 	{
 		id = "trade_agent",
-		name = "Торговый агент межпланетной сети",
+		name = "Interplanetary Trade Agent",
 		asset = 119,
 		requires = "launch_pad",
 		cost = 590_000_000,
@@ -1952,7 +2277,7 @@ local Staff = {
 	},
 	{
 		id = "shuttle_pilot",
-		name = "Пилот экспортного шаттла",
+		name = "Export Shuttle Pilot",
 		asset = 127,
 		requires = "launch_tower",
 		cost = 280_000_000,
@@ -1964,7 +2289,7 @@ local Staff = {
 	},
 	{
 		id = "vip_droid",
-		name = "Сервисный дроид золотого VIP-статуса",
+		name = "Golden VIP Service Droid",
 		asset = 128,
 		requires = "tower",
 		requiresPass = "vip",
@@ -1995,7 +2320,7 @@ return {
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="13">
+        <Item class="ModuleScript" referent="16">
           <Properties>
             <string name="Name">StarTech</string>
             <string name="Source"><![CDATA[-- Древо звёздных технологий (открывается после Rebirth, валюта — Картофельные Звезды).
@@ -2004,56 +2329,56 @@ return {
 local StarTech = {
 	{
 		id = "star_income",
-		name = "Звёздная выручка",
-		desc = "+25% ко всему доходу за уровень",
+		name = "Star Revenue",
+		desc = "+25% to all income per level",
 		baseCost = 40,
 		max = 10,
 		perLevel = 0.25,
 	},
 	{
 		id = "start_cash",
-		name = "Стартовый капитал",
-		desc = "После Rebirth начинаешь с $1,500 за уровень",
+		name = "Starting Capital",
+		desc = "Start with $1,500 per level after Rebirth",
 		baseCost = 60,
 		max = 5,
 		perLevel = 1_500,
 	},
 	{
 		id = "offline_rate",
-		name = "Офлайн-ферма",
-		desc = "+10% к офлайн-доходу (50% → 100%)",
+		name = "Offline Farm",
+		desc = "+10% offline income (50% → 100%)",
 		baseCost = 40,
 		max = 5,
 		perLevel = 0.1,
 	},
 	{
 		id = "offline_hours",
-		name = "Долгий сон магната",
-		desc = "+1 час офлайн-дохода (3 → 8 часов)",
+		name = "Tycoon's Long Sleep",
+		desc = "+1 hour of offline income (3 → 8 hours)",
 		baseCost = 40,
 		max = 5,
 		perLevel = 1,
 	},
 	{
 		id = "discount",
-		name = "Связи с поставщиками",
-		desc = "-5% к цене построек за уровень",
+		name = "Supplier Connections",
+		desc = "-5% building cost per level",
 		baseCost = 80,
 		max = 5,
 		perLevel = 0.05,
 	},
 	{
 		id = "energy_saver",
-		name = "Энергосбережение",
-		desc = "-10% к потреблению энергии за уровень",
+		name = "Energy Saving",
+		desc = "-10% energy use per level",
 		baseCost = 50,
 		max = 5,
 		perLevel = 0.1,
 	},
 	{
 		id = "quick_hands",
-		name = "Быстрые руки",
-		desc = "Ручные грядки созревают на 20% быстрее",
+		name = "Quick Hands",
+		desc = "Manual beds ripen 20% faster",
 		baseCost = 30,
 		max = 3,
 		perLevel = 0.2,
@@ -2078,7 +2403,7 @@ return {
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="14">
+        <Item class="ModuleScript" referent="17">
           <Properties>
             <string name="Name">Varieties</string>
             <string name="Source"><![CDATA[-- Сорта картофеля (ГДД 2.1). price — базовая цена $/кг из ГДД.
@@ -2089,7 +2414,7 @@ return {
 return {
 	{
 		id = "wild",
-		name = "Дикий полевой",
+		name = "Wild Field",
 		price = 1,
 		growth = 1,
 		cost = 0,
@@ -2099,7 +2424,7 @@ return {
 	},
 	{
 		id = "nevsky",
-		name = "Невский",
+		name = "Nevsky",
 		price = 3,
 		growth = 1,
 		cost = 390,
@@ -2110,7 +2435,7 @@ return {
 	},
 	{
 		id = "gala",
-		name = "Гала",
+		name = "Gala",
 		price = 8,
 		growth = 1,
 		cost = 3100,
@@ -2121,7 +2446,7 @@ return {
 	},
 	{
 		id = "siney",
-		name = "Синеглазка",
+		name = "Blue-Eyed",
 		price = 20,
 		growth = 1,
 		cost = 23_000,
@@ -2132,7 +2457,7 @@ return {
 	},
 	{
 		id = "red",
-		name = "Ред Скарлетт",
+		name = "Red Scarlett",
 		price = 50,
 		growth = 0.6,
 		cost = 3_800_000,
@@ -2143,7 +2468,7 @@ return {
 	},
 	{
 		id = "vitelot",
-		name = "Фиолетовый Вителот",
+		name = "Purple Vitelotte",
 		price = 150,
 		growth = 0.24,
 		cost = 13_000_000,
@@ -2154,7 +2479,7 @@ return {
 	},
 	{
 		id = "batat",
-		name = "Сладкий Батат",
+		name = "Sweet Potato",
 		price = 400,
 		growth = 0.105,
 		cost = 38_000_000,
@@ -2165,7 +2490,7 @@ return {
 	},
 	{
 		id = "truffle",
-		name = "Трюфельный",
+		name = "Truffle",
 		price = 1_200,
 		growth = 0.04,
 		cost = 100_000_000,
@@ -2176,7 +2501,7 @@ return {
 	},
 	{
 		id = "golden",
-		name = "Золотой клубень",
+		name = "Golden Tuber",
 		price = 5_000,
 		growth = 0.012,
 		cost = 44_000_000,
@@ -2187,7 +2512,7 @@ return {
 	},
 	{
 		id = "diamond",
-		name = "Алмазный картофель",
+		name = "Diamond Potato",
 		price = 20_000,
 		growth = 0.0036,
 		cost = 73_000_000,
@@ -2198,7 +2523,7 @@ return {
 	},
 	{
 		id = "radio",
-		name = "Радиоактивный",
+		name = "Radioactive",
 		price = 75_000,
 		growth = 0.00112,
 		cost = 100_000_000,
@@ -2209,7 +2534,7 @@ return {
 	},
 	{
 		id = "quantum",
-		name = "Квантовый клубень",
+		name = "Quantum Tuber",
 		price = 300_000,
 		growth = 0.000333,
 		cost = 180_000_000,
@@ -2220,7 +2545,7 @@ return {
 	},
 	{
 		id = "void",
-		name = "Картофель Пустоты",
+		name = "Void Potato",
 		price = 1_500_000,
 		growth = 0.0000767,
 		cost = 590_000_000,
@@ -2234,7 +2559,7 @@ return {
           </Properties>
         </Item>
       </Item>
-      <Item class="ModuleScript" referent="15">
+      <Item class="ModuleScript" referent="18">
         <Properties>
           <string name="Name">Economy</string>
           <string name="Source"><![CDATA[-- Экономика и формулы (ГДД, раздел 2). «Чистый» модуль: конфиг передаётся параметром,
@@ -2488,7 +2813,7 @@ return Economy
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="16">
+      <Item class="ModuleScript" referent="19">
         <Properties>
           <string name="Name">Format</string>
           <string name="Source"><![CDATA[-- Форматирование чисел и времени для интерфейса
@@ -2528,11 +2853,11 @@ end
 -- Масса: граммы, килограммы, тонны
 function Format.mass(kg: number): string
 	if kg < 1 then
-		return string.format("%d г", math.floor(kg * 1000 + 0.5))
+		return string.format("%d g", math.floor(kg * 1000 + 0.5))
 	elseif kg < 1000 then
-		return string.format("%.1f кг", kg)
+		return string.format("%.1f kg", kg)
 	end
-	return Format.number(kg / 1000) .. " т"
+	return Format.number(kg / 1000) .. " t"
 end
 
 function Format.time(seconds: number): string
@@ -2562,7 +2887,7 @@ return Format
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="17">
+      <Item class="ModuleScript" referent="20">
         <Properties>
           <string name="Name">Remotes</string>
           <string name="Source"><![CDATA[-- Сетевые события. Сервер создаёт их, клиент ждёт.
@@ -2622,15 +2947,15 @@ return Remotes
       </Item>
     </Item>
   </Item>
-  <Item class="ServerScriptService" referent="18">
+  <Item class="ServerScriptService" referent="21">
     <Properties>
       <string name="Name">ServerScriptService</string>
     </Properties>
-    <Item class="Folder" referent="19">
+    <Item class="Folder" referent="22">
       <Properties>
         <string name="Name">Server</string>
       </Properties>
-      <Item class="Script" referent="20">
+      <Item class="Script" referent="23">
         <Properties>
           <string name="Name">Main</string>
           <token name="RunContext">0</token>
@@ -2688,7 +3013,7 @@ local function createLeaderstats(player: Player)
 	local stats = Instance.new("Folder")
 	stats.Name = "leaderstats"
 	local cash = Instance.new("StringValue")
-	cash.Name = "Деньги"
+	cash.Name = "Cash"
 	cash.Value = "$0"
 	cash.Parent = stats
 	local rebirths = Instance.new("IntValue")
@@ -2738,11 +3063,7 @@ local function onPlayerAdded(player: Player)
 	local session = Sessions.create(player, profile, persistent)
 	PassService.load(session)
 	if not persistent then
-		Sessions.notify(
-			player,
-			"Сохранения недоступны — прогресс этой сессии не сохранится",
-			"error"
-		)
+		Sessions.notify(player, "Saving is unavailable — progress from this session won't be saved", "error")
 	end
 
 	Sessions.recompute(session)
@@ -2751,11 +3072,7 @@ local function onPlayerAdded(player: Player)
 		PlotService.buildAll(session)
 		ManualFarm.setupBeds(session)
 	else
-		Sessions.notify(
-			player,
-			"Все базы заняты — подожди, пока освободится место",
-			"error"
-		)
+		Sessions.notify(player, "All bases are taken — please wait for a free spot", "error")
 	end
 	Sessions.recompute(session)
 	session.loaded = true
@@ -2850,7 +3167,7 @@ end)
 
 print(
 	string.format(
-		"[Potato Tycoon] сервер запущен: %d баз, %d построек, стартовый капитал %s",
+		"[Potato Tycoon] server started: %d bases, %d buildings, starting cash %s",
 		#World.plots,
 		#Config.Items.List,
 		Format.money(Config.Game.StartCash)
@@ -2859,11 +3176,11 @@ print(
 ]]></string>
         </Properties>
       </Item>
-      <Item class="Folder" referent="21">
+      <Item class="Folder" referent="24">
         <Properties>
           <string name="Name">Services</string>
         </Properties>
-        <Item class="ModuleScript" referent="22">
+        <Item class="ModuleScript" referent="25">
           <Properties>
             <string name="Name">DataService</string>
             <string name="Source"><![CDATA[-- Сохранение прогресса в DataStore (с повторами). Если DataStore недоступен
@@ -2892,10 +3209,7 @@ local function getStore(): DataStore?
 		store = result
 	else
 		storeFailed = true
-		warn(
-			"[DataService] DataStore недоступен, прогресс не будет сохраняться: "
-				.. tostring(result)
-		)
+		warn("[DataService] DataStore unavailable, progress will not be saved: " .. tostring(result))
 	end
 	return store
 end
@@ -2910,14 +3224,7 @@ local function retry<T>(label: string, attempts: number, fn: () -> T): (boolean,
 		if ok then
 			return true, result
 		end
-		warn(
-			string.format(
-				"[DataService] %s: попытка %d не удалась: %s",
-				label,
-				attempt,
-				tostring(result)
-			)
-		)
+		warn(string.format("[DataService] %s: attempt %d failed: %s", label, attempt, tostring(result)))
 		if attempt < attempts then
 			task.wait(attempt * 1.5)
 		end
@@ -3005,15 +3312,13 @@ function DataService.load(player: Player)
 	end
 	-- в Studio без доступа к API не ждём повторов, сразу играем без сохранений
 	local attempts = if RunService:IsStudio() then 1 else 3
-	local ok, data = retry("загрузка " .. player.Name, attempts, function()
+	local ok, data = retry("load " .. player.Name, attempts, function()
 		return s:GetAsync(key(player))
 	end)
 	if not ok and RunService:IsStudio() then
 		storeFailed = true
 		store = nil
-		warn(
-			"[DataService] Включите Game Settings → Security → Enable Studio Access to API Services, чтобы проверить сохранения"
-		)
+		warn("[DataService] Turn on Game Settings → Security → Enable Studio Access to API Services to test saving")
 	end
 	if not ok then
 		-- не перезаписываем сохранение, которое не смогли прочитать
@@ -3034,7 +3339,7 @@ function DataService.save(player: Player, profile, persistent: boolean): boolean
 		return false
 	end
 	local payload = serialize(profile)
-	local ok = retry("сохранение " .. player.Name, 3, function()
+	local ok = retry("save " .. player.Name, 3, function()
 		return s:UpdateAsync(key(player), function()
 			return payload
 		end)
@@ -3046,7 +3351,7 @@ return DataService
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="23">
+        <Item class="ModuleScript" referent="26">
           <Properties>
             <string name="Name">EventService</string>
             <string name="Source"><![CDATA[-- Случайные события (ГДД, раздел 6):
@@ -3062,6 +3367,7 @@ local Remotes = require(ReplicatedStorage.Shared.Remotes)
 
 local Kit = require(script.Parent.Parent.World.ModelKit)
 local Misc = require(script.Parent.Parent.World.Models.Misc)
+local Templates = require(script.Parent.Parent.World.Templates)
 local World = require(script.Parent.Parent.World.WorldBuilder)
 local Sessions = require(script.Parent.Sessions)
 
@@ -3091,6 +3397,7 @@ local function spawnBug(session: Session, boss: boolean)
 	bugSerial += 1
 	local b = Kit.new("Bug" .. bugSerial, cf)
 	Misc.Bug(b, boss)
+	Templates.dress(b.model, "Bug", cf, { scale = if boss then 3 else 1 })
 	local health = if boss then Config.Game.Events.Bugs.BossHealth else 1
 	b.model:SetAttribute("Bug", true)
 	b.model:SetAttribute("Boss", boss)
@@ -3109,7 +3416,7 @@ local function reward(session: Session)
 	Sessions.addCash(session, amount)
 	Sessions.updateLeaderstats(session)
 	session.profile.bugEventsWon += 1
-	Sessions.notify(session.player, "🪲 Жуки побеждены! Бонус " .. Format.money(amount), "gold")
+	Sessions.notify(session.player, "🪲 Beetles defeated! Bonus " .. Format.money(amount), "gold")
 	Sessions.effect(session.player, { type = "Confetti" })
 	Sessions.effect(session.player, { type = "Sound", sound = "Cash" })
 end
@@ -3136,7 +3443,7 @@ function EventService.startBugs()
 		end
 	end
 	Sessions.notifyAll(
-		"🪲 НАШЕСТВИЕ ЖУКОВ! Кликай по жукам на своём поле: 15 за 45 сек = 10 минут дохода!",
+		"🪲 BEETLE INVASION! Click the beetles in your field: 15 in 45 sec = 10 minutes of income!",
 		"event"
 	)
 	Sessions.effectAll({ type = "Sound", sound = "BugBuzz" })
@@ -3144,11 +3451,7 @@ function EventService.startBugs()
 		bugsActive = false
 		for _, session in pairs(Sessions.all) do
 			if session.plot and #session.plot.bugs:GetChildren() > 0 and not session.bugs.rewarded then
-				Sessions.notify(
-					session.player,
-					"Жуки улетели... Попробуй в следующий раз!",
-					"info"
-				)
+				Sessions.notify(session.player, "The beetles flew away... Better luck next time!", "info")
 			end
 			clearBugs(session)
 			session.player:SetAttribute("BugsCaught", nil)
@@ -3189,20 +3492,14 @@ function EventService.startBoom()
 	for _, session in pairs(Sessions.all) do
 		Sessions.recompute(session)
 	end
-	Sessions.notifyAll(
-		"📈 КАРТОФЕЛЬНЫЙ БУМ НА БИРЖЕ! Чипсы и фри в цене — доход x3 на 3 минуты!",
-		"event"
-	)
+	Sessions.notifyAll("📈 POTATO MARKET BOOM! Chips and fries are in demand — income x3 for 3 minutes!", "event")
 	Sessions.effectAll({ type = "Sound", sound = "Cash" })
 	task.delay(B.Duration + 0.1, function()
 		GameState:SetAttribute("NextBoomAt", now() + B.Interval - B.Duration)
 		for _, session in pairs(Sessions.all) do
 			Sessions.recompute(session)
 		end
-		Sessions.notifyAll(
-			"Биржевой бум закончился. Следующий — через 27 минут.",
-			"info"
-		)
+		Sessions.notifyAll("The market boom is over. The next one is in 27 minutes.", "info")
 	end)
 end
 
@@ -3238,7 +3535,7 @@ return EventService
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="24">
+        <Item class="ModuleScript" referent="27">
           <Properties>
             <string name="Name">IncomeService</string>
             <string name="Source"><![CDATA[-- Пассивный доход (Direct Auto-Harvest & Instant Auto-Sell), золотые клубни, табло и Зал Славы
@@ -3287,11 +3584,7 @@ local function goldenRoll()
 				local target = if #sources > 0 then sources[math.random(1, #sources)] else nil
 				local bonus = stats.incomePerSec * G.IncomeSeconds
 				Sessions.addCash(session, bonus)
-				Sessions.notify(
-					session.player,
-					"✨ Золотой клубень на поле! +" .. Format.money(bonus),
-					"gold"
-				)
+				Sessions.notify(session.player, "✨ Golden tuber in the field! +" .. Format.money(bonus), "gold")
 				Sessions.effect(
 					session.player,
 					{ type = "Golden", target = target, amount = bonus, glow = G.GlowSeconds }
@@ -3310,7 +3603,7 @@ local function updateBoards()
 			local label = board:FindFirstChild("BoardText", true) :: TextLabel?
 			if label then
 				label.Text = string.format(
-					"ВЫРАБОТКА: %s\n%s/сек",
+					"OUTPUT: %s\n%s/sec",
 					Format.mass(session.profile.totalKg),
 					Format.money(session.stats and session.stats.incomePerSec or 0)
 				)
@@ -3343,7 +3636,7 @@ local function updateHallOfFame()
 		local e = entries[i]
 		table.insert(lines, string.format("%d. %s — ⭐%d, %s", i, e.name, e.rebirths, Format.money(e.earned)))
 	end
-	local text = if #lines > 0 then table.concat(lines, "\n") else "Пока пусто"
+	local text = if #lines > 0 then table.concat(lines, "\n") else "No records yet"
 	for _, d in ipairs(model:GetDescendants()) do
 		if d:IsA("TextLabel") and d.Name == "List" then
 			d.Text = text
@@ -3387,7 +3680,7 @@ return IncomeService
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="25">
+        <Item class="ModuleScript" referent="28">
           <Properties>
             <string name="Name">ManualFarm</string>
             <string name="Source"><![CDATA[-- Этап 1: ручной огород. Лопата, созревание кустов, мешок, сдача скупщику, советы Деда Матвея.
@@ -3500,7 +3793,7 @@ function ManualFarm.dig(session: Session, itemId: string, requireShovel: boolean
 		return
 	end
 	if (root.Position - model:GetPivot().Position).Magnitude > Config.Game.Manual.DigDistance then
-		Sessions.notify(player, "Подойди ближе к грядке", "error")
+		Sessions.notify(player, "Get closer to the bed", "error")
 		return
 	end
 	local tool = character:FindFirstChildOfClass("Tool")
@@ -3519,7 +3812,7 @@ function ManualFarm.dig(session: Session, itemId: string, requireShovel: boolean
 	local stats = session.stats
 	local capacity = stats.bagCapacity
 	if profile.bag >= capacity then
-		Sessions.notify(player, "Мешок полон! Отнеси картофель скупщику 🧺", "error")
+		Sessions.notify(player, "Your sack is full! Take the potatoes to the buyer 🧺", "error")
 		Sessions.effect(player, { type = "Sound", sound = "Error" })
 		return
 	end
@@ -3553,7 +3846,7 @@ function ManualFarm.dig(session: Session, itemId: string, requireShovel: boolean
 		local bonus = Config.Game.Manual.GoldenValue * stats.manualPrice
 		Sessions.addCash(session, bonus)
 		Sessions.updateLeaderstats(session)
-		Sessions.notify(player, "✨ Золотой клубень! +" .. Format.money(bonus), "gold")
+		Sessions.notify(player, "✨ Golden tuber! +" .. Format.money(bonus), "gold")
 		Sessions.effect(player, { type = "Golden", target = model, amount = bonus })
 	end
 end
@@ -3562,7 +3855,7 @@ function ManualFarm.sell(session: Session)
 	local profile = session.profile
 	local player = session.player
 	if profile.bag <= 0 then
-		Sessions.notify(player, "Мешок пуст — накопай картофеля лопатой 🥔", "info")
+		Sessions.notify(player, "Your sack is empty — dig up some potatoes with the shovel 🥔", "info")
 		return
 	end
 	local amount = profile.bag * session.stats.manualPrice
@@ -3589,16 +3882,16 @@ function ManualFarm.onTower(session: Session)
 end
 
 local TIPS = {
-	[1] = "Бери лопату, копай созревшие кусты и сдавай картошку скупщику. Копи $1,500 на Авто-вышку — и ручной труд закончится!",
-	[2] = "Теперь урожай продаётся сам. Ставь авто-грядки, следи за энергией ⚡ и открывай новые сорта в меню 🧬.",
-	[3] = "Каждый цех — множитель выручки. Не забывай про генераторы: при перегрузке доход падает вдвое!",
-	[4] = "Нанимай дронов в меню персонала и открывай премиальные сорта. Скоро — Лаборатория ДНК!",
-	[5] = "Построй шаттл и накопи на Rebirth: x3 ко всем доходам навсегда и Картофельные Звезды!",
+	[1] = "Grab the shovel, dig up ripe bushes and sell the potatoes to the buyer. Save $1,500 for the Auto Harvest Tower — and the manual labor is over!",
+	[2] = "Now the harvest sells itself. Build auto beds, watch your energy ⚡ and unlock new varieties in the 🧬 menu.",
+	[3] = "Every workshop multiplies your revenue. Don't forget generators: an overload halves your income!",
+	[4] = "Hire drones in the staff menu and unlock premium varieties. The DNA Lab is next!",
+	[5] = "Build the shuttle and save up for Rebirth: x3 to all income forever, plus Potato Stars!",
 }
 
 function ManualFarm.talk(session: Session)
 	local stage = session.stats.stage
-	Sessions.notify(session.player, "👴 Дед Матвей: " .. (TIPS[stage] or TIPS[1]), "tip")
+	Sessions.notify(session.player, "👴 Grandpa Matvey: " .. (TIPS[stage] or TIPS[1]), "tip")
 end
 
 function ManualFarm.init()
@@ -3635,7 +3928,7 @@ return ManualFarm
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="26">
+        <Item class="ModuleScript" referent="29">
           <Properties>
             <string name="Name">PassService</string>
             <string name="Source"><![CDATA[-- Геймпассы (ГДД, раздел 6): x2 Cash, Бесконечная Энергия, Авто-дрон Магната, VIP Фермер
@@ -3704,15 +3997,13 @@ function PassService.prompt(player: Player, key: string)
 	end
 	local session = Sessions.get(player)
 	if session and session.passes[key] then
-		Sessions.notify(player, "У тебя уже есть «" .. pass.name .. "»", "info")
+		Sessions.notify(player, "You already own “" .. pass.name .. "”", "info")
 		return
 	end
 	if pass.id <= 0 then
 		Sessions.notify(
 			player,
-			"Геймпасс «"
-				.. pass.name
-				.. "» ещё не настроен (впишите ID в Config/GamePasses)",
+			"Game pass “" .. pass.name .. "” is not set up yet (add its ID to Config/GamePasses)",
 			"error"
 		)
 		return
@@ -3735,7 +4026,7 @@ local function granted(player: Player, pass)
 		end
 		ManualFarm.giveShovel(session)
 	end
-	Sessions.notify(player, pass.icon .. " Спасибо за покупку «" .. pass.name .. "»!", "gold")
+	Sessions.notify(player, pass.icon .. " Thanks for buying “" .. pass.name .. "”!", "gold")
 	Sessions.effect(player, { type = "Confetti" })
 end
 
@@ -3774,7 +4065,7 @@ return PassService
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="27">
+        <Item class="ModuleScript" referent="30">
           <Properties>
             <string name="Name">PlotService</string>
             <string name="Source"><![CDATA[-- Базы игроков: выдача базы, постройка моделей, напольные кнопки, визуал персонала
@@ -3791,6 +4082,7 @@ local World = require(WorldFolder.WorldBuilder)
 local Library = require(WorldFolder.ModelLibrary)
 local Kit = require(WorldFolder.ModelKit)
 local Misc = require(WorldFolder.Models.Misc)
+local Templates = require(WorldFolder.Templates)
 
 local Sessions = require(script.Parent.Sessions)
 
@@ -3840,7 +4132,7 @@ function PlotService.assign(session: Session): boolean
 			(info :: any).owner = session.player
 			session.plot = info
 			info.folder:SetAttribute("OwnerUserId", session.player.UserId)
-			info.sign.Text = "База: " .. session.player.DisplayName
+			info.sign.Text = "Base: " .. session.player.DisplayName
 			session.player:SetAttribute("PlotIndex", info.index)
 			return true
 		end
@@ -3871,7 +4163,7 @@ function PlotService.release(session: Session)
 	PlotService.clear(session);
 	(info :: any).owner = nil
 	info.folder:SetAttribute("OwnerUserId", nil)
-	info.sign.Text = "Свободная база"
+	info.sign.Text = "Free Base"
 	session.plot = nil
 end
 
@@ -3955,7 +4247,7 @@ function PlotService.createButton(session: Session, item)
 			lastWarn[model] = os.clock()
 			Sessions.notify(
 				session.player,
-				"Не хватает " .. Format.money(cost - session.profile.cash),
+				"Not enough cash: need " .. Format.money(cost - session.profile.cash),
 				"error"
 			)
 		end
@@ -4013,8 +4305,7 @@ function PlotService.buildVipPads(session: Session)
 		if spot then
 			local b = Kit.new("Vip_" .. pass.key, World.localCFrame(info, spot[1], spot[2]))
 			local owned = session.passes[pass.key] == true
-			local pad =
-				Misc.Button(b, pass.icon .. " " .. pass.name, if owned then "✓ Куплено" else "Robux", "Vip")
+			local pad = Misc.Button(b, pass.icon .. " " .. pass.name, if owned then "✓ Owned" else "Robux", "Vip")
 			b.model:SetAttribute("PassKey", pass.key)
 			b:finish(folder)
 			local busy = false
@@ -4046,6 +4337,7 @@ function PlotService.spawnStaff(session: Session, staff, n: number, animate: boo
 		local z = 18 + (k * 7) % 18
 		b = Kit.new(staff.id .. "_" .. n, World.localCFrame(info, x, z, 0, 10 + (k % 3)))
 		Misc.Drone(b, color, if staff.id == "drone_hexa" then 6 else 4)
+		Templates.dress(b.model, "Drone", b.origin * CFrame.new(0, -1.6, 0), { tint = { White = color } })
 		b:tag(b.model, "Hover", { Radius = 3 + (k % 4), Speed = 0.4 + (k % 5) * 0.08, Phase = k })
 	else
 		local spots = STAFF_SPOTS[staff.id] or { { 0, 0 } }
@@ -4054,6 +4346,7 @@ function PlotService.spawnStaff(session: Session, staff, n: number, animate: boo
 		b = Kit.new(staff.id .. "_" .. n, World.localCFrame(info, spot[1], spot[2], rot))
 		if staff.visual == "Robot" then
 			Misc.Robot(b, color)
+			Templates.dress(b.model, "Robot", b.origin, { tint = { Blue = color } })
 			b:tag(b.model, "Roam", { Radius = 1.5, Speed = 0.5 + n * 0.1 })
 		else
 			Misc.StaffNpc(b, color, staff.name)
@@ -4108,7 +4401,7 @@ return PlotService
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="28">
+        <Item class="ModuleScript" referent="31">
           <Properties>
             <string name="Name">PurchaseService</string>
             <string name="Source"><![CDATA[-- Покупки: постройки (кнопки), исследования сортов, найм персонала, звёздные технологии
@@ -4134,15 +4427,11 @@ local function afterChange(session: Session, oldStage: number?)
 	Sessions.sync(session)
 	if oldStage and stats.stage > oldStage then
 		local stage = Config.Game.Stages[stats.stage]
-		Sessions.notify(session.player, string.format("🎉 ЭТАП %d: %s", stats.stage, stage.name), "stage")
+		Sessions.notify(session.player, string.format("🎉 STAGE %d: %s", stats.stage, stage.name), "stage")
 		Sessions.effect(session.player, { type = "Stage", stage = stats.stage })
 	end
 	if stats.overloaded and not session.passes.infiniteEnergy then
-		Sessions.notify(
-			session.player,
-			"⚠ Перегрузка сети! Доход -50%. Построй генератор.",
-			"error"
-		)
+		Sessions.notify(session.player, "⚠ Grid overload! Income -50%. Build a generator.", "error")
 	end
 end
 
@@ -4158,7 +4447,7 @@ function PurchaseService.buyItem(player: Player, itemId: string): boolean
 	end
 	local cost = Economy.itemCost(item, profile, Config)
 	if not Sessions.trySpend(session, cost) then
-		Sessions.notify(player, "Не хватает " .. Format.money(cost - profile.cash), "error")
+		Sessions.notify(player, "Not enough cash: need " .. Format.money(cost - profile.cash), "error")
 		return false
 	end
 	local oldStage = Economy.stage(profile, Config)
@@ -4168,15 +4457,11 @@ function PurchaseService.buyItem(player: Player, itemId: string): boolean
 		ManualFarm.setupBeds(session)
 	end
 	Sessions.effect(player, { type = "Purchase", itemId = itemId })
-	Sessions.notify(player, "Построено: " .. item.name, "success")
+	Sessions.notify(player, "Built: " .. item.name, "success")
 	if Config.Items.HasFlag(item, "Tower") then
 		Sessions.recompute(session)
 		ManualFarm.onTower(session)
-		Sessions.notify(
-			player,
-			"🤝 Контракт подписан! Урожай теперь собирается и продаётся сам.",
-			"stage"
-		)
+		Sessions.notify(player, "🤝 Contract signed! The harvest is now collected and sold automatically.", "stage")
 	end
 	afterChange(session, oldStage)
 	return true
@@ -4199,20 +4484,16 @@ function PurchaseService.buyResearch(player: Player, varietyId: string)
 	end
 	if variety.requires and not profile.owned[variety.requires] then
 		local req = Config.Items.ById[variety.requires]
-		Sessions.notify(
-			player,
-			"Сначала построй: " .. (if req then req.name else variety.requires),
-			"error"
-		)
+		Sessions.notify(player, "Build first: " .. (if req then req.name else variety.requires), "error")
 		return
 	end
 	local cost = Economy.varietyCost(variety, profile, Config)
 	if not Sessions.trySpend(session, cost) then
-		Sessions.notify(player, "Не хватает " .. Format.money(cost - profile.cash), "error")
+		Sessions.notify(player, "Not enough cash: need " .. Format.money(cost - profile.cash), "error")
 		return
 	end
 	profile.varieties[varietyId] = true
-	Sessions.notify(player, "🧬 Открыт сорт «" .. variety.name .. "»", "success")
+	Sessions.notify(player, "🧬 Variety unlocked: “" .. variety.name .. "”", "success")
 	Sessions.effect(player, { type = "Sound", sound = "Golden" })
 	afterChange(session)
 end
@@ -4241,25 +4522,21 @@ function PurchaseService.hireStaff(player: Player, staffId: string)
 	end
 	if not profile.owned[staff.requires] then
 		local req = Config.Items.ById[staff.requires]
-		Sessions.notify(
-			player,
-			"Сначала построй: " .. (if req then req.name else staff.requires),
-			"error"
-		)
+		Sessions.notify(player, "Build first: " .. (if req then req.name else staff.requires), "error")
 		return
 	end
 	if staff.requiresPass and not session.passes[staff.requiresPass] then
-		Sessions.notify(player, "Доступно только с геймпассом VIP Фермер 👑", "error")
+		Sessions.notify(player, "Only available with the VIP Farmer game pass 👑", "error")
 		return
 	end
 	local cost = Economy.staffCost(staff, profile, Config)
 	if not Sessions.trySpend(session, cost) then
-		Sessions.notify(player, "Не хватает " .. Format.money(cost - profile.cash), "error")
+		Sessions.notify(player, "Not enough cash: need " .. Format.money(cost - profile.cash), "error")
 		return
 	end
 	profile.staff[staffId] = count + 1
 	PlotService.spawnStaff(session, staff, count + 1, true)
-	Sessions.notify(player, "Нанят: " .. staff.name, "success")
+	Sessions.notify(player, "Hired: " .. staff.name, "success")
 	Sessions.effect(player, { type = "Sound", sound = "Cash" })
 	afterChange(session)
 end
@@ -4277,12 +4554,12 @@ function PurchaseService.buyStarTech(player: Player, techId: string)
 	end
 	local cost = Config.StarTech.CostOf(tech, level)
 	if profile.stars < cost then
-		Sessions.notify(player, "Не хватает ⭐ " .. Format.number(cost - profile.stars), "error")
+		Sessions.notify(player, "Not enough ⭐: need " .. Format.number(cost - profile.stars), "error")
 		return
 	end
 	profile.stars -= cost
 	profile.starTech[techId] = level + 1
-	Sessions.notify(player, string.format("⭐ %s: уровень %d", tech.name, level + 1), "success")
+	Sessions.notify(player, string.format("⭐ %s: level %d", tech.name, level + 1), "success")
 	Sessions.effect(player, { type = "Sound", sound = "Golden" })
 	afterChange(session)
 end
@@ -4317,7 +4594,7 @@ return PurchaseService
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="29">
+        <Item class="ModuleScript" referent="32">
           <Properties>
             <string name="Name">RebirthService</string>
             <string name="Source"><![CDATA[-- Rebirth (ГДД 2.1 и этап 5): запуск шаттла, сброс базы, множитель 3^N и Картофельные Звезды
@@ -4348,12 +4625,12 @@ function RebirthService.request(player: Player)
 	end
 	local profile = session.profile
 	if not profile.owned.shuttle then
-		Sessions.notify(player, "Для Rebirth нужен Экспортный шаттл (сектор 4)", "error")
+		Sessions.notify(player, "Rebirth requires the Export Shuttle (sector 4)", "error")
 		return
 	end
 	local cost = Economy.rebirthCost(profile.rebirths, Config)
 	if profile.cash < cost then
-		Sessions.notify(player, "Для Rebirth нужно накопить " .. Format.money(cost), "error")
+		Sessions.notify(player, "Rebirth requires " .. Format.money(cost), "error")
 		return
 	end
 	session.rebirthing = true
@@ -4389,18 +4666,10 @@ function RebirthService.request(player: Player)
 	Sessions.effect(player, { type = "Confetti", big = true })
 	Sessions.notify(
 		player,
-		string.format(
-			"🚀 REBIRTH %d! Доход x%s навсегда, +%d ⭐",
-			profile.rebirths,
-			Format.number(mult),
-			stars
-		),
+		string.format("🚀 REBIRTH %d! Income x%s forever, +%d ⭐", profile.rebirths, Format.number(mult), stars),
 		"stage"
 	)
-	Sessions.notifyAll(
-		string.format("🚀 %s совершает Rebirth #%d!", player.DisplayName, profile.rebirths),
-		"event"
-	)
+	Sessions.notifyAll(string.format("🚀 %s just did Rebirth #%d!", player.DisplayName, profile.rebirths), "event")
 	session.rebirthing = false
 	RebirthService.onRebirth(session)
 end
@@ -4415,7 +4684,7 @@ return RebirthService
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="30">
+        <Item class="ModuleScript" referent="33">
           <Properties>
             <string name="Name">Sessions</string>
             <string name="Source"><![CDATA[-- Состояние игроков на сервере: профиль, расчёт статистики, синхронизация с клиентом
@@ -4525,7 +4794,7 @@ function Sessions.updateLeaderstats(session: Session)
 	if not stats then
 		return
 	end
-	local cash = stats:FindFirstChild("Деньги") :: StringValue?
+	local cash = stats:FindFirstChild("Cash") :: StringValue?
 	if cash then
 		cash.Value = Format.money(session.profile.cash)
 	end
@@ -4617,11 +4886,11 @@ return Sessions
           </Properties>
         </Item>
       </Item>
-      <Item class="Folder" referent="31">
+      <Item class="Folder" referent="34">
         <Properties>
           <string name="Name">World</string>
         </Properties>
-        <Item class="ModuleScript" referent="32">
+        <Item class="ModuleScript" referent="35">
           <Properties>
             <string name="Name">ModelKit</string>
             <string name="Source"><![CDATA[-- Конструктор моделей из деталей (Part). Все координаты — в локальной системе модели:
@@ -4974,19 +5243,108 @@ function Kit.potato(self: Builder, pos: Vector3, scale: number, color: Color3?, 
 	return self:ellipsoid(Vector3.new(0.9, 0.6, 0.65) * scale, pos, color or Kit.C.potato, M.SmoothPlastic, opts)
 end
 
+export type FigureColors = {
+	shirt: Color3,
+	pants: Color3,
+	skin: Color3?,
+	hat: Color3?,
+	beard: Color3?,
+	avatar: boolean?, -- заменить фигурку настоящим аватаром R15 (когда игра запущена в Roblox)
+}
+
+local IDLE_ANIMATION = "rbxassetid://507766666" -- стандартная поза ожидания R15
+
+local function weldTo(head: BasePart, part: BasePart, offset: CFrame)
+	part.Anchored = false
+	part.CanCollide = false
+	part.Massless = true
+	part.CFrame = head.CFrame * offset
+	local weld = Instance.new("WeldConstraint")
+	weld.Part0 = head
+	weld.Part1 = part
+	weld.Parent = part
+	part.Parent = head.Parent
+end
+
+-- Аватар R15 вместо блочной фигурки. Создаётся асинхронно (описание грузится с сервера Roblox);
+-- таблички и подсказки с головы фигурки переезжают на голову аватара. Без Roblox (тесты) остаётся фигурка.
+function Kit.avatarize(self: Builder, fig: Model, colors: FigureColors, pos: Vector3, facing: number?, scale: number?)
+	local origin = self.origin
+	local s = scale or 1
+	task.spawn(function()
+		local ok, rig = pcall(function()
+			local desc = Instance.new("HumanoidDescription")
+			local skin = colors.skin or Kit.C.skin
+			desc.HeadColor = skin
+			desc.TorsoColor = colors.shirt
+			desc.LeftArmColor = colors.shirt
+			desc.RightArmColor = colors.shirt
+			desc.LeftLegColor = colors.pants
+			desc.RightLegColor = colors.pants
+			desc.HeightScale = s
+			desc.WidthScale = s
+			desc.DepthScale = s
+			desc.HeadScale = s
+			return game:GetService("Players"):CreateHumanoidModelFromDescription(desc, Enum.HumanoidRigType.R15)
+		end)
+		if not ok or not rig or not fig.Parent then
+			return
+		end
+		local humanoid = rig:FindFirstChildOfClass("Humanoid")
+		local root = rig:FindFirstChild("HumanoidRootPart") :: BasePart?
+		local head = rig:FindFirstChild("Head") :: BasePart?
+		if not humanoid or not root or not head then
+			rig:Destroy()
+			return
+		end
+		humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+		root.Anchored = true
+		local lift = humanoid.HipHeight + root.Size.Y / 2
+		rig:PivotTo(
+			origin * CFrame.new(pos) * CFrame.Angles(0, math.rad((facing or 0) + 180), 0) * CFrame.new(0, lift, 0)
+		)
+		local hs = head.Size
+		if colors.hat then
+			local brim = Instance.new("Part")
+			brim.Shape = Enum.PartType.Cylinder
+			brim.Size = Vector3.new(0.1, hs.X * 1.6, hs.X * 1.6)
+			brim.Color = colors.hat
+			brim.Material = Enum.Material.Fabric
+			weldTo(head, brim, CFrame.new(0, hs.Y * 0.42, 0) * CFrame.Angles(0, 0, math.rad(90)))
+			local crown = brim:Clone()
+			crown.Size = Vector3.new(hs.Y * 0.45, hs.X * 0.95, hs.X * 0.95)
+			weldTo(head, crown, CFrame.new(0, hs.Y * 0.62, 0) * CFrame.Angles(0, 0, math.rad(90)))
+		end
+		if colors.beard then
+			local beard = Instance.new("Part")
+			beard.Size = Vector3.new(hs.X * 0.75, hs.Y * 0.45, hs.Z * 0.3)
+			beard.Color = colors.beard
+			beard.Material = Enum.Material.SmoothPlastic
+			weldTo(head, beard, CFrame.new(0, -hs.Y * 0.38, -hs.Z * 0.42))
+		end
+		local oldHead = fig:FindFirstChild("Head")
+		if oldHead then
+			for _, c in ipairs(oldHead:GetChildren()) do
+				if c:IsA("BillboardGui") or c:IsA("ProximityPrompt") then
+					c.Parent = head
+				end
+			end
+		end
+		rig.Name = fig.Name
+		rig.Parent = fig.Parent
+		fig:Destroy()
+		pcall(function()
+			local animator = humanoid:FindFirstChildOfClass("Animator") or Instance.new("Animator")
+			animator.Parent = humanoid
+			local animation = Instance.new("Animation")
+			animation.AnimationId = IDLE_ANIMATION
+			animator:LoadAnimation(animation):Play()
+		end)
+	end)
+end
+
 -- Блочная фигурка человека (NPC без Humanoid). pos — точка на полу.
-function Kit.figure(
-	self: Builder,
-	pos: Vector3,
-	colors: {
-		shirt: Color3,
-		pants: Color3,
-		skin: Color3?,
-		hat: Color3?,
-	},
-	facing: number?,
-	scale: number?
-): Model
+function Kit.figure(self: Builder, pos: Vector3, colors: FigureColors, facing: number?, scale: number?): Model
 	local s = scale or 1
 	local g = self:group("Figure", pos)
 	local yaw = facing or 0
@@ -5011,7 +5369,14 @@ function Kit.figure(
 		g:box(Vector3.new(1.35, 0.35, 1.35) * s, at(Vector3.new(0, 5.1, 0)), colors.hat, M.SmoothPlastic, o)
 		g:box(Vector3.new(1.35, 0.12, 0.5) * s, at(Vector3.new(0, 4.98, 0.85)), colors.hat, M.SmoothPlastic, o)
 	end
-	return g:groupModel()
+	if colors.beard then
+		g:box(Vector3.new(0.9, 0.55, 0.25) * s, at(Vector3.new(0, 3.95, 0.55)), colors.beard, M.SmoothPlastic, o)
+	end
+	local model = g:groupModel()
+	if colors.avatar then
+		self:avatarize(model, colors, pos, facing, scale)
+	end
+	return model
 end
 
 -- Общая станина промышленного модуля: рама, корпус, панель управления, ножки
@@ -5073,12 +5438,13 @@ return Kit
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="33">
+        <Item class="ModuleScript" referent="36">
           <Properties>
             <string name="Name">ModelLibrary</string>
             <string name="Source"><![CDATA[-- Реестр всех моделей построек: ключ из Config.Items[...].model → функция-строитель
 
 local Kit = require(script.Parent.ModelKit)
+local Templates = require(script.Parent.Templates)
 
 local Library = {}
 
@@ -5104,10 +5470,12 @@ function Library.build(item, origin: CFrame, parent: Instance): Model
 	if builder then
 		builder(b, item)
 	else
-		warn("[ModelLibrary] нет модели " .. tostring(item.model) .. ", ставлю заглушку")
+		warn("[ModelLibrary] no model " .. tostring(item.model) .. ", using a placeholder")
 		b:box(Vector3.new(item.size[1], 2, item.size[2]), Vector3.new(0, 1, 0), Kit.C.metal, Enum.Material.Metal)
 	end
 	b.model:SetAttribute("ItemId", item.id)
+	-- модель из Blender, если она импортирована в ServerStorage.Assets
+	Templates.dress(b.model, item.model, origin)
 	return b:finish(parent)
 end
 
@@ -5115,11 +5483,11 @@ return Library
 ]]></string>
           </Properties>
         </Item>
-        <Item class="Folder" referent="34">
+        <Item class="Folder" referent="37">
           <Properties>
             <string name="Name">Models</string>
           </Properties>
-          <Item class="ModuleScript" referent="35">
+          <Item class="ModuleScript" referent="38">
             <Properties>
               <string name="Name">Agro</string>
               <string name="Source"><![CDATA[-- Модели агро-блока (сектор 1). Каждая функция строит модель в своей локальной системе:
@@ -5178,7 +5546,7 @@ end
 local function manualBed(b: Builder, item)
 	b.model:SetAttribute("ManualBed", true)
 	local s = b.model:FindFirstChild("Soil") :: BasePart
-	prompt(s, "Dig", "Выкопать", item.name)
+	prompt(s, "Dig", "Dig", item.name)
 end
 
 function Models.BedWood(b: Builder, item)
@@ -5245,12 +5613,7 @@ function Models.SellStand(b: Builder)
 	-- прилавок
 	local counter = b:box(V(6.6, 1.6, 1.4), V(0, 0.8, 2.2), C.wood, M.WoodPlanks, { name = "Counter" })
 	b:box(V(6.8, 0.2, 1.6), V(0, 1.7, 2.2), C.woodLight, M.Wood)
-	b:label(
-		counter,
-		Enum.NormalId.Back,
-		"СКУПКА КАРТОФЕЛЯ",
-		{ color = C.yellow, background = C.woodDark }
-	)
+	b:label(counter, Enum.NormalId.Back, "POTATO BUYER", { color = C.yellow, background = C.woodDark })
 	-- столбы и навес
 	for _, x in ipairs({ -3.1, 3.1 }) do
 		b:box(V(0.35, 5, 0.35), V(x, 2.5, 2.7), C.woodDark, M.Wood)
@@ -5272,15 +5635,15 @@ function Models.SellStand(b: Builder)
 	b:box(V(0.9, 0.05, 0.7), V(-2.2, 2.2, 2.2), C.metalDark, M.Metal, { collide = false })
 	-- табличка цены
 	local sign = b:box(V(2.4, 1, 0.15), V(1.6, 2.4, 2.9), C.white, M.SmoothPlastic, { collide = false })
-	b:label(sign, Enum.NormalId.Back, "$1 / шт", { color = C.green })
+	b:label(sign, Enum.NormalId.Back, "$1 EACH", { color = C.green })
 	-- скупщик (ГДД 114)
 	b:figure(
 		V(0, 0, 0.6),
-		{ shirt = Color3.fromRGB(70, 110, 160), pants = Color3.fromRGB(60, 60, 70), hat = C.woodDark },
+		{ shirt = Color3.fromRGB(70, 110, 160), pants = Color3.fromRGB(60, 60, 70), hat = C.woodDark, avatar = true },
 		0
 	)
-	b:billboard(counter, "Деревенский скупщик", 6, C.yellow)
-	prompt(counter, "Sell", "Сдать картофель", "Скупщик", 0.2)
+	b:billboard(counter, "Village Buyer", 6, C.yellow)
+	prompt(counter, "Sell", "Sell Potatoes", "Buyer", 0.2)
 end
 
 function Models.NpcMatvey(b: Builder)
@@ -5288,13 +5651,12 @@ function Models.NpcMatvey(b: Builder)
 		shirt = Color3.fromRGB(150, 60, 50),
 		pants = Color3.fromRGB(70, 80, 120),
 		hat = Color3.fromRGB(215, 185, 110),
+		beard = C.white,
+		avatar = true,
 	}, 0, 0.95)
 	local head = fig:FindFirstChild("Head") :: BasePart
-	-- борода
-	local headLocal = b.origin:PointToObjectSpace(head.CFrame.Position)
-	b:box(V(0.9, 0.55, 0.25), headLocal + V(0, -0.45, 0.55), C.white, M.SmoothPlastic, { collide = false })
-	b:billboard(head, "Дед Матвей", 2.2, C.yellow)
-	prompt(head, "Talk", "Поговорить", "Дед Матвей")
+	b:billboard(head, "Grandpa Matvey", 2.2, C.yellow)
+	prompt(head, "Talk", "Talk", "Grandpa Matvey")
 end
 
 function Models.FenceWood(b: Builder)
@@ -5353,7 +5715,7 @@ function Models.HarvestTower(b: Builder)
 	b:tag(dish:groupModel(), "Spin", { Axis = "Y", Speed = 60 })
 	-- табличка контракта
 	local board = b:box(V(4.4, 1.6, 0.2), V(0, 3, 2.9), C.blue, M.SmoothPlastic, { collide = false })
-	b:label(board, Enum.NormalId.Back, "КОНТРАКТ: АВТО-ПРОДАЖА", { color = C.white })
+	b:label(board, Enum.NormalId.Back, "CONTRACT: AUTO-SELL", { color = C.white })
 end
 
 local function autoBedBase(b: Builder, frame: Color3, mat: Enum.Material)
@@ -5422,6 +5784,7 @@ function Models.Sprinkler(b: Builder)
 	water.Acceleration = V(0, -25, 0)
 	water.Parent = nozzle
 	b:tag(head:groupModel(), "Spin", { Axis = "Y", Speed = 120 })
+	b.model:SetAttribute("Sound", "Water")
 end
 
 -- Столб с двумя светильниками над рядами грядок (±5 по Z)
@@ -5476,7 +5839,7 @@ function Models.LedBoard(b: Builder)
 	b:box(V(0.3, 3, 0.3), V(-2.2, 1.5, 0), C.metalDark, M.Metal)
 	b:box(V(0.3, 3, 0.3), V(2.2, 1.5, 0), C.metalDark, M.Metal)
 	local board = b:box(V(5, 2.4, 0.35), V(0, 3.9, 0), C.black, M.SmoothPlastic, { name = "Board" })
-	local label = b:label(board, Enum.NormalId.Back, "ВЫРАБОТКА: 0 кг", {
+	local label = b:label(board, Enum.NormalId.Back, "OUTPUT: 0 kg", {
 		color = Color3.fromRGB(255, 80, 60),
 		font = Enum.Font.Arcade,
 		name = "BoardGui",
@@ -5719,6 +6082,7 @@ function Models.ForceDome(b: Builder, item)
 		{ collide = false, shadow = false, name = "Dome" }
 	)
 	dome.CanQuery = false
+	dome:SetAttribute("KeepVisible", true) -- купол остаётся и у модели из Blender
 end
 
 function Models.Flagpole(b: Builder)
@@ -5749,7 +6113,7 @@ return Models
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="36">
+          <Item class="ModuleScript" referent="39">
             <Properties>
               <string name="Name">Energy</string>
               <string name="Source"><![CDATA[-- Модели сектора 3: энергетика, дрон-сервис, офис менеджера
@@ -5808,6 +6172,7 @@ function Models.GenPetrol(b: Builder)
 	smoke(exhaust, nil, 0.08)
 	local led = b:box(V(0.15, 0.15, 0.05), V(0.5, 1.1, 0.86), C.green, M.Neon, { collide = false })
 	b:tag(led, "Pulse", { Speed = 2 })
+	b.model:SetAttribute("Sound", "Engine")
 end
 
 function Models.GenDiesel25(b: Builder)
@@ -5817,7 +6182,8 @@ function Models.GenDiesel25(b: Builder)
 	local stack = b:cyl(1.6, 0.4, V(1.1, 3.4, -1), C.metal, M.Metal)
 	smoke(stack)
 	local label = b:box(V(1.6, 0.5, 0.05), V(-0.8, 2.4, 1.63), C.white, M.SmoothPlastic, { collide = false })
-	b:label(label, Enum.NormalId.Back, "25 кВт", { color = C.black })
+	b:label(label, Enum.NormalId.Back, "25 kW", { color = C.black })
+	b.model:SetAttribute("Sound", "Engine")
 end
 
 function Models.GenDiesel100(b: Builder)
@@ -5830,7 +6196,8 @@ function Models.GenDiesel100(b: Builder)
 		smoke(stack, nil, 0.2)
 	end
 	local label = b:box(V(2.4, 0.7, 0.05), V(0, 2.6, 2.11), C.black, M.SmoothPlastic, { collide = false })
-	b:label(label, Enum.NormalId.Back, "100 кВт", { color = C.yellow })
+	b:label(label, Enum.NormalId.Back, "100 kW", { color = C.yellow })
+	b.model:SetAttribute("Sound", "Engine")
 end
 
 function Models.Biogas(b: Builder)
@@ -5848,7 +6215,7 @@ function Models.Biogas(b: Builder)
 	fire.Parent = tip
 	local _ = flare
 	local label = b:box(V(2.6, 0.7, 0.05), V(0, 1.6, 2.62), C.white, M.SmoothPlastic, { collide = false })
-	b:label(label, Enum.NormalId.Back, "БИОГАЗ", { color = Color3.fromRGB(40, 120, 50) })
+	b:label(label, Enum.NormalId.Back, "BIOGAS", { color = Color3.fromRGB(40, 120, 50) })
 end
 
 function Models.BiogasTurbine(b: Builder)
@@ -5860,7 +6227,7 @@ function Models.BiogasTurbine(b: Builder)
 	local stack = b:cyl(3.4, 0.7, V(-1.5, 4.6, -1.8), C.metal, M.Metal)
 	smoke(stack, Color3.fromRGB(200, 200, 200), 0.1)
 	local label = b:box(V(2, 0.6, 0.05), V(2.4, 2.4, 1.31), C.white, M.SmoothPlastic, { collide = false })
-	b:label(label, Enum.NormalId.Back, "250 кВт", { color = C.blue })
+	b:label(label, Enum.NormalId.Back, "250 kW", { color = C.blue })
 end
 
 local function panel(b: Builder, w: number, d: number, pos: Vector3, tilt: number)
@@ -5957,7 +6324,7 @@ function Models.Geothermal(b: Builder)
 	local vent = b:cyl(1.2, 0.8, V(-1.8, 4.3, -1.6), C.metal, M.Metal)
 	smoke(vent, Color3.fromRGB(240, 240, 240), 0.2)
 	local label = b:box(V(2.6, 0.6, 0.05), V(-0.8, 2.6, 0.71), C.white, M.SmoothPlastic, { collide = false })
-	b:label(label, Enum.NormalId.Back, "ГЕОТЕРМ 300 кВт", { color = C.red })
+	b:label(label, Enum.NormalId.Back, "GEOTHERMAL 300 kW", { color = C.red })
 end
 
 function Models.Substation(b: Builder)
@@ -5980,8 +6347,9 @@ function Models.Substation(b: Builder)
 		b:box(V(0.1, 2, 4.8), V(x, 1, 0), C.metal, M.DiamondPlate, { transparency = 0.5, collide = false })
 	end
 	local sign = b:box(V(1.4, 1, 0.05), V(0, 1.3, 2.4), C.yellow, M.SmoothPlastic, { collide = false })
-	b:label(sign, Enum.NormalId.Back, "⚡ ОПАСНО", { color = C.black })
+	b:label(sign, Enum.NormalId.Back, "⚡ DANGER", { color = C.black })
 	b.model:SetAttribute("Sparks", true)
+	b.model:SetAttribute("Sound", "Hum")
 end
 
 function Models.Battery(b: Builder)
@@ -5994,7 +6362,7 @@ function Models.Battery(b: Builder)
 		end
 	end
 	local sign = b:box(V(1.8, 0.5, 0.05), V(0, 3.1, 1.71), C.white, M.SmoothPlastic, { collide = false })
-	b:label(sign, Enum.NormalId.Back, "50 кВт*ч", { color = C.green })
+	b:label(sign, Enum.NormalId.Back, "50 kWh", { color = C.green })
 end
 
 function Models.Megapack(b: Builder)
@@ -6056,7 +6424,7 @@ function Models.Office(b: Builder)
 	b:box(V(2, 1, 0.3), V(-0.1, 3.65, 2.85), wall, M.Metal)
 	b:box(V(7.4, 0.3, 6.4), V(0, 4.3, 0), C.metalDark, M.Metal)
 	local sign = b:box(V(3, 0.8, 0.1), V(0, 4.85, 3.0), C.blue, M.SmoothPlastic, { collide = false })
-	b:label(sign, Enum.NormalId.Back, "ОФИС", { color = C.white })
+	b:label(sign, Enum.NormalId.Back, "OFFICE", { color = C.white })
 	-- интерьер: стол, кресло, мониторинг биржи, кулер, шкаф (ГДД 173–177)
 	b:box(V(2.6, 0.15, 1.2), V(0.6, 1.1, -1.6), C.woodDark, M.Wood)
 	b:box(V(0.15, 0.95, 1.1), V(-0.6, 0.6, -1.6), C.woodDark, M.Wood)
@@ -6064,11 +6432,11 @@ function Models.Office(b: Builder)
 	b:box(V(0.9, 0.2, 0.9), V(0.6, 0.75, -0.5), C.black, M.Fabric)
 	b:box(V(0.9, 1.1, 0.2), V(0.6, 1.4, -0.1), C.black, M.Fabric)
 	local screen = b:box(V(1.4, 0.8, 0.08), V(0.6, 1.65, -2.05), C.black, M.SmoothPlastic, { collide = false })
-	b:label(screen, Enum.NormalId.Back, "📈 БИРЖА", { color = C.green, background = C.black })
+	b:label(screen, Enum.NormalId.Back, "📈 MARKET", { color = C.green, background = C.black })
 	b:cyl(1.3, 0.6, V(-2.6, 0.65, -2.2), C.white, M.SmoothPlastic)
 	b:cyl(0.7, 0.55, V(-2.6, 1.65, -2.2), Color3.fromRGB(120, 190, 255), M.Glass, { transparency = 0.3 })
 	b:box(V(1, 2.4, 0.7), V(2.6, 1.35, -2.3), C.metal, M.Metal)
-	openMenu(sign, "Staff", "Нанять персонал", "Офис менеджера")
+	openMenu(sign, "Staff", "Hire Staff", "Manager's Office")
 end
 
 function Models.DroneStation(b: Builder)
@@ -6085,8 +6453,8 @@ function Models.DroneStation(b: Builder)
 		b:tag(ring, "Pulse", { Speed = 1 + i * 0.5 })
 	end
 	local sign = b:box(V(3.2, 0.7, 0.1), V(-1.6, 3.2, 1.2), C.white, M.SmoothPlastic, { collide = false })
-	b:label(sign, Enum.NormalId.Back, "ДРОНЫ", { color = C.blue })
-	openMenu(sign, "Staff", "Нанять дронов", "Станция дронов")
+	b:label(sign, Enum.NormalId.Back, "DRONES", { color = C.blue })
+	openMenu(sign, "Staff", "Hire Drones", "Drone Station")
 end
 
 function Models.AiSorter(b: Builder)
@@ -6104,7 +6472,7 @@ function Models.AiSorter(b: Builder)
 		b:box(V(1.2, 1, 1.2), V(-2 + i * 1.3, 0.8, 1.3), color, M.SmoothPlastic)
 	end
 	local label = b:box(V(2.2, 0.5, 0.05), V(0, 1.6, 0.41), C.black, M.SmoothPlastic, { collide = false })
-	b:label(label, Enum.NormalId.Back, "ИИ-ОТК", { color = C.cyan })
+	b:label(label, Enum.NormalId.Back, "AI QC", { color = C.cyan })
 end
 
 function Models.CoolingTower(b: Builder)
@@ -6147,7 +6515,7 @@ return Models
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="37">
+          <Item class="ModuleScript" referent="40">
             <Properties>
               <string name="Name">Factory</string>
               <string name="Source"><![CDATA[-- Модели сектора 2: фабричный корпус и автономные модули-множители
@@ -6263,7 +6631,7 @@ function Models.FactoryHall(b: Builder)
 	end
 	-- вывеска
 	local s = b:box(V(12, 1.4, 0.3), V(0, H - 1.1, hd + 0.4), C.blue, M.SmoothPlastic, { collide = false })
-	b:label(s, Enum.NormalId.Back, "ЗАВОД ПЕРЕРАБОТКИ", { color = C.white })
+	b:label(s, Enum.NormalId.Back, "PROCESSING PLANT", { color = C.white })
 	-- декор: ящики чипсов и мешки (ГДД 183–184)
 	for i = 0, 2 do
 		local box = b:box(V(1.2, 0.9, 0.9), V(hw - 1.4, 0.55 + i * 0.9, -hd + 3.2), C.yellow, M.Cardboard)
@@ -6285,7 +6653,7 @@ function Models.Washer(b: Builder)
 	local spray = b:box(V(4, 0.2, 0.2), V(-0.3, 5.3, -0.2), C.metal, M.Metal, { collide = false })
 	local p = particles(spray, Color3.fromRGB(150, 210, 255), 25, 4, 0.3)
 	p.EmissionDirection = Enum.NormalId.Bottom
-	sign(b, "МОЙКА x1.5", C.cyan, V(-0.8, 2.6, 1.76))
+	sign(b, "WASHER x1.5", C.cyan, V(-0.8, 2.6, 1.76))
 end
 
 function Models.Peeler(b: Builder)
@@ -6296,7 +6664,7 @@ function Models.Peeler(b: Builder)
 	steam(valve, 0.2)
 	local gauge = b:cylZ(0.15, 0.8, V(0.8, 4.2, 1.0), C.white, M.SmoothPlastic, { collide = false })
 	local _ = gauge
-	sign(b, "ПИЛЕР +0.5", C.orange, V(-0.8, 2.6, 1.76))
+	sign(b, "PEELER +0.5", C.orange, V(-0.8, 2.6, 1.76))
 end
 
 function Models.Slicer(b: Builder)
@@ -6319,7 +6687,7 @@ function Models.Slicer(b: Builder)
 			{ collide = false }
 		)
 	end
-	sign(b, "ЧИПСЫ x2.5", C.yellow, V(-0.8, 2.6, 1.76))
+	sign(b, "CHIPS x2.5", C.yellow, V(-0.8, 2.6, 1.76))
 	b.model:SetAttribute("Sound", "Blade")
 end
 
@@ -6338,7 +6706,7 @@ function Models.Fryer(b: Builder)
 	local chimney = b:cyl(1.6, 0.6, V(0, 6, -1.2), C.metal, M.Metal)
 	steam(chimney, 0.18)
 	local _ = hood
-	sign(b, "ФРИТЮР x4", C.orange, V(-0.8, 2.6, 1.76))
+	sign(b, "FRYER x4", C.orange, V(-0.8, 2.6, 1.76))
 	b.model:SetAttribute("Sound", "Sizzle")
 end
 
@@ -6352,7 +6720,7 @@ function Models.SpiceDrum(b: Builder)
 	local hopper =
 		b:wedge(V(1.2, 1.4, 1.2), V(-1.6, 5.9, -0.2), C.red, M.Metal, { rot = V(180, 0, 0), collide = false })
 	particles(hopper, Color3.fromRGB(230, 120, 40), 10, 2, 0.15)
-	sign(b, "СПЕЦИИ x6", C.yellow, V(-0.8, 2.6, 1.76))
+	sign(b, "SPICES x6", C.yellow, V(-0.8, 2.6, 1.76))
 end
 
 function Models.PureeVat(b: Builder)
@@ -6364,7 +6732,7 @@ function Models.PureeVat(b: Builder)
 	mixer:box(V(2.6, 0.15, 0.3), V(-0.4, 4.8, -0.3), C.metal, M.Metal, { collide = false })
 	b:tag(mixer:groupModel(), "Spin", { Axis = "Y", Speed = 70 })
 	b:box(V(0.6, 1.2, 0.6), V(-0.4, 6.6, -0.3), C.blue, M.Metal, { collide = false })
-	sign(b, "ПЮРЕ +1", C.yellow, V(-0.8, 2.6, 1.76))
+	sign(b, "PUREE +1", C.yellow, V(-0.8, 2.6, 1.76))
 end
 
 function Models.Packer(b: Builder)
@@ -6381,7 +6749,7 @@ function Models.Packer(b: Builder)
 			{ collide = false }
 		)
 	end
-	sign(b, "УПАКОВКА +0.5", C.blue, V(-0.8, 2.6, 1.76))
+	sign(b, "PACKING +0.5", C.blue, V(-0.8, 2.6, 1.76))
 end
 
 function Models.CryoTunnel(b: Builder)
@@ -6394,7 +6762,7 @@ function Models.CryoTunnel(b: Builder)
 	end
 	local frost = b:box(V(5, 0.2, 0.2), V(0, 2.3, 1.3), C.white, M.Ice, { collide = false })
 	particles(frost, Color3.fromRGB(230, 245, 255), 15, 1, 0.6).Acceleration = V(0, -1, 0)
-	sign(b, "КРИО x10", C.cyan, V(-0.8, 2.6, 1.76))
+	sign(b, "CRYO x10", C.cyan, V(-0.8, 2.6, 1.76))
 end
 
 function Models.Sublimator(b: Builder)
@@ -6405,7 +6773,7 @@ function Models.Sublimator(b: Builder)
 	b:box(V(1.2, 1.2, 1.2), V(-1.8, 5.3, -0.3), C.purple, M.Metal)
 	b:pipe(V(-1.8, 4.7, -0.3), V(-1.8, 4.9, -0.3), 0.3, C.black)
 	b:light(hatch, C.purple, 8, 1)
-	sign(b, "СУБЛИМАЦИЯ x18", C.purple, V(-0.8, 2.6, 1.76))
+	sign(b, "FREEZE-DRY x18", C.purple, V(-0.8, 2.6, 1.76))
 end
 
 function Models.Autoclave(b: Builder)
@@ -6416,7 +6784,7 @@ function Models.Autoclave(b: Builder)
 	local vent = b:cyl(0.8, 0.4, V(-1.2, 5.3, -0.3), C.metal, M.Metal)
 	steam(vent, 0.2)
 	local _ = door
-	sign(b, "АВТОКЛАВ +1.5", C.red, V(-0.8, 2.6, 1.76))
+	sign(b, "AUTOCLAVE +1.5", C.red, V(-0.8, 2.6, 1.76))
 end
 
 function Models.StarchMill(b: Builder)
@@ -6427,7 +6795,7 @@ function Models.StarchMill(b: Builder)
 	b:tag(stones:groupModel(), "Spin", { Axis = "Y", Speed = 50 })
 	b:box(V(1.8, 2.6, 1.8), V(1.6, 3.3, -0.3), C.steel, M.Metal)
 	b:ellipsoid(V(1.6, 0.8, 1.2), V(1.6, 2.4, 1.3), C.white, M.Sand, { collide = false })
-	sign(b, "КРАХМАЛ +2", C.white, V(-0.8, 2.6, 1.76))
+	sign(b, "STARCH +2", C.white, V(-0.8, 2.6, 1.76))
 end
 
 function Models.Bioreactor(b: Builder)
@@ -6455,7 +6823,7 @@ function Models.Bioreactor(b: Builder)
 		b:cyl(0.15, 1.2, V(2.8, y, -1), C.yellow, M.Metal, { collide = false })
 	end
 	b:pipe(V(0, 4.5, -0.6), V(2.8, 6.5, -1), 0.25, C.metal)
-	sign(b, "БИОРЕАКТОР x35", Color3.fromRGB(120, 255, 80), V(-1.3, 1.6, 2.45))
+	sign(b, "BIOREACTOR x35", Color3.fromRGB(120, 255, 80), V(-1.3, 1.6, 2.45))
 end
 
 function Models.Extruder(b: Builder)
@@ -6470,7 +6838,7 @@ function Models.Extruder(b: Builder)
 	for i = 0, 4 do
 		b:cylX(1.6, 0.15, V(2.8, 2.5 + i * 0.15, 0.2 + (i % 2) * 0.2), C.potato, M.SmoothPlastic, { collide = false })
 	end
-	sign(b, "ПАЛОЧКИ +1", C.yellow, V(-0.8, 2.6, 1.76))
+	sign(b, "STICKS +1", C.yellow, V(-0.8, 2.6, 1.76))
 end
 
 function Models.QuantumConverter(b: Builder)
@@ -6499,14 +6867,14 @@ function Models.QuantumConverter(b: Builder)
 	sparks.SparkleColor = C.purple
 	sparks.Parent = core
 	local s = b:box(V(4, 0.7, 0.1), V(0, 1.3, 4.3), C.black, M.SmoothPlastic, { collide = false })
-	b:label(s, Enum.NormalId.Back, "КВАНТ x100", { color = C.purple })
+	b:label(s, Enum.NormalId.Back, "QUANTUM x100", { color = C.purple })
 end
 
 return Models
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="38">
+          <Item class="ModuleScript" referent="41">
             <Properties>
               <string name="Name">Misc</string>
               <string name="Source"><![CDATA[-- Кнопки покупки, вредители, персонал, лопата и объекты центральной площади
@@ -6618,7 +6986,7 @@ function Models.Bug(b: Builder, boss: boolean)
 		local sparks = Instance.new("Sparkles")
 		sparks.SparkleColor = Color3.fromRGB(120, 255, 60)
 		sparks.Parent = hitbox
-		b:billboard(hitbox, "🪲 ЖУК-МУТАНТ", 3.5, Color3.fromRGB(150, 255, 90), 120)
+		b:billboard(hitbox, "🪲 MUTANT BEETLE", 3.5, Color3.fromRGB(150, 255, 90), 120)
 	end
 	return hitbox
 end
@@ -6657,7 +7025,8 @@ function Models.Robot(b: Builder, color: Color3)
 end
 
 function Models.StaffNpc(b: Builder, color: Color3, title: string)
-	local fig = b:figure(V(0, 0, 0), { shirt = color, pants = Color3.fromRGB(50, 55, 65), hat = nil }, 0, 0.85)
+	local fig =
+		b:figure(V(0, 0, 0), { shirt = color, pants = Color3.fromRGB(50, 55, 65), hat = nil, avatar = true }, 0, 0.85)
 	local head = fig:FindFirstChild("Head") :: BasePart
 	b:billboard(head, title, 1.8, Color3.fromRGB(255, 240, 180), 30)
 end
@@ -6665,8 +7034,8 @@ end
 -- Лопата (инструмент этапа 1)
 function Models.Shovel(golden: boolean): Tool
 	local tool = Instance.new("Tool")
-	tool.Name = "Лопата"
-	tool.ToolTip = "Кликни по созревшей грядке"
+	tool.Name = "Shovel"
+	tool.ToolTip = "Click a ripe bed"
 	tool.CanBeDropped = false
 	tool.RequiresHandle = true
 	tool:SetAttribute("Shovel", true)
@@ -6714,6 +7083,7 @@ function Models.FounderStatue(b: Builder)
 	b:cyl(1.2, 9, V(0, 0.6, 0), C.stone, M.Marble)
 	b:cyl(1.6, 6.5, V(0, 2, 0), C.stoneDark, M.Marble)
 	local fig = b:figure(V(0, 2.8, 0), { shirt = C.stone, pants = C.stone, skin = C.stone, hat = C.stone }, 0, 1.8)
+	fig.Name = "Statue" -- у модели из Blender статуя своя, эту фигуру прячем
 	for _, d in ipairs(fig:GetDescendants()) do
 		if d:IsA("BasePart") then
 			d.Material = M.Marble
@@ -6722,12 +7092,7 @@ function Models.FounderStatue(b: Builder)
 	end
 	b:potato(V(3, 8.3, 0.8), 2, C.gold, { collide = false }).Material = M.Foil
 	local plaque = b:box(V(4.2, 0.9, 0.1), V(0, 2, 3.26), C.gold, M.Foil, { collide = false })
-	b:label(
-		plaque,
-		Enum.NormalId.Back,
-		"ОСНОВАТЕЛЬ КАРТОФЕЛЬНОЙ ИМПЕРИИ",
-		{ color = C.black }
-	)
+	b:label(plaque, Enum.NormalId.Back, "FOUNDER OF THE POTATO EMPIRE", { color = C.black })
 end
 
 -- Зал Славы игроков сервера (ГДД 151)
@@ -6749,7 +7114,7 @@ function Models.HallOfFame(b: Builder)
 	title.Font = Enum.Font.GothamBlack
 	title.TextColor3 = C.gold
 	title.TextScaled = true
-	title.Text = "🏆 ЗАЛ СЛАВЫ"
+	title.Text = "🏆 HALL OF FAME"
 	title.Parent = gui
 	local list = Instance.new("TextLabel")
 	list.Name = "List"
@@ -6761,7 +7126,7 @@ function Models.HallOfFame(b: Builder)
 	list.TextScaled = true
 	list.TextXAlignment = Enum.TextXAlignment.Left
 	list.TextYAlignment = Enum.TextYAlignment.Top
-	list.Text = "Пока пусто"
+	list.Text = "No records yet"
 	list.Parent = gui
 	local back = gui:Clone()
 	back.Face = Enum.NormalId.Front
@@ -6777,6 +7142,7 @@ function Models.RebirthGate(b: Builder)
 	b:box(V(9, 1.2, 1.4), V(0, 9.4, 0), C.black, M.Marble)
 	local portal = b:box(V(6.4, 8.4, 0.2), V(0, 4.7, 0), C.purple, M.ForceField, { collide = false })
 	portal.CanQuery = false
+	portal:SetAttribute("KeepVisible", true) -- силовое поле портала остаётся и у модели из Blender
 	local swirl = b:group("Swirl", V(0, 4.7, 0))
 	for i = 0, 5 do
 		swirl:box(
@@ -6842,7 +7208,7 @@ return Models
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="39">
+          <Item class="ModuleScript" referent="42">
             <Properties>
               <string name="Name">Science</string>
               <string name="Source"><![CDATA[-- Модели сектора 4: НИИ квантовой селекции, космодром и Rebirth
@@ -6881,7 +7247,7 @@ function Models.Lab(b: Builder)
 	b:box(V(0.15, 4.2, 8), V(5.9, 2.4, 0), C.glass, M.Glass, { transparency = 0.6 })
 	b:box(V(12.4, 0.4, 8.4), V(0, 4.75, 0), white, M.SmoothPlastic)
 	local sign = b:box(V(5, 0.9, 0.1), V(0, 5.4, 4.2), C.white, M.SmoothPlastic, { collide = false })
-	b:label(sign, Enum.NormalId.Back, "🧬 ЛАБОРАТОРИЯ ДНК", { color = C.blue })
+	b:label(sign, Enum.NormalId.Back, "🧬 DNA LAB", { color = C.blue })
 	-- дверь со сканером отпечатка (ГДД 161)
 	local scanner = b:box(V(0.4, 0.6, 0.1), V(1.6, 1.8, 4.0), C.black, M.SmoothPlastic, { collide = false })
 	b:box(V(0.25, 0.3, 0.05), V(1.6, 1.8, 4.06), C.green, M.Neon, { collide = false })
@@ -6905,9 +7271,9 @@ function Models.Lab(b: Builder)
 	b:tag(beam, "Pulse", { Speed = 6 })
 	-- терминал исследований
 	local terminal = b:box(V(1.6, 1.2, 0.2), V(0, 1.8, 1.4), C.black, M.SmoothPlastic, { rot = V(-20, 0, 0) })
-	b:label(terminal, Enum.NormalId.Back, "СОРТА", { color = C.green, background = C.black })
+	b:label(terminal, Enum.NormalId.Back, "VARIETIES", { color = C.green, background = C.black })
 	b:box(V(0.3, 1.2, 0.3), V(0, 0.75, 1.4), C.metal, M.Metal)
-	Energy.openMenu(terminal, "Research", "Исследования семян", "Терминал")
+	Energy.openMenu(terminal, "Research", "Seed Research", "Terminal")
 end
 
 function Models.Centrifuge(b: Builder)
@@ -7018,7 +7384,7 @@ function Models.GodMonument(b: Builder)
 	idol:ball(0.5, V(0.5, 5.2, 1.0), C.white, M.SmoothPlastic, { collide = false })
 	b:tag(idol:groupModel(), "Bob", { Amplitude = 0.3, Speed = 1 })
 	local plaque = b:box(V(2.4, 0.6, 0.05), V(0, 1.6, 2.53), C.gold, M.Foil, { collide = false })
-	b:label(plaque, Enum.NormalId.Back, "КАРТОФЕЛЬНЫЙ БОГ", { color = C.black })
+	b:label(plaque, Enum.NormalId.Back, "POTATO GOD", { color = C.black })
 	local glow = b:ball(0.2, V(0, 4.6, 0), C.gold, M.Neon, { collide = false, transparency = 1 })
 	b:light(glow, C.gold, 14, 2)
 end
@@ -7112,8 +7478,8 @@ function Models.Shuttle(b: Builder)
 	end
 	stack:groupModel():SetAttribute("Shuttle", true)
 	local plaque = b:box(V(0.1, 0.1, 0.1), V(0, 14.5, 0), white, M.SmoothPlastic, { collide = false, transparency = 1 })
-	b:billboard(plaque, "🚀 Шаттл готов к Rebirth", 2, C.yellow, 80)
-	Energy.openMenu(plaque, "Rebirth", "Запуск Rebirth", "Шаттл")
+	b:billboard(plaque, "🚀 Shuttle ready for Rebirth", 2, C.yellow, 80)
+	Energy.openMenu(plaque, "Rebirth", "Launch Rebirth", "Shuttle")
 	local prompt = plaque:FindFirstChildOfClass("ProximityPrompt")
 	if prompt then
 		prompt.MaxActivationDistance = 22
@@ -7142,11 +7508,11 @@ function Models.StarTerminal(b: Builder)
 	b:box(V(2.6, 0.4, 2.6), V(0, 0.2, 0), C.purple, M.Metal)
 	b:box(V(1.6, 2.4, 1), V(0, 1.6, -0.3), C.gold, M.Foil)
 	local screen = b:box(V(1.4, 1, 0.1), V(0, 2.2, 0.22), C.black, M.SmoothPlastic)
-	b:label(screen, Enum.NormalId.Back, "⭐ ЗВЁЗДЫ", { color = C.yellow, background = C.black })
+	b:label(screen, Enum.NormalId.Back, "⭐ STARS", { color = C.yellow, background = C.black })
 	local star = b:ball(0.7, V(0, 3.4, -0.3), C.yellow, M.Neon, { collide = false })
 	b:tag(star, "Bob", { Amplitude = 0.3, Speed = 2 })
 	b:light(star, C.yellow, 10, 2)
-	Energy.openMenu(screen, "StarTech", "Звёздные технологии", "Терминал звёзд")
+	Energy.openMenu(screen, "StarTech", "Star Tech", "Star Terminal")
 end
 
 return Models
@@ -7154,7 +7520,299 @@ return Models
             </Properties>
           </Item>
         </Item>
-        <Item class="ModuleScript" referent="40">
+        <Item class="ModuleScript" referent="43">
+          <Properties>
+            <string name="Name">Templates</string>
+            <string name="Source"><![CDATA[-- Модели из Blender (art/blender) поверх процедурных построек.
+--
+-- Шаблоны лежат в ServerStorage.Assets (импорт art/export/fbx/*.fbx через 3D Importer, см. docs/ART_PIPELINE.md).
+-- Процедурный строитель по-прежнему создаёт «скелет» постройки: подсказки ProximityPrompt, атрибуты,
+-- коллизии, свет, дым. Если для ключа модели есть шаблон, его детали становятся видимой частью,
+-- а процедурные детали — невидимыми коллизиями. Нет шаблона — остаётся процедурная модель.
+
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ServerStorage = game:GetService("ServerStorage")
+
+local AssetName = require(ReplicatedStorage.Shared.AssetName)
+local ModelText = require(ReplicatedStorage.Shared.Config.ModelText)
+local Palette = require(ReplicatedStorage.Shared.Config.Palette)
+
+local Templates = {}
+
+local ANIM_TAGS = { "Spin", "Slide", "Bob", "Sway", "Pulse" }
+local MARKER = "Origin__Pivot"
+-- группы, которые остаются видимыми (NPC-фигуры до перехода на аватары)
+local KEEP_VISIBLE = { Figure = true }
+
+type Prepared = {
+	parts: { { part: BasePart, info: AssetName.Parsed, rel: CFrame } },
+	scale: number,
+}
+
+local cache: { [string]: Prepared | false } = {}
+
+local function findTemplate(key: string): Model?
+	local folder = ServerStorage:FindFirstChild("Assets")
+	if not folder then
+		return nil
+	end
+	for _, d in ipairs(folder:GetDescendants()) do
+		if d:IsA("Model") and d.Name == key and d:FindFirstChild(MARKER, true) then
+			return d
+		end
+	end
+	return nil
+end
+
+-- Разбирает шаблон один раз: относительные CFrame деталей от маркера начала координат и масштаб импорта
+local function prepare(key: string): Prepared?
+	local cached = cache[key]
+	if cached ~= nil then
+		return cached or nil
+	end
+	local template = findTemplate(key)
+	if not template then
+		cache[key] = false
+		return nil
+	end
+	local marker = template:FindFirstChild(MARKER, true) :: BasePart
+	-- маркер — куб 1x1x1: по нему видно, в каких единицах импортирован файл
+	local scale = 1 / math.max(marker.Size.X, 1e-3)
+	local root = marker.CFrame
+	local prepared: Prepared = { parts = {}, scale = scale }
+	for _, d in ipairs(template:GetDescendants()) do
+		if d:IsA("BasePart") and d.Name ~= MARKER then
+			local info = AssetName.parse(d.Name)
+			if info then
+				table.insert(prepared.parts, { part = d, info = info, rel = root:ToObjectSpace(d.CFrame) })
+			end
+		end
+	end
+	cache[key] = prepared
+	return prepared
+end
+
+function Templates.has(key: string): boolean
+	return prepare(key) ~= nil
+end
+
+local function insideKept(inst: Instance, model: Model): boolean
+	local node = inst.Parent
+	while node and node ~= model do
+		if KEEP_VISIBLE[node.Name] then
+			return true
+		end
+		node = node.Parent
+	end
+	return false
+end
+
+-- SurfaceGui с собственным именем — живой текст (табло выработки): такая деталь остаётся как есть
+local function hasLiveGui(part: BasePart): boolean
+	for _, c in ipairs(part:GetChildren()) do
+		if c:IsA("SurfaceGui") and c.Name ~= "Label" then
+			return true
+		end
+	end
+	return false
+end
+
+-- Процедурные детали: декоративные удаляются, носители подсказок/эффектов/хитбоксы становятся невидимыми.
+-- Коллизии дают детали шаблона (корпус), поэтому невидимые стены не мешают игроку.
+local function hideProcedural(model: Model)
+	for _, d in ipairs(model:GetDescendants()) do
+		if not d.Parent or insideKept(d, model) or d:GetAttribute("KeepVisible") then
+			continue
+		end
+		for _, tag in ipairs(ANIM_TAGS) do
+			if d:HasTag(tag) then
+				d:RemoveTag(tag)
+			end
+		end
+		if d:IsA("BasePart") then
+			if hasLiveGui(d) then
+				continue
+			end
+			local invisible = d.Transparency >= 1
+			local functional = #d:GetChildren() > 0 or invisible or d == model.PrimaryPart
+			if not functional then
+				d:Destroy()
+			elseif not invisible then
+				d.Transparency = 1
+				d.CastShadow = false
+				d.CanCollide = false
+			end
+		elseif d:IsA("SurfaceGui") and d.Name == "Label" then
+			d.Enabled = false
+		elseif d:IsA("Decal") then
+			d.Transparency = 1
+		end
+	end
+end
+
+-- Детали, которые двигаются или растут, не сталкиваются с игроком
+local NO_COLLIDE_GROUPS = { Bush = true, Tubers = true, Flames = true }
+
+local function collides(info: AssetName.Parsed): boolean
+	if info.anim or info.pivot then
+		return false
+	end
+	for _, name in ipairs(info.path) do
+		if NO_COLLIDE_GROUPS[name] then
+			return false
+		end
+	end
+	return true
+end
+
+-- Находит или создаёт вложенную группу (процедурные Bush/Tubers/Stack переиспользуются)
+local function group(parent: Instance, name: string, origin: CFrame): Model
+	local existing = parent:FindFirstChild(name)
+	if existing and existing:IsA("Model") then
+		return existing
+	end
+	local m = Instance.new("Model")
+	m.Name = name
+	m.WorldPivot = origin
+	m.Parent = parent
+	return m
+end
+
+local function applyAnimation(inst: Instance, anim: string, phaseOffset: number, scale: number)
+	local tag, attrs = AssetName.animation(anim)
+	if not tag or inst:HasTag(tag) then
+		return
+	end
+	if (tag == "Bob" or tag == "Slide") and attrs.Amplitude then
+		attrs.Amplitude *= scale -- ход в стадах растёт вместе с моделью
+	end
+	if attrs.Phase then
+		-- общий сдвиг на модель: лапы одного жука согласованы, а разные жуки — нет
+		attrs.Phase += phaseOffset
+	end
+	for k, v in pairs(attrs) do
+		inst:SetAttribute(k, v)
+	end
+	inst:AddTag(tag)
+end
+
+-- Надпись на модели: текст Roblox на грани плоской метки. Исходный текст английский;
+-- TextLabel.AutoLocalize (включён по умолчанию) отдаёт его автопереводу Roblox.
+local function addLabel(part: BasePart, label: ModelText.Label, color: Color3, neon: boolean)
+	part.Transparency = 1
+	part.CastShadow = false
+	local gui = Instance.new("SurfaceGui")
+	gui.Name = "ModelText"
+	gui.Face = (Enum.NormalId :: any)[label.face] or Enum.NormalId.Back
+	gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+	gui.PixelsPerStud = 60
+	gui.LightInfluence = if neon then 0 else 1
+	gui.Brightness = if neon then 2 else 1
+	local text = Instance.new("TextLabel")
+	text.Name = "Text"
+	text.Size = UDim2.fromScale(1, 1)
+	text.BackgroundTransparency = 1
+	text.Font = Enum.Font.GothamBlack
+	text.TextScaled = true
+	text.TextColor3 = color
+	text.Text = label.text
+	text.Parent = gui
+	gui.Parent = part
+end
+
+export type DressOptions = {
+	scale: number?, -- например, жук-босс в 3 раза больше
+	tint: { [string]: Color3 }?, -- перекраска ключа палитры (цвет дрона по сотруднику)
+}
+
+-- Ставит детали шаблона в модель. origin — CFrame пятна постройки (как у процедурного строителя).
+function Templates.dress(model: Model, key: string, origin: CFrame, opts: DressOptions?): boolean
+	local prepared = prepare(key)
+	if not prepared then
+		return false
+	end
+	local o: DressOptions = opts or {}
+	hideProcedural(model)
+	local userScale = o.scale or 1
+	-- позиции деталей — в единицах импорта (масштаб по маркеру); точки вращения в именах — уже в стадах
+	local s = prepared.scale * userScale
+	local animated: { [Instance]: boolean } = {}
+	local phaseOffset = math.random()
+	for _, rec in ipairs(prepared.parts) do
+		local info = rec.info
+		local part = rec.part:Clone()
+		for _, child in ipairs(part:GetChildren()) do
+			if child:IsA("SurfaceAppearance") or child:IsA("Decal") or child:IsA("Texture") then
+				child:Destroy()
+			end
+		end
+		local spec = Palette[info.key]
+		if spec then
+			part.Color = spec.color
+			part.Material = spec.material
+			part.Transparency = spec.transparency or 0
+		end
+		local tint = o.tint and o.tint[info.key]
+		if tint then
+			part.Color = tint
+		end
+		if s ~= 1 then
+			part.Size *= s
+		end
+		part.CFrame = origin * (CFrame.new(rec.rel.Position * s) * rec.rel.Rotation)
+		part.Anchored = true
+		part.CanCollide = collides(info)
+		part.CanQuery = part.CanCollide
+		part.CanTouch = false
+		part.CastShadow = part.Size.Magnitude > 0.6
+		part.Locked = true
+		-- путь групп; у анимируемой группы (#x,y,z) точка вращения совпадает с пустышкой из Blender
+		local container: Instance = model
+		for i, name in ipairs(info.path) do
+			local isScope = i == #info.path and info.pivot ~= nil
+			local pivot = if isScope then origin * CFrame.new((info.pivot :: Vector3) * userScale) else origin
+			container = group(container, name, pivot)
+			if isScope and info.anim and not animated[container] then
+				-- группа могла появиться раньше как промежуточная (дети обработаны первыми)
+				animated[container] = true
+				local m = container :: Model
+				m.WorldPivot = pivot
+				applyAnimation(m, info.anim, phaseOffset, userScale)
+			end
+		end
+		if info.anim and not info.pivot then
+			applyAnimation(part, info.anim, phaseOffset, userScale)
+		end
+		local labels = ModelText[key]
+		local label = info.label and labels and labels[info.label]
+		if label then
+			addLabel(part, label, part.Color, part.Material == Enum.Material.Neon)
+			part.CanCollide = false
+			part.CanQuery = false
+		elseif info.label then
+			part.Transparency = 1 -- метка без текста (устаревший экспорт)
+		end
+		if table.find(info.path, "Flames") then
+			-- пламя шаттла видно только во время старта (Effects.launch)
+			part.Transparency = 1
+			part:SetAttribute("LaunchOnly", true)
+		end
+		part.Parent = container
+	end
+	model:SetAttribute("Template", key)
+	return true
+end
+
+-- Для тестов: сбросить кэш (после добавления шаблонов в ServerStorage.Assets)
+function Templates.reset()
+	table.clear(cache)
+end
+
+return Templates
+]]></string>
+          </Properties>
+        </Item>
+        <Item class="ModuleScript" referent="44">
           <Properties>
             <string name="Name">WorldBuilder</string>
             <string name="Source"><![CDATA[-- Генерация мира: центральная площадь, дорожки и 6 баз игроков 80x80 по кругу.
@@ -7165,6 +7823,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Config = require(ReplicatedStorage.Shared.Config)
 local Kit = require(script.Parent.ModelKit)
 local Misc = require(script.Parent.Models.Misc)
+local Templates = require(script.Parent.Templates)
 
 local V = Vector3.new
 local C = Kit.C
@@ -7190,28 +7849,28 @@ World.plots = {} :: { PlotInfo }
 
 local SECTORS = {
 	{
-		name = "СЕКТОР 1: АГРО-БЛОК",
+		name = "SECTOR 1: FARM BLOCK",
 		z0 = 14,
 		z1 = 40,
 		color = Color3.fromRGB(105, 165, 75),
 		material = M.Grass,
 	},
 	{
-		name = "СЕКТОР 3: ЭНЕРГЕТИКА И ДРОН-СЕРВИС",
+		name = "SECTOR 3: ENERGY & DRONE SERVICE",
 		z0 = -2,
 		z1 = 14,
 		color = Color3.fromRGB(80, 82, 88),
 		material = M.Asphalt,
 	},
 	{
-		name = "СЕКТОР 2: ЗАВОД ПЕРЕРАБОТКИ",
+		name = "SECTOR 2: PROCESSING PLANT",
 		z0 = -22,
 		z1 = -2,
 		color = Color3.fromRGB(165, 165, 160),
 		material = M.Concrete,
 	},
 	{
-		name = "СЕКТОР 4: НАУКА, КОСМОДРОМ И REBIRTH",
+		name = "SECTOR 4: SCIENCE, SPACEPORT & REBIRTH",
 		z0 = -40,
 		z1 = -22,
 		color = Color3.fromRGB(215, 222, 235),
@@ -7282,7 +7941,7 @@ local function buildPlotBase(index: number, cf: CFrame): PlotInfo
 	-- табличка владельца у входа
 	b:box(V(0.4, 4, 0.4), V(-7, 2.2, 41.5), C.woodDark, M.Wood)
 	local board = b:box(V(7, 2.2, 0.3), V(-7, 4.6, 41.5), C.woodLight, M.WoodPlanks, { name = "OwnerSign" })
-	local sign = b:label(board, Enum.NormalId.Back, "Свободная база", { color = C.woodDark })
+	local sign = b:label(board, Enum.NormalId.Back, "Free Base", { color = C.woodDark })
 	local base = b.model
 	base.Parent = folder
 
@@ -7310,6 +7969,7 @@ end
 local function hubObject(builderName: string, parent: Instance, cf: CFrame, ...)
 	local b = Kit.new(builderName, cf)
 	Misc[builderName](b, ...)
+	Templates.dress(b.model, builderName, cf)
 	return b:finish(parent)
 end
 
@@ -7318,6 +7978,7 @@ local function tree(parent: Instance, pos: Vector3, scale: number)
 	b:cyl(5 * scale, 1.2 * scale, V(0, 2.5 * scale, 0), C.woodDark, M.Wood)
 	b:ellipsoid(V(7, 6, 7) * scale, V(0, 6.5 * scale, 0), C.leafDark, M.Grass)
 	b:ellipsoid(V(5, 4.5, 5) * scale, V(0.8 * scale, 9 * scale, 0.5 * scale), C.leaf, M.Grass)
+	Templates.dress(b.model, "Tree", CFrame.new(pos), { scale = scale * 1.3 })
 	b:finish(parent)
 end
 
@@ -7406,29 +8067,29 @@ return World
       </Item>
     </Item>
   </Item>
-  <Item class="SoundService" referent="41">
+  <Item class="SoundService" referent="45">
     <Properties>
       <string name="Name">SoundService</string>
     </Properties>
   </Item>
-  <Item class="StarterPlayer" referent="42">
+  <Item class="StarterPlayer" referent="46">
     <Properties>
       <string name="Name">StarterPlayer</string>
       <float name="CharacterWalkSpeed">20</float>
     </Properties>
-    <Item class="StarterPlayerScripts" referent="43">
+    <Item class="StarterPlayerScripts" referent="47">
       <Properties>
         <string name="Name">StarterPlayerScripts</string>
       </Properties>
-      <Item class="Folder" referent="44">
+      <Item class="Folder" referent="48">
         <Properties>
           <string name="Name">Client</string>
         </Properties>
-        <Item class="Folder" referent="45">
+        <Item class="Folder" referent="49">
           <Properties>
             <string name="Name">Controllers</string>
           </Properties>
-          <Item class="ModuleScript" referent="46">
+          <Item class="ModuleScript" referent="50">
             <Properties>
               <string name="Name">Animator</string>
               <string name="Source"><![CDATA[-- Локальные анимации объектов по тегам CollectionService (сервер их только помечает):
@@ -7574,18 +8235,21 @@ local function step()
 		end
 		local speed = inst:GetAttribute("Speed") or 1
 		local tag = e.tag
+		-- Phase (доля цикла) согласует детали одной модели, например лапы жука; иначе фаза случайная
+		local phase = inst:GetAttribute("Phase")
+		local offset = if tag ~= "Hover" and phase then phase * math.pi * 2 else e.seed
 		local cf: CFrame? = nil
 		if tag == "Spin" then
 			local angle = math.rad(t * speed + e.seed * 10)
 			cf = base * axisRotation(inst:GetAttribute("Axis"), angle)
 		elseif tag == "Slide" then
-			local offset = math.sin(t * speed * 2 + e.seed) * (inst:GetAttribute("Amplitude") or 1)
-			cf = base * CFrame.new(axisVector(inst:GetAttribute("Axis")) * offset)
+			local shift = math.sin(t * speed * 2 + offset) * (inst:GetAttribute("Amplitude") or 1)
+			cf = base * CFrame.new(axisVector(inst:GetAttribute("Axis")) * shift)
 		elseif tag == "Bob" then
-			local offset = math.sin(t * speed * 2 + e.seed) * (inst:GetAttribute("Amplitude") or 0.3)
-			cf = base * CFrame.new(0, offset, 0)
+			local shift = math.sin(t * speed * 2 + offset) * (inst:GetAttribute("Amplitude") or 0.3)
+			cf = base * CFrame.new(0, shift, 0)
 		elseif tag == "Sway" then
-			local angle = math.rad(math.sin(t * speed + e.seed) * (inst:GetAttribute("Amplitude") or 10))
+			local angle = math.rad(math.sin(t * speed + offset) * (inst:GetAttribute("Amplitude") or 10))
 			cf = base * axisRotation(inst:GetAttribute("Axis"), angle)
 		elseif tag == "Pulse" then
 			if inst:IsA("BasePart") then
@@ -7594,9 +8258,9 @@ local function step()
 			end
 		elseif tag == "Hover" then
 			local r = inst:GetAttribute("Radius") or 3
-			local phase = inst:GetAttribute("Phase") or 0
-			local a = t * speed + phase
-			local pos = Vector3.new(math.cos(a) * r, math.sin(t * 2 + phase) * 0.4, math.sin(a) * r)
+			local hoverPhase = phase or 0
+			local a = t * speed + hoverPhase
+			local pos = Vector3.new(math.cos(a) * r, math.sin(t * 2 + hoverPhase) * 0.4, math.sin(a) * r)
 			local facing = math.atan2(-math.cos(a), math.sin(a))
 			cf = base * CFrame.new(pos) * CFrame.Angles(0, facing, math.sin(t * 3) * 0.08)
 		elseif tag == "Roam" then
@@ -7643,7 +8307,7 @@ return Animator
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="47">
+          <Item class="ModuleScript" referent="51">
             <Properties>
               <string name="Name">Beds</string>
               <string name="Source"><![CDATA[-- Рост кустов на ручных грядках (Этап 1): сервер присылает время созревания, клиент анимирует
@@ -7652,9 +8316,19 @@ local RunService = game:GetService("RunService")
 
 local Beds = {}
 
+type PartRec = {
+	part: BasePart,
+	size: Vector3,
+	cframe: CFrame,
+	bottom: number,
+	-- куст из Blender: деталь растёт от основания своего куста (группа Plant с покачиванием)
+	scope: Model?,
+	rel: CFrame?,
+}
+
 type BedInfo = {
 	model: Model,
-	parts: { { part: BasePart, size: Vector3, cframe: CFrame, bottom: number } },
+	parts: { PartRec },
 	tubers: { BasePart },
 	last: number,
 }
@@ -7679,11 +8353,14 @@ local function track(model: Model)
 	local info: BedInfo = { model = model, parts = {}, tubers = {}, last = -1 }
 	for _, p in ipairs(bush:GetDescendants()) do
 		if p:IsA("BasePart") then
+			local scope = if p.Parent ~= bush and p.Parent and p.Parent:IsA("Model") then p.Parent :: Model else nil
 			table.insert(info.parts, {
 				part = p,
 				size = p.Size,
 				cframe = p.CFrame,
 				bottom = p.CFrame.Position.Y - halfHeight(p.CFrame, p.Size),
+				scope = scope,
+				rel = if scope then scope:GetPivot():ToObjectSpace(p.CFrame) else nil,
 			})
 		end
 	end
@@ -7729,9 +8406,14 @@ local function update()
 			for _, rec in ipairs(info.parts) do
 				local size = rec.size * k
 				rec.part.Size = size
-				local pos = rec.cframe.Position
-				local half = halfHeight(rec.cframe, size)
-				rec.part.CFrame = rec.cframe - pos + Vector3.new(pos.X, rec.bottom + half, pos.Z)
+				if rec.scope and rec.rel then
+					-- относительно текущей точки группы: не сбивает покачивание от Animator
+					rec.part.CFrame = rec.scope:GetPivot() * (CFrame.new(rec.rel.Position * k) * rec.rel.Rotation)
+				else
+					local pos = rec.cframe.Position
+					local half = halfHeight(rec.cframe, size)
+					rec.part.CFrame = rec.cframe - pos + Vector3.new(pos.X, rec.bottom + half, pos.Z)
+				end
 			end
 			local ripe = f >= 0.97 and not auto
 			for _, t in ipairs(info.tubers) do
@@ -7771,7 +8453,7 @@ return Beds
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="48">
+          <Item class="ModuleScript" referent="52">
             <Properties>
               <string name="Name">Click</string>
               <string name="Source"><![CDATA[-- Клики по миру: копка грядок лопатой и ловля жуков
@@ -7865,7 +8547,7 @@ return Click
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="49">
+          <Item class="ModuleScript" referent="53">
             <Properties>
               <string name="Name">Effects</string>
               <string name="Source"><![CDATA[-- Визуальные эффекты (ГДД, ассеты 205–210): всплывающие «+$», золотое сияние, искры перегрузки,
@@ -8092,6 +8774,8 @@ local function launch(plotIndex: number)
 	for _, d in ipairs(stack:GetDescendants()) do
 		if d:IsA("Fire") or d:IsA("Smoke") then
 			d.Enabled = true
+		elseif d:IsA("BasePart") and d:GetAttribute("LaunchOnly") then
+			d.Transparency = 0 -- пламя модели из Blender
 		end
 	end
 	if plot:GetAttribute("OwnerUserId") == player.UserId then
@@ -8146,7 +8830,7 @@ function Effects.handle(data)
 		Sound.play("Golden")
 	elseif kind == "Confetti" then
 		Effects.confetti(data.big)
-		Sound.play("Cash")
+		Sound.play("Fanfare")
 	elseif kind == "Launch" then
 		launch(data.plotIndex)
 	elseif kind == "Squash" then
@@ -8158,8 +8842,9 @@ function Effects.handle(data)
 	elseif kind == "Stage" then
 		local stage = Config.Game.Stages[data.stage]
 		if stage then
-			Effects.banner("ЭТАП " .. data.stage, stage.name)
+			Effects.banner("STAGE " .. data.stage, stage.name)
 			Effects.confetti(false)
+			Sound.play("Fanfare")
 		end
 	elseif kind == "Sound" then
 		Sound.play(data.sound)
@@ -8174,71 +8859,220 @@ return Effects
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="50">
+          <Item class="ModuleScript" referent="54">
             <Properties>
               <string name="Name">Sound</string>
-              <string name="Source"><![CDATA[-- Воспроизведение звуков по ключу из Config.Sounds
+              <string name="Source"><![CDATA[-- Воспроизведение звуков по ключу из Config.Sounds: короткие эффекты, 3D-петли цехов и фоновая музыка.
+-- Звуки разведены по группам (Effects, Ambient, Music), чтобы громкость каждой можно было менять целиком.
 
+local ContentProvider = game:GetService("ContentProvider")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local SoundService = game:GetService("SoundService")
+local TweenService = game:GetService("TweenService")
 
 local Config = require(ReplicatedStorage.Shared.Config)
 
 local Sound = {}
 
-local cache: { [string]: Sound } = {}
+local MAX_VOICES = 4 -- одновременных копий одного эффекта (частые «Cash» не складываются в шум)
+local FADE = 0.25 -- затухание в конце обрезанного фрагмента, с
 
-local function get(key: string): Sound?
-	local def = Config.Sounds[key]
-	if not def or def.id == "" then
-		return nil
+local groups: { [string]: SoundGroup } = {}
+local voices: { [string]: number } = {}
+
+local function group(name: string): SoundGroup
+	local g = groups[name]
+	if not g then
+		g = Instance.new("SoundGroup")
+		g.Name = name
+		g.Volume = 1
+		g.Parent = SoundService
+		groups[name] = g
 	end
-	local s = cache[key]
-	if not s then
-		s = Instance.new("Sound")
-		s.Name = "Sfx_" .. key
-		s.SoundId = def.id
-		s.Volume = def.volume
-		s.Parent = SoundService
-		cache[key] = s
-	end
-	return s
+	return g
 end
 
-function Sound.play(key: string, pitchJitter: number?)
-	local s = get(key)
-	if not s then
-		return
+-- Дубли звука: основной и variants. Вариант — id-строка или таблица { id, start?, length?, volume? },
+-- недостающие поля берутся из основной записи
+local function takes(def): { any }
+	local list = { def }
+	for _, v in ipairs(def.variants or {}) do
+		local take = if type(v) == "string" then { id = v } else v
+		table.insert(list, {
+			id = take.id,
+			volume = take.volume or def.volume,
+			pitch = def.pitch,
+			start = take.start or def.start,
+			length = take.length or def.length,
+		})
 	end
-	local def = Config.Sounds[key]
-	s.PlaybackSpeed = def.pitch * (1 + (math.random() - 0.5) * (pitchJitter or 0))
-	SoundService:PlayLocalSound(s)
+	return list
 end
 
--- Зацикленный 3D-звук на объекте (жарка, слайсер, гул трансформатора)
-function Sound.attachLoop(key: string, part: BasePart): Sound?
-	local def = Config.Sounds[key]
-	if not def or def.id == "" then
-		return nil
+-- Фрагмент файла: start — пропустить тишину в начале, length — сколько секунд играть (0 — до конца)
+local function region(s: Sound, def)
+	local start, length = def.start or 0, def.length or 0
+	if start > 0 or length > 0 then
+		s.PlaybackRegionsEnabled = true
+		local stop = if length > 0 then start + length else 3600
+		s.PlaybackRegion = NumberRange.new(start, stop)
+		s.LoopRegion = NumberRange.new(start, stop)
 	end
+end
+
+local function make(key: string, def, groupName: string): Sound
 	local s = Instance.new("Sound")
-	s.Name = "Loop_" .. key
+	s.Name = key
 	s.SoundId = def.id
 	s.Volume = def.volume
-	s.PlaybackSpeed = def.pitch
+	s.PlaybackSpeed = def.pitch or 1
+	s.SoundGroup = group(groupName)
+	region(s, def)
+	return s
+end
+
+-- Короткий звук для этого игрока. pitchJitter — случайный разброс высоты (0.2 = ±10 %)
+function Sound.play(key: string, pitchJitter: number?)
+	local def = Config.Sounds[key]
+	if not def or def.id == "" or (voices[key] or 0) >= MAX_VOICES then
+		return
+	end
+	local list = takes(def)
+	local take = list[math.random(1, #list)]
+	local s = make(key, take, "Effects")
+	local speed = (def.pitch or 1) * (1 + (math.random() - 0.5) * (pitchJitter or 0))
+	s.PlaybackSpeed = speed
+	s.Parent = SoundService
+	voices[key] = (voices[key] or 0) + 1
+	local done = false
+	local function finish()
+		if not done then
+			done = true
+			voices[key] = (voices[key] or 1) - 1
+			s:Destroy()
+		end
+	end
+	s.Ended:Connect(finish)
+	local length = take.length or 0
+	if length > 0 then
+		local playTime = length / speed
+		task.delay(math.max(0, playTime - FADE), function()
+			if s.Parent then
+				TweenService:Create(s, TweenInfo.new(FADE), { Volume = 0 }):Play()
+			end
+		end)
+		task.delay(playTime + 0.05, finish)
+	else
+		task.delay(20, finish) -- страховка, если Ended не придёт
+	end
+	s:Play()
+end
+
+-- Зацикленный 3D-звук на объекте (жарка, слайсер, гул подстанции, двигатель, спринклер)
+function Sound.attachLoop(key: string, parent: Instance): Sound?
+	local def = Config.Sounds[key]
+	if not def or def.id == "" then
+		return nil
+	end
+	local s = make("Loop_" .. key, def, "Ambient")
 	s.Looped = true
-	s.RollOffMaxDistance = 45
+	s.RollOffMode = Enum.RollOffMode.InverseTapered
+	s.RollOffMaxDistance = def.range or 45
 	s.RollOffMinDistance = 6
-	s.Parent = part
+	-- одинаковые петли рядом не должны звучать в унисон: старт со случайного места
+	local start, length = def.start or 0, def.length or 0
+	if length > 0 then
+		s.TimePosition = start + math.random() * length
+	end
+	s.Parent = parent
 	s:Play()
 	return s
+end
+
+------------------------------------------------------------------
+-- Фоновая музыка: ключи Music1, Music2… по кругу в случайном порядке
+------------------------------------------------------------------
+local musicOn = true
+local musicStarted = false
+
+local function playlist(): { string }
+	local keys = {}
+	for key, def in pairs(Config.Sounds) do
+		if string.match(key, "^Music%d+$") and def.id ~= "" then
+			table.insert(keys, key)
+		end
+	end
+	table.sort(keys)
+	for i = #keys, 2, -1 do
+		local j = math.random(1, i)
+		keys[i], keys[j] = keys[j], keys[i]
+	end
+	return keys
+end
+
+function Sound.startMusic()
+	if musicStarted then
+		return
+	end
+	musicStarted = true
+	local keys = playlist()
+	if #keys == 0 then
+		return
+	end
+	task.spawn(function()
+		local i = 0
+		while true do
+			i = i % #keys + 1
+			local key = keys[i]
+			local def = Config.Sounds[key]
+			local s = make(key, def, "Music")
+			s.Name = "Music"
+			s.Parent = SoundService
+			s:Play()
+			-- ждём конца трека; если файл не загрузился за 15 с — следующий
+			local waited = 0
+			repeat
+				task.wait(1)
+				waited += 1
+			until s.IsLoaded and not s.IsPlaying or not s.IsLoaded and waited > 15 or waited > 600
+			s:Destroy()
+			task.wait(3)
+		end
+	end)
+end
+
+function Sound.musicEnabled(): boolean
+	return musicOn
+end
+
+function Sound.setMusic(on: boolean)
+	musicOn = on
+	TweenService:Create(group("Music"), TweenInfo.new(0.6), { Volume = if on then 1 else 0 }):Play()
+end
+
+function Sound.init()
+	-- заранее подгружаем короткие эффекты, чтобы первый клик не был беззвучным
+	local list = {}
+	for key, def in pairs(Config.Sounds) do
+		if not def.loop and not string.match(key, "^Music") then
+			for _, take in ipairs(takes(def)) do
+				if take.id ~= "" then
+					table.insert(list, take.id)
+				end
+			end
+		end
+	end
+	task.spawn(function()
+		ContentProvider:PreloadAsync(list)
+	end)
+	Sound.startMusic()
 end
 
 return Sound
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="51">
+          <Item class="ModuleScript" referent="55">
             <Properties>
               <string name="Name">WorldFx</string>
               <string name="Source"><![CDATA[-- Живой мир базы: цвет кнопок покупки, анимация постройки, «+$» над полями,
@@ -8416,6 +9250,7 @@ local function setOverload(on: boolean)
 		return
 	end
 	Sound.play("Alarm")
+	task.delay(0.4, Sound.play, "Zap")
 	local plot = myPlot()
 	local items = plot and plot:FindFirstChild("Items")
 	if not items then
@@ -8455,7 +9290,12 @@ local function ambient(model: Instance)
 	if key and model:IsA("Model") then
 		local part = model:FindFirstChildWhichIsA("BasePart", true)
 		if part then
-			Sound.attachLoop(key, part)
+			-- источник звука — центр постройки, а не случайная деталь
+			local emitter = Instance.new("Attachment")
+			emitter.Name = "SoundEmitter"
+			emitter.Parent = part
+			emitter.WorldPosition = model:GetPivot().Position + Vector3.new(0, 2, 0)
+			Sound.attachLoop(key, emitter)
 		end
 	end
 end
@@ -8520,7 +9360,7 @@ return WorldFx
             </Properties>
           </Item>
         </Item>
-        <Item class="LocalScript" referent="52">
+        <Item class="LocalScript" referent="56">
           <Properties>
             <string name="Name">Main</string>
             <string name="Source"><![CDATA[-- Potato Tycoon — точка входа клиента: интерфейс, эффекты, управление
@@ -8538,11 +9378,13 @@ local Toasts = require(Client.UI.Toasts)
 local Hud = require(Client.UI.Hud)
 local Windows = require(Client.UI.Windows)
 local Effects = require(Client.Controllers.Effects)
+local Sound = require(Client.Controllers.Sound)
 local Animator = require(Client.Controllers.Animator)
 local Beds = require(Client.Controllers.Beds)
 local Click = require(Client.Controllers.Click)
 local WorldFx = require(Client.Controllers.WorldFx)
 
+Sound.init()
 Effects.init()
 Animator.init()
 Beds.init()
@@ -8584,14 +9426,11 @@ TextChatService.OnIncomingMessage = function(message: TextChatMessage)
 end
 
 Remotes.get("Ready"):FireServer()
-Toasts.show(
-	"🥔 Добро пожаловать в Potato Tycoon! Поговори с Дедом Матвеем у входа на базу.",
-	"tip"
-)
+Toasts.show("🥔 Welcome to Potato Tycoon! Talk to Grandpa Matvey at the entrance to your base.", "tip")
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="53">
+        <Item class="ModuleScript" referent="57">
           <Properties>
             <string name="Name">State</string>
             <string name="Source"><![CDATA[-- Клиентское состояние: данные синхронизации с сервера и атрибуты игрока
@@ -8636,11 +9475,11 @@ return State
 ]]></string>
           </Properties>
         </Item>
-        <Item class="Folder" referent="54">
+        <Item class="Folder" referent="58">
           <Properties>
             <string name="Name">UI</string>
           </Properties>
-          <Item class="ModuleScript" referent="55">
+          <Item class="ModuleScript" referent="59">
             <Properties>
               <string name="Name">Hud</string>
               <string name="Source"><![CDATA[-- Верхний HUD-бар (ГДД 192): баланс, прирост $/сек, энергия, звёзды, этап.
@@ -8656,6 +9495,7 @@ local Format = require(ReplicatedStorage.Shared.Format)
 local Theme = require(script.Parent.Theme)
 local Root = require(script.Parent.Root)
 local State = require(script.Parent.Parent.State)
+local Sound = require(script.Parent.Parent.Controllers.Sound)
 
 local C = Theme.Colors
 local New = Theme.New
@@ -8773,7 +9613,7 @@ function Hud.init()
 		Size = UDim2.new(1, -12, 0, 20),
 		Font = Theme.FontRegular,
 		TextColor3 = C.Muted,
-		Text = "Лопатой кликай по созревшим кустам, сдавай урожай скупщику",
+		Text = "Click ripe bushes with the shovel and sell the harvest to the buyer",
 		Parent = bag,
 	})
 
@@ -8781,7 +9621,7 @@ function Hud.init()
 	local menu = New("Frame", {
 		AnchorPoint = Vector2.new(0, 0.5),
 		Position = UDim2.new(0, 12, 0.5, 0),
-		Size = UDim2.fromOffset(76, 470),
+		Size = UDim2.fromOffset(76, 520),
 		BackgroundTransparency = 1,
 		Parent = Root.gui,
 	}, {
@@ -8792,13 +9632,13 @@ function Hud.init()
 		}),
 	})
 	local MENU = {
-		{ "Research", "🧬", "Сорта" },
-		{ "Staff", "🤖", "Персонал" },
-		{ "StarTech", "⭐", "Звёзды" },
+		{ "Research", "🧬", "Varieties" },
+		{ "Staff", "🤖", "Staff" },
+		{ "StarTech", "⭐", "Stars" },
 		{ "Rebirth", "🚀", "Rebirth" },
-		{ "Shop", "💎", "Магазин" },
-		{ "Stats", "📊", "Доход" },
-		{ "Home", "🏠", "Домой" },
+		{ "Shop", "💎", "Shop" },
+		{ "Stats", "📊", "Income" },
+		{ "Home", "🏠", "Home" },
 	}
 	for i, entry in ipairs(MENU) do
 		local button = Theme.button({
@@ -8826,20 +9666,40 @@ function Hud.init()
 		})
 	end
 
+	-- музыка вкл/выкл
+	local musicButton
+	musicButton = Theme.button({
+		Size = UDim2.fromOffset(76, 44),
+		BackgroundColor3 = C.Panel,
+		BackgroundTransparency = 0.1,
+		LayoutOrder = #MENU + 1,
+		Text = "🎵 Music",
+		TextScaled = false,
+		TextSize = 15,
+		Parent = menu,
+	}, function()
+		local on = not Sound.musicEnabled()
+		Sound.play("Click")
+		Sound.setMusic(on)
+		musicButton.Text = if on then "🎵 Music" else "🔇 Music"
+		musicButton.TextColor3 = if on then Color3.new(1, 1, 1) else C.Muted
+	end)
+	Theme.stroke(C.Stroke, 1.5, 0.8).Parent = musicButton
+
 	local function refresh()
 		local cash = State.num("Cash")
 		cashLabel.Text = "💰 " .. Format.money(cash)
 		local manual = State.attr("Manual") == true
 		if manual then
-			incomeLabel.Text = "🥔 ручной сбор"
+			incomeLabel.Text = "🥔 manual harvest"
 			incomeLabel.TextColor3 = C.Muted
 		else
-			incomeLabel.Text = "+" .. Format.money(State.num("Income")) .. "/с"
+			incomeLabel.Text = "+" .. Format.money(State.num("Income")) .. "/s"
 			incomeLabel.TextColor3 = C.Cash
 		end
 		local gen, use = State.num("EnergyGen"), State.num("EnergyUse")
 		local over = State.attr("Overloaded") == true
-		energyLabel.Text = string.format("⚡ %s/%s кВт", Format.number(use), Format.number(gen))
+		energyLabel.Text = string.format("⚡ %s/%s kW", Format.number(use), Format.number(gen))
 		energyLabel.TextColor3 = if over then C.Danger else C.Energy
 		local stroke = energyFrame:FindFirstChildOfClass("UIStroke")
 		if stroke then
@@ -8847,12 +9707,12 @@ function Hud.init()
 		end
 		starsLabel.Text = "⭐ " .. Format.number(State.num("Stars"))
 		local stage = math.max(1, State.num("Stage"))
-		stageLabel.Text = "Этап " .. stage
+		stageLabel.Text = "Stage " .. stage
 
 		local info = Config.Game.Stages[stage]
 		local text = if info then "🎯 " .. info.goal else ""
 		if over then
-			text = "⚠ ПЕРЕГРУЗКА СЕТИ: доход -50%! Купи генератор ⚡"
+			text = "⚠ GRID OVERLOAD: income -50%! Buy a generator ⚡"
 			goal.TextColor3 = C.Danger
 		else
 			goal.TextColor3 = Color3.fromRGB(255, 240, 200)
@@ -8862,7 +9722,7 @@ function Hud.init()
 		bag.Visible = manual
 		local capacity = math.max(1, State.num("BagCapacity"))
 		local count = State.num("Bag")
-		bagLabel.Text = string.format("🥔 Мешок: %d / %d", count, capacity)
+		bagLabel.Text = string.format("🥔 Sack: %d / %d", count, capacity)
 		bagFill.Size = UDim2.new(math.clamp(count / capacity, 0, 1), -12, 0, 22)
 		bagFill.BackgroundColor3 = if count >= capacity then C.Danger else Color3.fromRGB(190, 140, 70)
 	end
@@ -8889,7 +9749,7 @@ function Hud.init()
 			table.insert(
 				lines,
 				string.format(
-					"🪲 Жуки: %d / %d — %s",
+					"🪲 Beetles: %d / %d — %s",
 					player:GetAttribute("BugsCaught") or 0,
 					Config.Game.Events.Bugs.Goal,
 					Format.time(bugsEnd - now)
@@ -8897,17 +9757,17 @@ function Hud.init()
 			)
 		end
 		if boomEnd > now then
-			table.insert(lines, "📈 БУМ НА БИРЖЕ x3 — " .. Format.time(boomEnd - now))
+			table.insert(lines, "📈 MARKET BOOM x3 — " .. Format.time(boomEnd - now))
 		end
 		eventLine.Text = table.concat(lines, "   ")
 		local nextBugs = (GameState:GetAttribute("NextBugsAt") or 0) - now
 		local nextBoom = (GameState:GetAttribute("NextBoomAt") or 0) - now
 		local parts = {}
 		if nextBugs > 0 and nextBugs < 7200 then
-			table.insert(parts, "🪲 жуки через " .. Format.time(nextBugs))
+			table.insert(parts, "🪲 beetles in " .. Format.time(nextBugs))
 		end
 		if nextBoom > 0 and nextBoom < 7200 then
-			table.insert(parts, "📈 бум через " .. Format.time(nextBoom))
+			table.insert(parts, "📈 boom in " .. Format.time(nextBoom))
 		end
 		timers.Text = table.concat(parts, "  ·  ")
 	end)
@@ -8917,7 +9777,7 @@ return Hud
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="56">
+          <Item class="ModuleScript" referent="60">
             <Properties>
               <string name="Name">Root</string>
               <string name="Source"><![CDATA[-- Корневой ScreenGui с автоматическим масштабом под размер экрана
@@ -8974,7 +9834,7 @@ return Root
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="57">
+          <Item class="ModuleScript" referent="61">
             <Properties>
               <string name="Name">Theme</string>
               <string name="Source"><![CDATA[-- Оформление интерфейса и помощники для создания элементов
@@ -9077,7 +9937,7 @@ return Theme
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="58">
+          <Item class="ModuleScript" referent="62">
             <Properties>
               <string name="Name">Toasts</string>
               <string name="Source"><![CDATA[-- Всплывающие уведомления в правом нижнем углу
@@ -9197,7 +10057,7 @@ return Toasts
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="59">
+          <Item class="ModuleScript" referent="63">
             <Properties>
               <string name="Name">Windows</string>
               <string name="Source"><![CDATA[-- Окна меню: исследования семян (ГДД 193), найм персонала и дронов (194), подтверждение Rebirth (195),
@@ -9366,7 +10226,7 @@ end
 -- Исследования семян
 ------------------------------------------------------------------
 defs.Research = {
-	title = "Исследования семян",
+	title = "Seed Research",
 	icon = "🧬",
 	signature = function()
 		local p = shadowProfile()
@@ -9385,19 +10245,13 @@ defs.Research = {
 			return
 		end
 		local active = Economy.activeVariety(p, Config)
-		header(
-			list,
-			"Сейчас растёт: "
-				.. active.name
-				.. (if p.activeVariety then "" else " (авто: самый выгодный)"),
-			0
-		)
+		header(list, "Now growing: " .. active.name .. (if p.activeVariety then "" else " (auto: most profitable)"), 0)
 		if p.activeVariety then
 			card(list, 1, {
 				icon = "⚙",
-				title = "Автовыбор сорта",
-				subtitle = "Всегда сажать самый доходный из открытых сортов",
-				button = "Включить авто",
+				title = "Auto-Select Variety",
+				subtitle = "Always plant the most profitable unlocked variety",
+				button = "Enable Auto",
 				onClick = function()
 					Remotes.get("SelectVariety"):FireServer(nil)
 				end,
@@ -9407,35 +10261,32 @@ defs.Research = {
 		for i, v in ipairs(Config.Varieties) do
 			local color = Color3.fromRGB(v.color[1], v.color[2], v.color[3])
 			local value = v.price * v.growth / (wild.price * wild.growth)
-			local subtitle = string.format(
-				"Урожайность %s · Доход с поля ×%s к дикому",
-				Format.percent(v.growth),
-				Format.number(value)
-			)
+			local subtitle =
+				string.format("Yield %s · Field income ×%s vs. wild", Format.percent(v.growth), Format.number(value))
 			local opts: any = {
 				icon = "🥔",
 				iconColor = color,
-				title = string.format("%s — $%s/кг", v.name, Format.number(v.price)),
+				title = string.format("%s — $%s/kg", v.name, Format.number(v.price)),
 				subtitle = subtitle,
 			}
 			if p.varieties[v.id] then
 				if active.id == v.id then
-					opts.button = "✓ Растёт"
+					opts.button = "✓ Growing"
 					opts.buttonColor = Color3.fromRGB(150, 110, 20)
 				else
-					opts.button = "Посадить"
+					opts.button = "Plant"
 					opts.buttonColor = C.Energy
 					opts.onClick = function()
 						Remotes.get("SelectVariety"):FireServer(v.id)
 					end
 				end
 			elseif v.requires and not p.owned[v.requires] then
-				opts.subtitle = subtitle .. "\n🔒 Нужно построить: " .. itemName(v.requires)
-				opts.button = "🔒 Закрыто"
+				opts.subtitle = subtitle .. "\n🔒 Requires: " .. itemName(v.requires)
+				opts.button = "🔒 Locked"
 				opts.buttonColor = Color3.fromRGB(120, 50, 50)
 			else
 				local cost = Economy.varietyCost(v, p, Config)
-				opts.button = "Исследовать " .. Format.money(cost)
+				opts.button = "Research " .. Format.money(cost)
 				if p.cash >= cost then
 					opts.onClick = function()
 						Remotes.get("BuyResearch"):FireServer(v.id)
@@ -9455,34 +10306,34 @@ local VISUAL_ICON = { Drone = "🚁", Robot = "🤖", Npc = "👷" }
 local function staffEffect(s): string
 	local parts = {}
 	if s.yieldBoost then
-		table.insert(parts, "+" .. Format.percent(s.yieldBoost) .. " к урожаю")
+		table.insert(parts, "+" .. Format.percent(s.yieldBoost) .. " yield")
 	end
 	if s.factoryAdd then
-		table.insert(parts, "+" .. s.factoryAdd .. " к множителю цехов")
+		table.insert(parts, "+" .. s.factoryAdd .. " workshop multiplier")
 	end
 	if s.factoryBoost then
-		table.insert(parts, "+" .. Format.percent(s.factoryBoost) .. " к множителю цехов")
+		table.insert(parts, "+" .. Format.percent(s.factoryBoost) .. " workshop multiplier")
 	end
 	if s.powerGen then
-		table.insert(parts, "+" .. s.powerGen .. " кВт")
+		table.insert(parts, "+" .. s.powerGen .. " kW")
 	end
 	if s.powerBoost then
-		table.insert(parts, "+" .. Format.percent(s.powerBoost) .. " к генерации")
+		table.insert(parts, "+" .. Format.percent(s.powerBoost) .. " generation")
 	end
 	if s.incomeBoost then
-		table.insert(parts, "+" .. Format.percent(s.incomeBoost) .. " к доходу")
+		table.insert(parts, "+" .. Format.percent(s.incomeBoost) .. " income")
 	end
 	if s.priceBoost then
-		table.insert(parts, "+" .. Format.percent(s.priceBoost) .. " к цене картофеля")
+		table.insert(parts, "+" .. Format.percent(s.priceBoost) .. " potato price")
 	end
 	if s.bugBoost then
-		table.insert(parts, "+" .. Format.percent(s.bugBoost) .. " к награде за жуков")
+		table.insert(parts, "+" .. Format.percent(s.bugBoost) .. " beetle reward")
 	end
-	return table.concat(parts, ", ") .. " за единицу"
+	return table.concat(parts, ", ") .. " per unit"
 end
 
 defs.Staff = {
-	title = "Найм персонала и дронов",
+	title = "Hire Staff & Drones",
 	icon = "🤖",
 	signature = function()
 		local p = shadowProfile()
@@ -9509,14 +10360,14 @@ defs.Staff = {
 				subtitle = staffEffect(s),
 			}
 			if count >= s.max then
-				opts.button = "✓ Максимум"
+				opts.button = "✓ Maxed"
 				opts.buttonColor = Color3.fromRGB(150, 110, 20)
 			elseif not p.owned[s.requires] then
-				opts.subtitle ..= "\n🔒 Нужно построить: " .. itemName(s.requires)
-				opts.button = "🔒 Закрыто"
+				opts.subtitle ..= "\n🔒 Requires: " .. itemName(s.requires)
+				opts.button = "🔒 Locked"
 				opts.buttonColor = Color3.fromRGB(120, 50, 50)
 			elseif s.requiresPass and not passes[s.requiresPass] then
-				opts.subtitle ..= "\n👑 Только для VIP Фермеров"
+				opts.subtitle ..= "\n👑 VIP Farmers only"
 				opts.button = "👑 VIP"
 				opts.buttonColor = Color3.fromRGB(150, 110, 20)
 				opts.onClick = function()
@@ -9524,7 +10375,7 @@ defs.Staff = {
 				end
 			else
 				local cost = Economy.staffCost(s, p, Config)
-				opts.button = "Нанять " .. Format.money(cost)
+				opts.button = "Hire " .. Format.money(cost)
 				if p.cash >= cost then
 					opts.onClick = function()
 						Remotes.get("HireStaff"):FireServer(s.id)
@@ -9540,7 +10391,7 @@ defs.Staff = {
 -- Звёздные технологии
 ------------------------------------------------------------------
 defs.StarTech = {
-	title = "Древо звёздных технологий",
+	title = "Star Tech Tree",
 	icon = "⭐",
 	signature = function()
 		return tostring(State.num("Stars"))
@@ -9550,20 +10401,13 @@ defs.StarTech = {
 		if not p then
 			return
 		end
-		header(
-			list,
-			string.format(
-				"У тебя ⭐ %s Картофельных Звезд (даются за Rebirth)",
-				Format.number(p.stars)
-			),
-			0
-		)
+		header(list, string.format("You have ⭐ %s Potato Stars (earned through Rebirth)", Format.number(p.stars)), 0)
 		for i, t in ipairs(Config.StarTech.List) do
 			local level = p.starTech[t.id] or 0
 			local opts: any = {
 				icon = "⭐",
 				iconColor = Color3.fromRGB(110, 80, 20),
-				title = string.format("%s  (ур. %d/%d)", t.name, level, t.max),
+				title = string.format("%s  (lvl %d/%d)", t.name, level, t.max),
 				subtitle = t.desc,
 			}
 			if level >= t.max then
@@ -9588,7 +10432,7 @@ defs.StarTech = {
 -- Rebirth
 ------------------------------------------------------------------
 defs.Rebirth = {
-	title = "Подтверждение Rebirth",
+	title = "Confirm Rebirth",
 	icon = "🚀",
 	signature = function()
 		local d = State.data
@@ -9606,22 +10450,22 @@ defs.Rebirth = {
 		line(
 			list,
 			1,
-			"Множитель всех доходов",
+			"All-income multiplier",
 			string.format("x%s → x%s", Format.number(State.num("RebirthMult")), Format.number(d.nextMult)),
 			C.Gold
 		)
-		line(list, 2, "Картофельные Звезды", "+" .. Format.number(d.nextStars) .. " ⭐", C.Star)
-		line(list, 3, "Нужно накопить", Format.money(d.rebirthCost), if enough then C.Cash else C.Danger)
+		line(list, 2, "Potato Stars", "+" .. Format.number(d.nextStars) .. " ⭐", C.Star)
+		line(list, 3, "Required savings", Format.money(d.rebirthCost), if enough then C.Cash else C.Danger)
 		line(
 			list,
 			4,
-			"Экспортный шаттл «Галактический Картофель»",
-			if hasShuttle then "✓ построен" else "✗ не построен",
+			"“Galactic Potato” Export Shuttle",
+			if hasShuttle then "✓ built" else "✗ not built",
 			if hasShuttle then C.Cash else C.Danger
 		)
 		local warn = Theme.label({
 			Size = UDim2.new(1, -8, 0, 54),
-			Text = "Сбросятся: деньги, постройки, сорта и персонал.\nОстанутся: Звёзды, звёздные технологии и множитель Rebirth.",
+			Text = "Resets: cash, buildings, varieties and staff.\nKept: Stars, star tech and the Rebirth multiplier.",
 			Font = Theme.FontRegular,
 			TextColor3 = C.Muted,
 			TextWrapped = true,
@@ -9634,7 +10478,7 @@ defs.Rebirth = {
 			Size = UDim2.new(1, -8, 0, 56),
 			BackgroundColor3 = if ready then C.Purple else C.ButtonOff,
 			AutoButtonColor = ready,
-			Text = if ready then "🚀 ЗАПУСТИТЬ REBIRTH" else "🔒 Условия не выполнены",
+			Text = if ready then "🚀 LAUNCH REBIRTH" else "🔒 Requirements not met",
 			LayoutOrder = 6,
 			Parent = list,
 		}, function()
@@ -9651,7 +10495,7 @@ defs.Rebirth = {
 -- Магазин геймпассов
 ------------------------------------------------------------------
 defs.Shop = {
-	title = "Магазин",
+	title = "Shop",
 	icon = "💎",
 	signature = function()
 		return ""
@@ -9666,7 +10510,7 @@ defs.Shop = {
 				iconColor = Color3.fromRGB(110, 80, 20),
 				title = pass.name,
 				subtitle = pass.desc,
-				button = if owned then "✓ Куплено" else (if price then "R$ " .. price else "Купить"),
+				button = if owned then "✓ Owned" else (if price then "R$ " .. price else "Buy"),
 				buttonColor = if owned then Color3.fromRGB(150, 110, 20) else Color3.fromRGB(0, 160, 90),
 				onClick = if owned
 					then nil
@@ -9686,7 +10530,7 @@ defs.Shop = {
 -- Разбор дохода по формуле ГДД 2.1
 ------------------------------------------------------------------
 defs.Stats = {
-	title = "Доход фабрики",
+	title = "Factory Income",
 	icon = "📊",
 	render = function(list)
 		local d = State.data
@@ -9700,62 +10544,53 @@ defs.Stats = {
 			end
 		end
 		local s = d.stats
-		header(
-			list,
-			"Доход = Урожай × Цена × Цеха × Энергия × Rebirth × Бонусы",
-			0
-		)
+		header(list, "Income = Yield × Price × Workshops × Energy × Rebirth × Bonuses", 0)
 		line(
 			list,
 			1,
 			string.format(
-				"🌱 Урожай (%d полей, бонус +%s, сорт %s)",
+				"🌱 Yield (%d fields, bonus +%s, variety %s)",
 				s.plots,
 				Format.percent(s.yieldBoost),
 				if variety then Format.percent(variety.growth) else "?"
 			),
-			Format.mass(State.num("YieldKg")) .. "/с"
+			Format.mass(State.num("YieldKg")) .. "/s"
 		)
 		line(
 			list,
 			2,
-			"🥔 Цена сорта «" .. (if variety then variety.name else "?") .. "»",
-			Format.money(State.num("Price")) .. "/кг"
+			"🥔 Price of “" .. (if variety then variety.name else "?") .. "”",
+			Format.money(State.num("Price")) .. "/kg"
 		)
-		line(
-			list,
-			3,
-			"🏭 Суммарный множитель цехов",
-			"x" .. Format.number(State.num("FactoryMult"))
-		)
+		line(list, 3, "🏭 Total workshop multiplier", "x" .. Format.number(State.num("FactoryMult")))
 		local over = State.attr("Overloaded") == true
 		line(
 			list,
 			4,
 			string.format(
-				"⚡ Энергия %s / %s кВт",
+				"⚡ Energy %s / %s kW",
 				Format.number(State.num("EnergyUse")),
 				Format.number(State.num("EnergyGen"))
 			),
-			if over then "x0.5 ПЕРЕГРУЗКА" else "x1",
+			if over then "x0.5 OVERLOAD" else "x1",
 			if over then C.Danger else C.Energy
 		)
-		line(list, 5, "🚀 Множитель Rebirth", "x" .. Format.number(State.num("RebirthMult")), C.Gold)
+		line(list, 5, "🚀 Rebirth multiplier", "x" .. Format.number(State.num("RebirthMult")), C.Gold)
 		line(
 			list,
 			6,
-			"🎁 Бонусы (постройки, персонал, звёзды, геймпассы, бум)",
+			"🎁 Bonuses (buildings, staff, stars, game passes, boom)",
 			"x" .. string.format("%.2f", State.num("BonusMult"))
 		)
-		line(list, 7, "💰 Итого", "+" .. Format.money(State.num("Income")) .. "/с", C.Cash)
-		header(list, "Статистика", 8)
-		line(list, 9, "Всего заработано", Format.money(d.totalEarned or 0))
-		line(list, 10, "Всего собрано картофеля", Format.mass(State.num("TotalKg")))
+		line(list, 7, "💰 Total", "+" .. Format.money(State.num("Income")) .. "/s", C.Cash)
+		header(list, "Statistics", 8)
+		line(list, 9, "Total earned", Format.money(d.totalEarned or 0))
+		line(list, 10, "Total potatoes harvested", Format.mass(State.num("TotalKg")))
 		line(
 			list,
 			11,
-			"Офлайн-доход",
-			string.format("%s дохода до %d ч", Format.percent(s.offlineRate), s.offlineHours)
+			"Offline income",
+			string.format("%s of income for up to %d h", Format.percent(s.offlineRate), s.offlineHours)
 		)
 		line(list, 12, "Rebirth", tostring(d.rebirths))
 	end,
@@ -9837,7 +10672,7 @@ function Windows.open(name: string)
 	local scale = New("UIScale", { Scale = 0.85, Parent = frame })
 	TweenService:Create(scale, TweenInfo.new(0.18, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 })
 		:Play()
-	Sound.play("Click")
+	Sound.play("Open")
 	Windows.refresh()
 end
 
@@ -9854,7 +10689,7 @@ function Windows.offline(seconds: number, amount: number)
 	Theme.label({
 		Position = UDim2.fromOffset(16, 14),
 		Size = UDim2.new(1, -32, 0, 40),
-		Text = "🌙 С возвращением, магнат!",
+		Text = "🌙 Welcome back, tycoon!",
 		Font = Theme.FontBlack,
 		TextColor3 = C.Gold,
 		Parent = frame,
@@ -9863,7 +10698,7 @@ function Windows.offline(seconds: number, amount: number)
 		Position = UDim2.fromOffset(16, 62),
 		Size = UDim2.new(1, -32, 0, 70),
 		Text = string.format(
-			"Пока тебя не было (%s), ферма заработала\n%s",
+			"While you were away (%s), your farm earned\n%s",
 			Format.time(seconds),
 			Format.money(amount)
 		),
@@ -9874,7 +10709,7 @@ function Windows.offline(seconds: number, amount: number)
 		AnchorPoint = Vector2.new(0.5, 1),
 		Position = UDim2.new(0.5, 0, 1, -14),
 		Size = UDim2.fromOffset(200, 48),
-		Text = "Забрать",
+		Text = "Collect",
 		Parent = frame,
 	}, function()
 		Sound.play("Cash")
@@ -9918,19 +10753,19 @@ return Windows
       </Item>
     </Item>
   </Item>
-  <Item class="TextChatService" referent="60">
+  <Item class="TextChatService" referent="64">
     <Properties>
       <string name="Name">TextChatService</string>
       <token name="ChatVersion">1</token>
     </Properties>
   </Item>
-  <Item class="Workspace" referent="61">
+  <Item class="Workspace" referent="65">
     <Properties>
       <string name="Name">Workspace</string>
       <bool name="NeedsPivotMigration">false</bool>
       <bool name="StreamingEnabled">false</bool>
     </Properties>
-    <Item class="Part" referent="62">
+    <Item class="Part" referent="66">
       <Properties>
         <string name="Name">Ground</string>
         <bool name="Anchored">true</bool>
@@ -9951,7 +10786,7 @@ return Windows
         <token name="TopSurface">0</token>
       </Properties>
     </Item>
-    <Item class="SpawnLocation" referent="63">
+    <Item class="SpawnLocation" referent="67">
       <Properties>
         <string name="Name">SpawnLocation</string>
         <bool name="Anchored">true</bool>

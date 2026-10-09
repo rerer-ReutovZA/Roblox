@@ -28,10 +28,19 @@ local function group(name: string): SoundGroup
 	return g
 end
 
-local function ids(def): { string }
-	local list = { def.id }
-	for _, id in ipairs(def.variants or {}) do
-		table.insert(list, id)
+-- Дубли звука: основной и variants. Вариант — id-строка или таблица { id, start?, length?, volume? },
+-- недостающие поля берутся из основной записи
+local function takes(def): { any }
+	local list = { def }
+	for _, v in ipairs(def.variants or {}) do
+		local take = if type(v) == "string" then { id = v } else v
+		table.insert(list, {
+			id = take.id,
+			volume = take.volume or def.volume,
+			pitch = def.pitch,
+			start = take.start or def.start,
+			length = take.length or def.length,
+		})
 	end
 	return list
 end
@@ -47,10 +56,10 @@ local function region(s: Sound, def)
 	end
 end
 
-local function make(key: string, def, id: string, groupName: string): Sound
+local function make(key: string, def, groupName: string): Sound
 	local s = Instance.new("Sound")
 	s.Name = key
-	s.SoundId = id
+	s.SoundId = def.id
 	s.Volume = def.volume
 	s.PlaybackSpeed = def.pitch or 1
 	s.SoundGroup = group(groupName)
@@ -64,8 +73,9 @@ function Sound.play(key: string, pitchJitter: number?)
 	if not def or def.id == "" or (voices[key] or 0) >= MAX_VOICES then
 		return
 	end
-	local list = ids(def)
-	local s = make(key, def, list[math.random(1, #list)], "Effects")
+	local list = takes(def)
+	local take = list[math.random(1, #list)]
+	local s = make(key, take, "Effects")
 	local speed = (def.pitch or 1) * (1 + (math.random() - 0.5) * (pitchJitter or 0))
 	s.PlaybackSpeed = speed
 	s.Parent = SoundService
@@ -79,7 +89,7 @@ function Sound.play(key: string, pitchJitter: number?)
 		end
 	end
 	s.Ended:Connect(finish)
-	local length = def.length or 0
+	local length = take.length or 0
 	if length > 0 then
 		local playTime = length / speed
 		task.delay(math.max(0, playTime - FADE), function()
@@ -100,7 +110,7 @@ function Sound.attachLoop(key: string, parent: Instance): Sound?
 	if not def or def.id == "" then
 		return nil
 	end
-	local s = make("Loop_" .. key, def, def.id, "Ambient")
+	local s = make("Loop_" .. key, def, "Ambient")
 	s.Looped = true
 	s.RollOffMode = Enum.RollOffMode.InverseTapered
 	s.RollOffMaxDistance = def.range or 45
@@ -151,7 +161,7 @@ function Sound.startMusic()
 			i = i % #keys + 1
 			local key = keys[i]
 			local def = Config.Sounds[key]
-			local s = make(key, def, def.id, "Music")
+			local s = make(key, def, "Music")
 			s.Name = "Music"
 			s.Parent = SoundService
 			s:Play()
@@ -181,9 +191,9 @@ function Sound.init()
 	local list = {}
 	for key, def in pairs(Config.Sounds) do
 		if not def.loop and not string.match(key, "^Music") then
-			for _, id in ipairs(ids(def)) do
-				if id ~= "" then
-					table.insert(list, id)
+			for _, take in ipairs(takes(def)) do
+				if take.id ~= "" then
+					table.insert(list, take.id)
 				end
 			end
 		end

@@ -244,15 +244,15 @@
 | 193 | Меню исследований семян (Research Tree GUI) | ✅ окно «🧬 Сорта» (`Windows.luau`) |
 | 194 | Меню найма персонала и дронов | ✅ окно «🤖 Персонал» (`Windows.luau`) |
 | 195 | Окно подтверждения Rebirth с множителями | ✅ окно «🚀 Rebirth» (`Windows.luau`) |
-| 196 | Звук копания лопатой (Dig Dirt SFX, Этап 1) | ✅ звук `Dig` (заглушка) |
-| 197 | Звук высыпания клубней в лоток (Wood Dump SFX, Этап 1) | ✅ звук `Dump` (заглушка) |
-| 198 | Звук кассового аппарата при зачислении монет (Cha-ching SFX) | ✅ звук `Cash` (заглушка) |
-| 199 | Звук шипения фритюра (Sizzle SFX) | ✅ звук `Sizzle` (нужен ID) |
-| 200 | Звук роторного нарезчика чипсов (Whir Blade SFX) | ✅ звук `Blade` (нужен ID) |
-| 201 | Звук гудения мощного трансформатора (Hum Electric SFX) | ✅ звук `Hum` (нужен ID) |
-| 202 | Звук сирены перегрузки сети (Klaxon Alarm SFX) | ✅ звук `Alarm` (заглушка) |
-| 203 | Звук старта ракеты Rebirth (Rocket Blast SFX) | ✅ звук `Rocket` (заглушка) |
-| 204 | Звук взмаха крыльев жука-вредителя (Bug Buzz SFX) | ✅ звук `BugBuzz` (нужен ID) |
+| 196 | Звук копания лопатой (Dig Dirt SFX, Этап 1) | ✅ звук `Dig` — Pro Sound Effects «Dirt Scoops», 3 дубля ([все звуки](SOUNDS.md)) |
+| 197 | Звук высыпания клубней в лоток (Wood Dump SFX, Этап 1) | ✅ звук `Dump` — Pro Sound Effects «Crate Of Rocks 10» |
+| 198 | Звук кассового аппарата при зачислении монет (Cha-ching SFX) | ✅ звук `Cash` — Roblox «GUI - Purchase» |
+| 199 | Звук шипения фритюра (Sizzle SFX) | ✅ звук `Sizzle` — Pro Sound Effects «Fry Or Sizzle 2», петля |
+| 200 | Звук роторного нарезчика чипсов (Whir Blade SFX) | ✅ звук `Blade` — Pro Sound Effects «Conveyor Belt 3», петля |
+| 201 | Звук гудения мощного трансформатора (Hum Electric SFX) | ✅ звук `Hum` — Pro Sound Effects «Transformer Hum 1», петля на подстанции |
+| 202 | Звук сирены перегрузки сети (Klaxon Alarm SFX) | ✅ звук `Alarm` — Pro Sound Effects «Sci-Fi Siren» |
+| 203 | Звук старта ракеты Rebirth (Rocket Blast SFX) | ✅ звук `Rocket` — Pro Sound Effects «Tubular Whoosh Explosion Long Constant Roar» |
+| 204 | Звук взмаха крыльев жука-вредителя (Bug Buzz SFX) | ✅ звук `BugBuzz` — Pro Sound Effects «Bee Various Buzzing Actions 10» |
 | 205 | VFX парящих всплывающих зеленых цифр «+\$» над грядками | ✅ всплывающие «+$» над полями (`WorldFx`) |
 | 206 | VFX пара над автоклавами и фритюрницами | ✅ Smoke у фритюра, пилера, автоклава, градирни |
 | 207 | VFX искр короткого замыкания при нехватке энергии | ✅ искры над генераторами при перегрузке (`WorldFx`) |
