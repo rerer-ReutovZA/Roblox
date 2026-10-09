@@ -33,12 +33,16 @@ rojo build default.project.json -o PotatoTycoon.rbxlx
 
 ## Публикация игры
 
+Пошагово, с импортом моделей из Blender, — [docs/STUDIO_SETUP.md](docs/STUDIO_SETUP.md).
+
 1. **File → Publish to Roblox**.
-2. **Game Settings → Security → Enable Studio Access to API Services** — чтобы работали сохранения в Studio.
-3. **Game Settings → Places → Max Players = 6** (на сервере 6 баз).
-4. Создайте 4 геймпасса (Creator Hub → Monetization → Passes) и впишите их ID в
+2. Модели: **File → Import** → `art/export/fbx/*.fbx`, затем перенести их в папку `ServerStorage.Assets`.
+3. **File → Experience Settings → Security → Enable Studio Access to API Services** — чтобы работали сохранения в Studio.
+4. Creator Hub → **Configure → Places → Access → Maximum Visitor Count = 6** (на сервере 6 баз).
+5. Создайте 4 геймпасса (Creator Hub → Monetization → Passes) и впишите их ID в
    [`src/shared/Config/GamePasses.luau`](src/shared/Config/GamePasses.luau).
-5. Замените звуки-заглушки на свои ID в [`src/shared/Config/Sounds.luau`](src/shared/Config/Sounds.luau).
+6. Звуки и музыка уже подключены из бесплатных библиотек Roblox (Pro Sound Effects, APM Music) —
+   список и запасные варианты в [`docs/SOUNDS.md`](docs/SOUNDS.md).
 
 ## Как играть
 

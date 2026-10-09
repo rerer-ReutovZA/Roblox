@@ -8,6 +8,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
 
+local AssetMeta = require(ReplicatedStorage.Shared.Config.AssetMeta)
 local AssetName = require(ReplicatedStorage.Shared.AssetName)
 local ModelText = require(ReplicatedStorage.Shared.Config.ModelText)
 local Palette = require(ReplicatedStorage.Shared.Config.Palette)
@@ -16,6 +17,7 @@ local Templates = {}
 
 local ANIM_TAGS = { "Spin", "Slide", "Bob", "Sway", "Pulse" }
 local MARKER = "Origin__Pivot"
+local AXIS_X, AXIS_Z = "Origin__AxisX", "Origin__AxisZ"
 -- группы, которые остаются видимыми (NPC-фигуры до перехода на аватары)
 local KEEP_VISIBLE = { Figure = true }
 
@@ -26,13 +28,45 @@ type Prepared = {
 
 local cache: { [string]: Prepared | false } = {}
 
+-- Калибровочные маркеры: куб Origin__Pivot в начале координат и точки осей Origin__AxisX/AxisZ
+-- (в старых FBX у куба суффикс Blender: Origin__Pivot.024)
+local function isMarker(inst: Instance): boolean
+	return inst:IsA("BasePart") and string.sub(AssetName.clean(inst.Name), 1, 8) == "Origin__"
+end
+
+local function findMarker(model: Instance, name: string?): BasePart?
+	local want = name or MARKER
+	for _, d in ipairs(model:GetDescendants()) do
+		if d:IsA("BasePart") and AssetName.clean(d.Name) == want then
+			return d :: BasePart
+		end
+	end
+	return nil
+end
+
+-- Система координат модели после импорта: начало — куб, оси — по точкам +X и +Z (1 стад в Blender).
+-- Так неважно, повернул ли 3D Importer модель и в каких единицах он её прочитал.
+local function importFrame(template: Model, marker: BasePart): (CFrame, number)
+	local ax, az = findMarker(template, AXIS_X), findMarker(template, AXIS_Z)
+	if ax and az then
+		local o = marker.CFrame.Position
+		local vx, vz = ax.CFrame.Position - o, az.CFrame.Position - o
+		if vx.Magnitude > 1e-4 and vz.Magnitude > 1e-4 then
+			local x, z = vx.Unit, vz.Unit
+			return CFrame.fromMatrix(o, x, z:Cross(x), z), 1 / vx.Magnitude
+		end
+	end
+	-- старый экспорт без точек осей: ориентация куба, масштаб по его размеру (куб 1x1x1)
+	return marker.CFrame, 1 / math.max(marker.Size.X, 1e-3)
+end
+
 local function findTemplate(key: string): Model?
 	local folder = ServerStorage:FindFirstChild("Assets")
 	if not folder then
 		return nil
 	end
 	for _, d in ipairs(folder:GetDescendants()) do
-		if d:IsA("Model") and d.Name == key and d:FindFirstChild(MARKER, true) then
+		if d:IsA("Model") and AssetName.clean(d.Name) == key and findMarker(d) then
 			return d
 		end
 	end
@@ -50,15 +84,23 @@ local function prepare(key: string): Prepared?
 		cache[key] = false
 		return nil
 	end
-	local marker = template:FindFirstChild(MARKER, true) :: BasePart
-	-- маркер — куб 1x1x1: по нему видно, в каких единицах импортирован файл
-	local scale = 1 / math.max(marker.Size.X, 1e-3)
-	local root = marker.CFrame
+	local marker = findMarker(template) :: BasePart
+	local root, scale = importFrame(template, marker)
 	local prepared: Prepared = { parts = {}, scale = scale }
+	local groups = AssetMeta[key] or {}
 	for _, d in ipairs(template:GetDescendants()) do
-		if d:IsA("BasePart") and d.Name ~= MARKER then
+		if d:IsA("BasePart") and not isMarker(d) then
 			local info = AssetName.parse(d.Name)
 			if info then
+				-- анимация и точка вращения группы — из Config.AssetMeta (если их нет в самом имени)
+				local meta = groups[table.concat(info.path, "/")]
+				if meta and not info.anim then
+					info.anim = meta.anim
+					local p = meta.pivot
+					if p then
+						info.pivot = Vector3.new(p[1], p[2], p[3])
+					end
+				end
 				table.insert(prepared.parts, { part = d, info = info, rel = root:ToObjectSpace(d.CFrame) })
 			end
 		end
@@ -129,8 +171,13 @@ end
 local NO_COLLIDE_GROUPS = { Bush = true, Tubers = true, Flames = true }
 
 local function collides(info: AssetName.Parsed): boolean
-	if info.anim or info.pivot then
-		return false
+	if info.anim then
+		-- мигание и мелкая вибрация (мотор генератора) не мешают стоять рядом, остальное движется — насквозь
+		local tag, attrs = AssetName.animation(info.anim)
+		local still = tag == "Pulse" or (tag == "Slide" and math.abs(attrs.Amplitude or 0) < 0.05)
+		if not still then
+			return false
+		end
 	end
 	for _, name in ipairs(info.path) do
 		if NO_COLLIDE_GROUPS[name] then
@@ -173,12 +220,34 @@ end
 
 -- Надпись на модели: текст Roblox на грани плоской метки. Исходный текст английский;
 -- TextLabel.AutoLocalize (включён по умолчанию) отдаёт его автопереводу Roblox.
-local function addLabel(part: BasePart, label: ModelText.Label, color: Color3, neon: boolean)
+local NORMALS = {
+	Right = Vector3.new(1, 0, 0),
+	Left = Vector3.new(-1, 0, 0),
+	Top = Vector3.new(0, 1, 0),
+	Bottom = Vector3.new(0, -1, 0),
+	Back = Vector3.new(0, 0, 1),
+	Front = Vector3.new(0, 0, -1),
+}
+
+-- Грань в осях модели → грань детали (если импорт развернул деталь относительно модели)
+local function localFace(face: string, rel: CFrame): Enum.NormalId
+	local normal = rel:VectorToObjectSpace(NORMALS[face] or NORMALS.Back)
+	local best, bestDot = "Back", -math.huge
+	for name, n in pairs(NORMALS) do
+		local d = n:Dot(normal)
+		if d > bestDot then
+			best, bestDot = name, d
+		end
+	end
+	return (Enum.NormalId :: any)[best]
+end
+
+local function addLabel(part: BasePart, label: ModelText.Label, color: Color3, neon: boolean, rel: CFrame)
 	part.Transparency = 1
 	part.CastShadow = false
 	local gui = Instance.new("SurfaceGui")
 	gui.Name = "ModelText"
-	gui.Face = (Enum.NormalId :: any)[label.face] or Enum.NormalId.Back
+	gui.Face = localFace(label.face, rel)
 	gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
 	gui.PixelsPerStud = 60
 	gui.LightInfluence = if neon then 0 else 1
@@ -261,7 +330,7 @@ function Templates.dress(model: Model, key: string, origin: CFrame, opts: DressO
 		local labels = ModelText[key]
 		local label = info.label and labels and labels[info.label]
 		if label then
-			addLabel(part, label, part.Color, part.Material == Enum.Material.Neon)
+			addLabel(part, label, part.Color, part.Material == Enum.Material.Neon, rec.rel)
 			part.CanCollide = false
 			part.CanQuery = false
 		elseif info.label then

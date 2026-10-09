@@ -14,6 +14,7 @@ import argparse
 import json
 import math
 import os
+import re
 import sys
 import time
 
@@ -454,9 +455,21 @@ def label_markers(key, coll, root):
     return labels
 
 
+MAX_NAME = 50  # 3D Importer Roblox обрезает более длинные имена посередине
+SERIAL = [0]
+
+
+def hold_name(obj, name):
+    """Имя детали в игре хранится в свойстве rbx_name, а в Blender — уникальное «0001|имя»:
+    одинаковые имена в разных ассетах иначе получили бы суффиксы .001, .002… и попали бы в FBX."""
+    SERIAL[0] += 1
+    obj["rbx_name"] = name
+    obj.name = obj.data.name = f"{SERIAL[0]:04d}|{name}"
+
+
 def merge_asset(key, coll, root):
-    """Детали одного материала в одной группе → одна MeshPart. Имя несёт всё, что нужно игре:
-    «Путь/Группы__КлючПалитры[@анимация][#x,y,z точки вращения в координатах Roblox][!номер надписи]»."""
+    """Детали одного материала в одной группе → одна MeshPart с именем «Путь/Группы__КлючПалитры[~n][!надпись]».
+    Анимация и точка вращения группы (в координатах Roblox) — в groups: игра берёт их из Config/AssetMeta.luau."""
     labels = label_markers(key, coll, root)
     groups = {}
     for obj in [o for o in coll.objects if o.type == "MESH"]:
@@ -474,11 +487,17 @@ def merge_asset(key, coll, root):
         else:
             gid = ("/".join(path) or "Body", obj["key"], None, None)
         groups.setdefault(gid, []).append(obj)
-    parts = []
+    parts, meta, used = [], {}, {}
     for (path, pkey, anim, pivot, *extra), objs in sorted(groups.items(), key=lambda kv: kv[0][:2]):
-        name = f"{path}__{pkey}" + (f"@{anim}" if anim else "") + (f"#{pivot}" if pivot else "")
-        if extra and str(extra[0]).startswith("!"):
-            name += extra[0]
+        # в именах групп — только буквы, цифры, «_», «-» и «/» (Flame1.6 → Flame1_6)
+        path = re.sub(r"[^A-Za-z0-9_\-/]", "_", path)
+        if anim:
+            old = meta.get(path)
+            if old and old != {"anim": anim, "pivot": pivot}:
+                raise RuntimeError(f"{key}: у группы {path} две разные анимации: {old} и {anim} {pivot}")
+            meta[path] = {"anim": anim, "pivot": pivot}
+        base = f"{path}__{pkey}"
+        label = extra[0] if extra and str(extra[0]).startswith("!") else ""
         chunks, chunk, tris = [], [], 0
         for o in objs:
             t = tri_count(o)
@@ -489,10 +508,16 @@ def merge_asset(key, coll, root):
             tris += t
         chunks.append(chunk)
         for c in chunks:
+            # одинаковые имена внутри ассета (куски большой группы, отдельные стены) различает «~n»
+            n = used[base + label] = used.get(base + label, 0) + 1
+            name = base + (f"~{n}" if n > 1 else "") + label
+            if len(name) > MAX_NAME:
+                raise RuntimeError(f"{key}: имя детали длиннее {MAX_NAME} символов: {name}")
             merged = join(c, name)
+            hold_name(merged, name)
             merged.parent = root
             parts.append((name, tri_count(merged)))
-    # пустышки больше не нужны: группы и точки вращения записаны в именах
+    # пустышки больше не нужны: группы — в именах, анимации и точки вращения — в meta
     for o in [o for o in coll.objects if o.type == "EMPTY" and o != root]:
         bpy.data.objects.remove(o)
     # калибровочный куб 1x1x1 в начале координат ассета: по нему игра находит origin и масштаб импорта
@@ -503,11 +528,26 @@ def merge_asset(key, coll, root):
     bm.free()
     marker = bpy.data.objects.new("Origin__Pivot", mesh)
     coll.objects.link(marker)
+    hold_name(marker, "Origin__Pivot")
     marker.parent = root
+    # две точки осей Roblox (+X и +Z на расстоянии 1 стад): по ним игра находит поворот импорта —
+    # симметричный куб не выдал бы, если 3D Importer развернёт модель
+    for name, pos in (("Origin__AxisX", (1, 0, 0)), ("Origin__AxisZ", (0, -1, 0))):
+        bm = bmesh.new()
+        bmesh.ops.create_cube(bm, size=0.2)
+        mesh = bpy.data.meshes.new(name)
+        bm.to_mesh(mesh)
+        bm.free()
+        axis = bpy.data.objects.new(name, mesh)
+        coll.objects.link(axis)
+        hold_name(axis, name)
+        axis.parent = root
+        axis.location = pos
     total = sum(t for _, t in parts)
     print(f"[merge] {key:14s} {len(parts):3d} MeshPart, {total:6d} треугольников", flush=True)
     return {"parts": [{"name": n, "tris": t} for n, t in parts], "tris": total,
-            "labels": {str(i): v for i, v in labels.items()}}
+            "labels": {str(i): v for i, v in labels.items()},
+            "groups": {p: meta[p] for p in sorted(meta)}}
 
 
 def export_glb(built, out_dir):
@@ -521,20 +561,32 @@ def export_glb(built, out_dir):
 
 def export_fbx(built, out_dir):
     os.makedirs(os.path.join(out_dir, "fbx"), exist_ok=True)
+    # «FBX Units Scale» при системе единиц None — как советует руководство Roblox по Blender:
+    # 1 единица Blender = 1 стад, у объектов масштаб 1 (масштаб импорта игра всё равно проверяет по Origin__Pivot)
     opts = dict(use_selection=True, object_types={"EMPTY", "MESH"}, apply_unit_scale=True,
-                apply_scale_options="FBX_SCALE_NONE", axis_forward="-Z", axis_up="Y", bake_anim=False,
+                apply_scale_options="FBX_SCALE_UNITS", axis_forward="-Z", axis_up="Y", bake_anim=False,
                 mesh_smooth_type="OFF", add_leaf_bones=False, use_mesh_modifiers=True)
     manifest = {}
     for key, coll, root, _ in built:
         manifest[key] = merge_asset(key, coll, root)
+    for key, coll, root, _ in built:
+        objs = [o for o in coll.objects if "rbx_name" in o]
+        held = {o: o.name for o in objs}
+        # на время экспорта — точные имена (в других ассетах сейчас у всех имена «0001|…», конфликтов нет)
+        for o in objs:
+            o.name = o.data.name = o["rbx_name"]
+            assert o.name == o["rbx_name"], f"{key}: Blender переименовал {o['rbx_name']} в {o.name}"
         select_only(list(coll.objects))
         bpy.ops.export_scene.fbx(filepath=os.path.join(out_dir, "fbx", f"{key}.fbx"), **opts)
+        for o, name in held.items():
+            o.name = o.data.name = name
     path = os.path.join(out_dir, "manifest.json")
     old = json.load(open(path, encoding="utf-8")) if os.path.exists(path) else {}
     old.update(manifest)
     with open(path, "w", encoding="utf-8") as f:
         json.dump(old, f, ensure_ascii=False, indent=1, sort_keys=True)
     write_model_text(old)
+    write_asset_meta(old)
     print(f"[export] {len(built)} ассетов → art/export/fbx/*.fbx, glb/, manifest.json", flush=True)
 
 
@@ -564,6 +616,32 @@ def write_model_text(manifest):
         lines.append("\t},")
     lines += ["}", "", "return ModelText", ""]
     with open(os.path.join(ROOT, "src", "shared", "Config", "ModelText.luau"), "w", encoding="utf-8") as f:
+        f.write("\n".join(lines))
+
+
+def write_asset_meta(manifest):
+    """Анимации групп → src/shared/Config/AssetMeta.luau (имена деталей в FBX короткие и без них)."""
+    lines = [
+        "-- Анимированные группы моделей из Blender: ключ модели → путь группы → анимация и точка вращения",
+        "-- (координаты модели Roblox, стады). Формат анимации — в src/shared/AssetName.luau.",
+        "-- Сгенерировано art/blender/build.py.",
+        "",
+        "export type Group = { anim: string, pivot: { number }? }",
+        "",
+        "local AssetMeta: { [string]: { [string]: Group } } = {",
+    ]
+    for key in sorted(manifest):
+        groups = manifest[key].get("groups") or {}
+        if not groups:
+            continue
+        lines.append(f"\t{key} = {{")
+        for path in sorted(groups):
+            g = groups[path]
+            pivot = f", pivot = {{ {', '.join(g['pivot'].split(','))} }}" if g.get("pivot") else ""
+            lines.append(f"\t\t[{luau_str(path)}] = {{ anim = {luau_str(g['anim'])}{pivot} }},")
+        lines.append("\t},")
+    lines += ["}", "", "return AssetMeta", ""]
+    with open(os.path.join(ROOT, "src", "shared", "Config", "AssetMeta.luau"), "w", encoding="utf-8") as f:
         f.write("\n".join(lines))
 
 

@@ -173,6 +173,7 @@ local function setOverload(on: boolean)
 		return
 	end
 	Sound.play("Alarm")
+	task.delay(0.4, Sound.play, "Zap")
 	local plot = myPlot()
 	local items = plot and plot:FindFirstChild("Items")
 	if not items then
@@ -212,7 +213,12 @@ local function ambient(model: Instance)
 	if key and model:IsA("Model") then
 		local part = model:FindFirstChildWhichIsA("BasePart", true)
 		if part then
-			Sound.attachLoop(key, part)
+			-- источник звука — центр постройки, а не случайная деталь
+			local emitter = Instance.new("Attachment")
+			emitter.Name = "SoundEmitter"
+			emitter.Parent = part
+			emitter.WorldPosition = model:GetPivot().Position + Vector3.new(0, 2, 0)
+			Sound.attachLoop(key, emitter)
 		end
 	end
 end

@@ -1,5 +1,11 @@
 {
  "Aeroponic": {
+  "groups": {
+   "PanelLed": {
+    "anim": "pulse_2",
+    "pivot": null
+   }
+  },
   "labels": {},
   "parts": [
    {
@@ -31,13 +37,23 @@
     "tris": 980
    },
    {
-    "name": "PanelLed__NeonGreen@pulse_2",
+    "name": "PanelLed__NeonGreen",
     "tris": 190
    }
   ],
   "tris": 3922
  },
  "AiSorter": {
+  "groups": {
+   "Arm": {
+    "anim": "sway_y_50_3.14",
+    "pivot": "1.2,2.1,-0.2"
+   },
+   "Lens": {
+    "anim": "pulse_2",
+    "pivot": null
+   }
+  },
   "labels": {
    "1": {
     "face": "Back",
@@ -46,15 +62,15 @@
   },
   "parts": [
    {
-    "name": "Arm__Chrome@sway_y_50_3.14#1.2,2.1,-0.2",
+    "name": "Arm__Chrome",
     "tris": 216
    },
    {
-    "name": "Arm__MetalDark@sway_y_50_3.14#1.2,2.1,-0.2",
+    "name": "Arm__MetalDark",
     "tris": 318
    },
    {
-    "name": "Arm__Orange@sway_y_50_3.14#1.2,2.1,-0.2",
+    "name": "Arm__Orange",
     "tris": 216
    },
    {
@@ -94,21 +110,39 @@
     "tris": 40
    },
    {
-    "name": "Lens__NeonRed@pulse_2",
+    "name": "Lens__NeonRed",
     "tris": 190
    }
   ],
   "tris": 2750
  },
  "AutoBedT1": {
+  "groups": {
+   "Auger": {
+    "anim": "spin_z_-360",
+    "pivot": "1.38,0.66,0"
+   },
+   "Bush/Plant0": {
+    "anim": "sway_x_2.5_3.14_0.15",
+    "pivot": "-0.503,0.97,1.9"
+   },
+   "Bush/Plant1": {
+    "anim": "sway_x_2.5_3.14_0.45",
+    "pivot": "-0.397,0.97,0"
+   },
+   "Bush/Plant2": {
+    "anim": "sway_x_2.5_3.14_0.75",
+    "pivot": "-0.384,0.97,-1.9"
+   }
+  },
   "labels": {},
   "parts": [
    {
-    "name": "Auger__Chrome@spin_z_-360#1.38,0.66,0",
+    "name": "Auger__Chrome",
     "tris": 44
    },
    {
-    "name": "Auger__Orange@spin_z_-360#1.38,0.66,0",
+    "name": "Auger__Orange",
     "tris": 2308
    },
    {
@@ -148,63 +182,63 @@
     "tris": 432
    },
    {
-    "name": "Bush/Plant0__Flower@sway_x_2.5_3.14_0.15#-0.503,0.97,1.9",
+    "name": "Bush/Plant0__Flower",
     "tris": 600
    },
    {
-    "name": "Bush/Plant0__FlowerCore@sway_x_2.5_3.14_0.15#-0.503,0.97,1.9",
+    "name": "Bush/Plant0__FlowerCore",
     "tris": 114
    },
    {
-    "name": "Bush/Plant0__Leaf@sway_x_2.5_3.14_0.15#-0.503,0.97,1.9",
+    "name": "Bush/Plant0__Leaf",
     "tris": 1000
    },
    {
-    "name": "Bush/Plant0__LeafDark@sway_x_2.5_3.14_0.15#-0.503,0.97,1.9",
+    "name": "Bush/Plant0__LeafDark",
     "tris": 600
    },
    {
-    "name": "Bush/Plant0__Stem@sway_x_2.5_3.14_0.15#-0.503,0.97,1.9",
+    "name": "Bush/Plant0__Stem",
     "tris": 1528
    },
    {
-    "name": "Bush/Plant1__Flower@sway_x_2.5_3.14_0.45#-0.397,0.97,0",
+    "name": "Bush/Plant1__Flower",
     "tris": 600
    },
    {
-    "name": "Bush/Plant1__FlowerCore@sway_x_2.5_3.14_0.45#-0.397,0.97,0",
+    "name": "Bush/Plant1__FlowerCore",
     "tris": 114
    },
    {
-    "name": "Bush/Plant1__Leaf@sway_x_2.5_3.14_0.45#-0.397,0.97,0",
+    "name": "Bush/Plant1__Leaf",
     "tris": 1000
    },
    {
-    "name": "Bush/Plant1__LeafDark@sway_x_2.5_3.14_0.45#-0.397,0.97,0",
+    "name": "Bush/Plant1__LeafDark",
     "tris": 600
    },
    {
-    "name": "Bush/Plant1__Stem@sway_x_2.5_3.14_0.45#-0.397,0.97,0",
+    "name": "Bush/Plant1__Stem",
     "tris": 1528
    },
    {
-    "name": "Bush/Plant2__Flower@sway_x_2.5_3.14_0.75#-0.384,0.97,-1.9",
+    "name": "Bush/Plant2__Flower",
     "tris": 600
    },
    {
-    "name": "Bush/Plant2__FlowerCore@sway_x_2.5_3.14_0.75#-0.384,0.97,-1.9",
+    "name": "Bush/Plant2__FlowerCore",
     "tris": 114
    },
    {
-    "name": "Bush/Plant2__Leaf@sway_x_2.5_3.14_0.75#-0.384,0.97,-1.9",
+    "name": "Bush/Plant2__Leaf",
     "tris": 1000
    },
    {
-    "name": "Bush/Plant2__LeafDark@sway_x_2.5_3.14_0.75#-0.384,0.97,-1.9",
+    "name": "Bush/Plant2__LeafDark",
     "tris": 600
    },
    {
-    "name": "Bush/Plant2__Stem@sway_x_2.5_3.14_0.75#-0.384,0.97,-1.9",
+    "name": "Bush/Plant2__Stem",
     "tris": 1528
    },
    {
@@ -215,6 +249,24 @@
   "tris": 20754
  },
  "AutoBedT2": {
+  "groups": {
+   "Bush/Plant0": {
+    "anim": "sway_x_2.5_3.14_0.15",
+    "pivot": "0.025,1.03,1.867"
+   },
+   "Bush/Plant1": {
+    "anim": "sway_x_2.5_3.14_0.45",
+    "pivot": "0.089,1.03,0"
+   },
+   "Bush/Plant2": {
+    "anim": "sway_x_2.5_3.14_0.75",
+    "pivot": "-0.097,1.03,-1.867"
+   },
+   "Nozzle": {
+    "anim": "slide_z_-1.8_3.14",
+    "pivot": "0,0,0"
+   }
+  },
   "labels": {},
   "parts": [
    {
@@ -250,83 +302,83 @@
     "tris": 864
    },
    {
-    "name": "Bush/Plant0__Flower@sway_x_2.5_3.14_0.15#0.025,1.03,1.867",
+    "name": "Bush/Plant0__Flower",
     "tris": 600
    },
    {
-    "name": "Bush/Plant0__FlowerCore@sway_x_2.5_3.14_0.15#0.025,1.03,1.867",
+    "name": "Bush/Plant0__FlowerCore",
     "tris": 114
    },
    {
-    "name": "Bush/Plant0__Leaf@sway_x_2.5_3.14_0.15#0.025,1.03,1.867",
+    "name": "Bush/Plant0__Leaf",
     "tris": 1000
    },
    {
-    "name": "Bush/Plant0__LeafDark@sway_x_2.5_3.14_0.15#0.025,1.03,1.867",
+    "name": "Bush/Plant0__LeafDark",
     "tris": 600
    },
    {
-    "name": "Bush/Plant0__Stem@sway_x_2.5_3.14_0.15#0.025,1.03,1.867",
+    "name": "Bush/Plant0__Stem",
     "tris": 1528
    },
    {
-    "name": "Bush/Plant1__Flower@sway_x_2.5_3.14_0.45#0.089,1.03,0",
+    "name": "Bush/Plant1__Flower",
     "tris": 600
    },
    {
-    "name": "Bush/Plant1__FlowerCore@sway_x_2.5_3.14_0.45#0.089,1.03,0",
+    "name": "Bush/Plant1__FlowerCore",
     "tris": 114
    },
    {
-    "name": "Bush/Plant1__Leaf@sway_x_2.5_3.14_0.45#0.089,1.03,0",
+    "name": "Bush/Plant1__Leaf",
     "tris": 1000
    },
    {
-    "name": "Bush/Plant1__LeafDark@sway_x_2.5_3.14_0.45#0.089,1.03,0",
+    "name": "Bush/Plant1__LeafDark",
     "tris": 600
    },
    {
-    "name": "Bush/Plant1__Stem@sway_x_2.5_3.14_0.45#0.089,1.03,0",
+    "name": "Bush/Plant1__Stem",
     "tris": 1528
    },
    {
-    "name": "Bush/Plant2__Flower@sway_x_2.5_3.14_0.75#-0.097,1.03,-1.867",
+    "name": "Bush/Plant2__Flower",
     "tris": 600
    },
    {
-    "name": "Bush/Plant2__FlowerCore@sway_x_2.5_3.14_0.75#-0.097,1.03,-1.867",
+    "name": "Bush/Plant2__FlowerCore",
     "tris": 114
    },
    {
-    "name": "Bush/Plant2__Leaf@sway_x_2.5_3.14_0.75#-0.097,1.03,-1.867",
+    "name": "Bush/Plant2__Leaf",
     "tris": 1000
    },
    {
-    "name": "Bush/Plant2__LeafDark@sway_x_2.5_3.14_0.75#-0.097,1.03,-1.867",
+    "name": "Bush/Plant2__LeafDark",
     "tris": 600
    },
    {
-    "name": "Bush/Plant2__Stem@sway_x_2.5_3.14_0.75#-0.097,1.03,-1.867",
+    "name": "Bush/Plant2__Stem",
     "tris": 1528
    },
    {
-    "name": "Nozzle__Black@slide_z_-1.8_3.14#0,0,0",
+    "name": "Nozzle__Black",
     "tris": 152
    },
    {
-    "name": "Nozzle__Blue@slide_z_-1.8_3.14#0,0,0",
+    "name": "Nozzle__Blue",
     "tris": 324
    },
    {
-    "name": "Nozzle__BlueDark@slide_z_-1.8_3.14#0,0,0",
+    "name": "Nozzle__BlueDark",
     "tris": 190
    },
    {
-    "name": "Nozzle__Chrome@slide_z_-1.8_3.14#0,0,0",
+    "name": "Nozzle__Chrome",
     "tris": 126
    },
    {
-    "name": "Nozzle__Rubber@slide_z_-1.8_3.14#0,0,0",
+    "name": "Nozzle__Rubber",
     "tris": 612
    },
    {
@@ -337,6 +389,28 @@
   "tris": 18720
  },
  "AutoBedT3": {
+  "groups": {
+   "Bush/Plant0": {
+    "anim": "sway_x_2.5_3.14_0.15",
+    "pivot": "0.059,1.03,1.867"
+   },
+   "Bush/Plant1": {
+    "anim": "sway_x_2.5_3.14_0.45",
+    "pivot": "-0.025,1.03,0"
+   },
+   "Bush/Plant2": {
+    "anim": "sway_x_2.5_3.14_0.75",
+    "pivot": "-0.061,1.03,-1.867"
+   },
+   "Laser": {
+    "anim": "slide_z_-2.3_3.14",
+    "pivot": "0,0,0"
+   },
+   "WarnLamp": {
+    "anim": "pulse_4",
+    "pivot": null
+   }
+  },
   "labels": {},
   "parts": [
    {
@@ -360,75 +434,75 @@
     "tris": 108
    },
    {
-    "name": "Bush/Plant0__Flower@sway_x_2.5_3.14_0.15#0.059,1.03,1.867",
+    "name": "Bush/Plant0__Flower",
     "tris": 600
    },
    {
-    "name": "Bush/Plant0__FlowerCore@sway_x_2.5_3.14_0.15#0.059,1.03,1.867",
+    "name": "Bush/Plant0__FlowerCore",
     "tris": 114
    },
    {
-    "name": "Bush/Plant0__Leaf@sway_x_2.5_3.14_0.15#0.059,1.03,1.867",
+    "name": "Bush/Plant0__Leaf",
     "tris": 1000
    },
    {
-    "name": "Bush/Plant0__LeafDark@sway_x_2.5_3.14_0.15#0.059,1.03,1.867",
+    "name": "Bush/Plant0__LeafDark",
     "tris": 600
    },
    {
-    "name": "Bush/Plant0__Stem@sway_x_2.5_3.14_0.15#0.059,1.03,1.867",
+    "name": "Bush/Plant0__Stem",
     "tris": 1528
    },
    {
-    "name": "Bush/Plant1__Flower@sway_x_2.5_3.14_0.45#-0.025,1.03,0",
+    "name": "Bush/Plant1__Flower",
     "tris": 600
    },
    {
-    "name": "Bush/Plant1__FlowerCore@sway_x_2.5_3.14_0.45#-0.025,1.03,0",
+    "name": "Bush/Plant1__FlowerCore",
     "tris": 114
    },
    {
-    "name": "Bush/Plant1__Leaf@sway_x_2.5_3.14_0.45#-0.025,1.03,0",
+    "name": "Bush/Plant1__Leaf",
     "tris": 1000
    },
    {
-    "name": "Bush/Plant1__LeafDark@sway_x_2.5_3.14_0.45#-0.025,1.03,0",
+    "name": "Bush/Plant1__LeafDark",
     "tris": 600
    },
    {
-    "name": "Bush/Plant1__Stem@sway_x_2.5_3.14_0.45#-0.025,1.03,0",
+    "name": "Bush/Plant1__Stem",
     "tris": 1528
    },
    {
-    "name": "Bush/Plant2__Flower@sway_x_2.5_3.14_0.75#-0.061,1.03,-1.867",
+    "name": "Bush/Plant2__Flower",
     "tris": 600
    },
    {
-    "name": "Bush/Plant2__FlowerCore@sway_x_2.5_3.14_0.75#-0.061,1.03,-1.867",
+    "name": "Bush/Plant2__FlowerCore",
     "tris": 114
    },
    {
-    "name": "Bush/Plant2__Leaf@sway_x_2.5_3.14_0.75#-0.061,1.03,-1.867",
+    "name": "Bush/Plant2__Leaf",
     "tris": 1000
    },
    {
-    "name": "Bush/Plant2__LeafDark@sway_x_2.5_3.14_0.75#-0.061,1.03,-1.867",
+    "name": "Bush/Plant2__LeafDark",
     "tris": 600
    },
    {
-    "name": "Bush/Plant2__Stem@sway_x_2.5_3.14_0.75#-0.061,1.03,-1.867",
+    "name": "Bush/Plant2__Stem",
     "tris": 1528
    },
    {
-    "name": "Laser__MetalDark@slide_z_-2.3_3.14#0,0,0",
+    "name": "Laser__MetalDark",
     "tris": 108
    },
    {
-    "name": "Laser__NeonRed@slide_z_-2.3_3.14#0,0,0",
+    "name": "Laser__NeonRed",
     "tris": 1170
    },
    {
-    "name": "Laser__White@slide_z_-2.3_3.14#0,0,0",
+    "name": "Laser__White",
     "tris": 188
    },
    {
@@ -436,13 +510,14 @@
     "tris": 2592
    },
    {
-    "name": "WarnLamp__NeonRed@pulse_4",
+    "name": "WarnLamp__NeonRed",
     "tris": 190
    }
   ],
   "tris": 18494
  },
  "Autoclave": {
+  "groups": {},
   "labels": {
    "1": {
     "face": "Back",
@@ -506,6 +581,48 @@
   "tris": 7200
  },
  "Battery": {
+  "groups": {
+   "Led-10": {
+    "anim": "pulse_1",
+    "pivot": null
+   },
+   "Led-11": {
+    "anim": "pulse_1.4",
+    "pivot": null
+   },
+   "Led-12": {
+    "anim": "pulse_1.8",
+    "pivot": null
+   },
+   "Led-13": {
+    "anim": "pulse_2.2",
+    "pivot": null
+   },
+   "Led-14": {
+    "anim": "pulse_2.6",
+    "pivot": null
+   },
+   "Led10": {
+    "anim": "pulse_1",
+    "pivot": null
+   },
+   "Led11": {
+    "anim": "pulse_1.4",
+    "pivot": null
+   },
+   "Led12": {
+    "anim": "pulse_1.8",
+    "pivot": null
+   },
+   "Led13": {
+    "anim": "pulse_2.2",
+    "pivot": null
+   },
+   "Led14": {
+    "anim": "pulse_2.6",
+    "pivot": null
+   }
+  },
   "labels": {
    "1": {
     "face": "Back",
@@ -538,49 +655,55 @@
     "tris": 126
    },
    {
-    "name": "Led-10__NeonGreen@pulse_1",
+    "name": "Led-10__NeonGreen",
     "tris": 108
    },
    {
-    "name": "Led-11__NeonGreen@pulse_1.4",
+    "name": "Led-11__NeonGreen",
     "tris": 108
    },
    {
-    "name": "Led-12__NeonGreen@pulse_1.8",
+    "name": "Led-12__NeonGreen",
     "tris": 108
    },
    {
-    "name": "Led-13__NeonGreen@pulse_2.2",
+    "name": "Led-13__NeonGreen",
     "tris": 108
    },
    {
-    "name": "Led-14__NeonGreen@pulse_2.6",
+    "name": "Led-14__NeonGreen",
     "tris": 108
    },
    {
-    "name": "Led10__NeonGreen@pulse_1",
+    "name": "Led10__NeonGreen",
     "tris": 108
    },
    {
-    "name": "Led11__NeonGreen@pulse_1.4",
+    "name": "Led11__NeonGreen",
     "tris": 108
    },
    {
-    "name": "Led12__NeonGreen@pulse_1.8",
+    "name": "Led12__NeonGreen",
     "tris": 108
    },
    {
-    "name": "Led13__NeonGreen@pulse_2.2",
+    "name": "Led13__NeonGreen",
     "tris": 108
    },
    {
-    "name": "Led14__NeonGreen@pulse_2.6",
+    "name": "Led14__NeonGreen",
     "tris": 108
    }
   ],
   "tris": 6454
  },
  "Beacon": {
+  "groups": {
+   "Lamp": {
+    "anim": "pulse_1.2",
+    "pivot": null
+   }
+  },
   "labels": {},
   "parts": [
    {
@@ -608,13 +731,31 @@
     "tris": 62
    },
    {
-    "name": "Lamp__NeonRed@pulse_1.2",
+    "name": "Lamp__NeonRed",
     "tris": 144
    }
   ],
   "tris": 2886
  },
  "BedMetal": {
+  "groups": {
+   "Bush/Plant0": {
+    "anim": "sway_x_2.5_3.14_0.15",
+    "pivot": "-0.052,1.13,2"
+   },
+   "Bush/Plant1": {
+    "anim": "sway_x_2.5_3.14_0.45",
+    "pivot": "-0.048,1.13,0"
+   },
+   "Bush/Plant2": {
+    "anim": "sway_x_2.5_3.14_0.75",
+    "pivot": "0.027,1.13,-2"
+   },
+   "HeatLamp": {
+    "anim": "pulse_2",
+    "pivot": null
+   }
+  },
   "labels": {},
   "parts": [
    {
@@ -650,67 +791,67 @@
     "tris": 92
    },
    {
-    "name": "Bush/Plant0__Flower@sway_x_2.5_3.14_0.15#-0.052,1.13,2",
+    "name": "Bush/Plant0__Flower",
     "tris": 600
    },
    {
-    "name": "Bush/Plant0__FlowerCore@sway_x_2.5_3.14_0.15#-0.052,1.13,2",
+    "name": "Bush/Plant0__FlowerCore",
     "tris": 114
    },
    {
-    "name": "Bush/Plant0__Leaf@sway_x_2.5_3.14_0.15#-0.052,1.13,2",
+    "name": "Bush/Plant0__Leaf",
     "tris": 1000
    },
    {
-    "name": "Bush/Plant0__LeafDark@sway_x_2.5_3.14_0.15#-0.052,1.13,2",
+    "name": "Bush/Plant0__LeafDark",
     "tris": 600
    },
    {
-    "name": "Bush/Plant0__Stem@sway_x_2.5_3.14_0.15#-0.052,1.13,2",
+    "name": "Bush/Plant0__Stem",
     "tris": 1528
    },
    {
-    "name": "Bush/Plant1__Flower@sway_x_2.5_3.14_0.45#-0.048,1.13,0",
+    "name": "Bush/Plant1__Flower",
     "tris": 600
    },
    {
-    "name": "Bush/Plant1__FlowerCore@sway_x_2.5_3.14_0.45#-0.048,1.13,0",
+    "name": "Bush/Plant1__FlowerCore",
     "tris": 114
    },
    {
-    "name": "Bush/Plant1__Leaf@sway_x_2.5_3.14_0.45#-0.048,1.13,0",
+    "name": "Bush/Plant1__Leaf",
     "tris": 1000
    },
    {
-    "name": "Bush/Plant1__LeafDark@sway_x_2.5_3.14_0.45#-0.048,1.13,0",
+    "name": "Bush/Plant1__LeafDark",
     "tris": 600
    },
    {
-    "name": "Bush/Plant1__Stem@sway_x_2.5_3.14_0.45#-0.048,1.13,0",
+    "name": "Bush/Plant1__Stem",
     "tris": 1528
    },
    {
-    "name": "Bush/Plant2__Flower@sway_x_2.5_3.14_0.75#0.027,1.13,-2",
+    "name": "Bush/Plant2__Flower",
     "tris": 600
    },
    {
-    "name": "Bush/Plant2__FlowerCore@sway_x_2.5_3.14_0.75#0.027,1.13,-2",
+    "name": "Bush/Plant2__FlowerCore",
     "tris": 114
    },
    {
-    "name": "Bush/Plant2__Leaf@sway_x_2.5_3.14_0.75#0.027,1.13,-2",
+    "name": "Bush/Plant2__Leaf",
     "tris": 1000
    },
    {
-    "name": "Bush/Plant2__LeafDark@sway_x_2.5_3.14_0.75#0.027,1.13,-2",
+    "name": "Bush/Plant2__LeafDark",
     "tris": 600
    },
    {
-    "name": "Bush/Plant2__Stem@sway_x_2.5_3.14_0.75#0.027,1.13,-2",
+    "name": "Bush/Plant2__Stem",
     "tris": 1528
    },
    {
-    "name": "HeatLamp__NeonOrange@pulse_2",
+    "name": "HeatLamp__NeonOrange",
     "tris": 190
    },
    {
@@ -721,6 +862,20 @@
   "tris": 21324
  },
  "BedStone": {
+  "groups": {
+   "Bush/Plant0": {
+    "anim": "sway_x_2.5_3.14_0.15",
+    "pivot": "0.091,1.01,1.867"
+   },
+   "Bush/Plant1": {
+    "anim": "sway_x_2.5_3.14_0.45",
+    "pivot": "0.021,1.01,0"
+   },
+   "Bush/Plant2": {
+    "anim": "sway_x_2.5_3.14_0.75",
+    "pivot": "0.09,1.01,-1.867"
+   }
+  },
   "labels": {},
   "parts": [
    {
@@ -744,63 +899,63 @@
     "tris": 3456
    },
    {
-    "name": "Bush/Plant0__Flower@sway_x_2.5_3.14_0.15#0.091,1.01,1.867",
+    "name": "Bush/Plant0__Flower",
     "tris": 600
    },
    {
-    "name": "Bush/Plant0__FlowerCore@sway_x_2.5_3.14_0.15#0.091,1.01,1.867",
+    "name": "Bush/Plant0__FlowerCore",
     "tris": 114
    },
    {
-    "name": "Bush/Plant0__Leaf@sway_x_2.5_3.14_0.15#0.091,1.01,1.867",
+    "name": "Bush/Plant0__Leaf",
     "tris": 1000
    },
    {
-    "name": "Bush/Plant0__LeafDark@sway_x_2.5_3.14_0.15#0.091,1.01,1.867",
+    "name": "Bush/Plant0__LeafDark",
     "tris": 600
    },
    {
-    "name": "Bush/Plant0__Stem@sway_x_2.5_3.14_0.15#0.091,1.01,1.867",
+    "name": "Bush/Plant0__Stem",
     "tris": 1528
    },
    {
-    "name": "Bush/Plant1__Flower@sway_x_2.5_3.14_0.45#0.021,1.01,0",
+    "name": "Bush/Plant1__Flower",
     "tris": 600
    },
    {
-    "name": "Bush/Plant1__FlowerCore@sway_x_2.5_3.14_0.45#0.021,1.01,0",
+    "name": "Bush/Plant1__FlowerCore",
     "tris": 114
    },
    {
-    "name": "Bush/Plant1__Leaf@sway_x_2.5_3.14_0.45#0.021,1.01,0",
+    "name": "Bush/Plant1__Leaf",
     "tris": 1000
    },
    {
-    "name": "Bush/Plant1__LeafDark@sway_x_2.5_3.14_0.45#0.021,1.01,0",
+    "name": "Bush/Plant1__LeafDark",
     "tris": 600
    },
    {
-    "name": "Bush/Plant1__Stem@sway_x_2.5_3.14_0.45#0.021,1.01,0",
+    "name": "Bush/Plant1__Stem",
     "tris": 1528
    },
    {
-    "name": "Bush/Plant2__Flower@sway_x_2.5_3.14_0.75#0.09,1.01,-1.867",
+    "name": "Bush/Plant2__Flower",
     "tris": 600
    },
    {
-    "name": "Bush/Plant2__FlowerCore@sway_x_2.5_3.14_0.75#0.09,1.01,-1.867",
+    "name": "Bush/Plant2__FlowerCore",
     "tris": 114
    },
    {
-    "name": "Bush/Plant2__Leaf@sway_x_2.5_3.14_0.75#0.09,1.01,-1.867",
+    "name": "Bush/Plant2__Leaf",
     "tris": 1000
    },
    {
-    "name": "Bush/Plant2__LeafDark@sway_x_2.5_3.14_0.75#0.09,1.01,-1.867",
+    "name": "Bush/Plant2__LeafDark",
     "tris": 600
    },
    {
-    "name": "Bush/Plant2__Stem@sway_x_2.5_3.14_0.75#0.09,1.01,-1.867",
+    "name": "Bush/Plant2__Stem",
     "tris": 1528
    },
    {
@@ -811,6 +966,20 @@
   "tris": 24002
  },
  "BedWood": {
+  "groups": {
+   "Bush/Plant0": {
+    "anim": "sway_x_2.5_3.14_0.15",
+    "pivot": "-0.073,0.85,2"
+   },
+   "Bush/Plant1": {
+    "anim": "sway_x_2.5_3.14_0.45",
+    "pivot": "-0.081,0.85,0"
+   },
+   "Bush/Plant2": {
+    "anim": "sway_x_2.5_3.14_0.75",
+    "pivot": "-0.054,0.85,-2"
+   }
+  },
   "labels": {},
   "parts": [
    {
@@ -838,63 +1007,63 @@
     "tris": 432
    },
    {
-    "name": "Bush/Plant0__Flower@sway_x_2.5_3.14_0.15#-0.073,0.85,2",
+    "name": "Bush/Plant0__Flower",
     "tris": 600
    },
    {
-    "name": "Bush/Plant0__FlowerCore@sway_x_2.5_3.14_0.15#-0.073,0.85,2",
+    "name": "Bush/Plant0__FlowerCore",
     "tris": 114
    },
    {
-    "name": "Bush/Plant0__Leaf@sway_x_2.5_3.14_0.15#-0.073,0.85,2",
+    "name": "Bush/Plant0__Leaf",
     "tris": 1000
    },
    {
-    "name": "Bush/Plant0__LeafDark@sway_x_2.5_3.14_0.15#-0.073,0.85,2",
+    "name": "Bush/Plant0__LeafDark",
     "tris": 600
    },
    {
-    "name": "Bush/Plant0__Stem@sway_x_2.5_3.14_0.15#-0.073,0.85,2",
+    "name": "Bush/Plant0__Stem",
     "tris": 1528
    },
    {
-    "name": "Bush/Plant1__Flower@sway_x_2.5_3.14_0.45#-0.081,0.85,0",
+    "name": "Bush/Plant1__Flower",
     "tris": 600
    },
    {
-    "name": "Bush/Plant1__FlowerCore@sway_x_2.5_3.14_0.45#-0.081,0.85,0",
+    "name": "Bush/Plant1__FlowerCore",
     "tris": 114
    },
    {
-    "name": "Bush/Plant1__Leaf@sway_x_2.5_3.14_0.45#-0.081,0.85,0",
+    "name": "Bush/Plant1__Leaf",
     "tris": 1000
    },
    {
-    "name": "Bush/Plant1__LeafDark@sway_x_2.5_3.14_0.45#-0.081,0.85,0",
+    "name": "Bush/Plant1__LeafDark",
     "tris": 600
    },
    {
-    "name": "Bush/Plant1__Stem@sway_x_2.5_3.14_0.45#-0.081,0.85,0",
+    "name": "Bush/Plant1__Stem",
     "tris": 1528
    },
    {
-    "name": "Bush/Plant2__Flower@sway_x_2.5_3.14_0.75#-0.054,0.85,-2",
+    "name": "Bush/Plant2__Flower",
     "tris": 600
    },
    {
-    "name": "Bush/Plant2__FlowerCore@sway_x_2.5_3.14_0.75#-0.054,0.85,-2",
+    "name": "Bush/Plant2__FlowerCore",
     "tris": 114
    },
    {
-    "name": "Bush/Plant2__Leaf@sway_x_2.5_3.14_0.75#-0.054,0.85,-2",
+    "name": "Bush/Plant2__Leaf",
     "tris": 1000
    },
    {
-    "name": "Bush/Plant2__LeafDark@sway_x_2.5_3.14_0.75#-0.054,0.85,-2",
+    "name": "Bush/Plant2__LeafDark",
     "tris": 600
    },
    {
-    "name": "Bush/Plant2__Stem@sway_x_2.5_3.14_0.75#-0.054,0.85,-2",
+    "name": "Bush/Plant2__Stem",
     "tris": 1528
    },
    {
@@ -905,6 +1074,7 @@
   "tris": 17658
  },
  "Bench": {
+  "groups": {},
   "labels": {},
   "parts": [
    {
@@ -923,6 +1093,7 @@
   "tris": 5284
  },
  "BigSack": {
+  "groups": {},
   "labels": {},
   "parts": [
    {
@@ -953,6 +1124,12 @@
   "tris": 5560
  },
  "Biogas": {
+  "groups": {
+   "FlareFlame": {
+    "anim": "pulse_4",
+    "pivot": null
+   }
+  },
   "labels": {
    "1": {
     "face": "Back",
@@ -1005,13 +1182,14 @@
     "tris": 68
    },
    {
-    "name": "FlareFlame__NeonOrange@pulse_4",
+    "name": "FlareFlame__NeonOrange",
     "tris": 72
    }
   ],
   "tris": 5296
  },
  "BiogasTurbine": {
+  "groups": {},
   "labels": {
    "1": {
     "face": "Back",
@@ -1051,6 +1229,7 @@
   "tris": 6434
  },
  "BiohumusTank": {
+  "groups": {},
   "labels": {},
   "parts": [
    {
@@ -1081,6 +1260,7 @@
   "tris": 4942
  },
  "Bioreactor": {
+  "groups": {},
   "labels": {
    "1": {
     "face": "Back",
@@ -1128,6 +1308,20 @@
   "tris": 8830
  },
  "Breaker": {
+  "groups": {
+   "Led0": {
+    "anim": "pulse_1",
+    "pivot": null
+   },
+   "Led1": {
+    "anim": "pulse_2",
+    "pivot": null
+   },
+   "Led2": {
+    "anim": "pulse_3",
+    "pivot": null
+   }
+  },
   "labels": {
    "1": {
     "face": "Back",
@@ -1172,95 +1366,139 @@
     "tris": 108
    },
    {
-    "name": "Led0__NeonGreen@pulse_1",
+    "name": "Led0__NeonGreen",
     "tris": 190
    },
    {
-    "name": "Led1__NeonGreen@pulse_2",
+    "name": "Led1__NeonGreen",
     "tris": 190
    },
    {
-    "name": "Led2__NeonRed@pulse_3",
+    "name": "Led2__NeonRed",
     "tris": 190
    }
   ],
   "tris": 1768
  },
  "Bug": {
+  "groups": {
+   "BugBody": {
+    "anim": "bob_0.03_25.13",
+    "pivot": "0,0,0"
+   },
+   "BugBody/HeadGroup": {
+    "anim": "sway_y_8_6.28",
+    "pivot": "0,0.4,1.28"
+   },
+   "BugBody/Hip0-1": {
+    "anim": "sway_y_14_12.57_0.5",
+    "pivot": "-0.5,0.32,0.72"
+   },
+   "BugBody/Hip01": {
+    "anim": "sway_y_14_12.57_0",
+    "pivot": "0.5,0.32,0.72"
+   },
+   "BugBody/Hip1-1": {
+    "anim": "sway_y_14_12.57_0",
+    "pivot": "-0.5,0.32,0.25"
+   },
+   "BugBody/Hip11": {
+    "anim": "sway_y_14_12.57_0.5",
+    "pivot": "0.5,0.32,0.25"
+   },
+   "BugBody/Hip2-1": {
+    "anim": "sway_y_14_12.57_0.5",
+    "pivot": "-0.5,0.32,-0.25"
+   },
+   "BugBody/Hip21": {
+    "anim": "sway_y_14_12.57_0",
+    "pivot": "0.5,0.32,-0.25"
+   }
+  },
   "labels": {},
   "parts": [
    {
-    "name": "BugBody__Black@bob_0.03_25.13#0,0,0",
+    "name": "BugBody__Black",
     "tris": 3740
    },
    {
-    "name": "BugBody__BugOrange@bob_0.03_25.13#0,0,0",
+    "name": "BugBody__BugOrange",
     "tris": 574
    },
    {
-    "name": "BugBody__Shell@bob_0.03_25.13#0,0,0",
+    "name": "BugBody__Shell",
     "tris": 878
    },
    {
-    "name": "BugBody/HeadGroup__Black@sway_y_8_6.28#0,0.4,1.28",
+    "name": "BugBody/HeadGroup__Black",
     "tris": 2050
    },
    {
-    "name": "BugBody/HeadGroup__BugOrange@sway_y_8_6.28#0,0.4,1.28",
+    "name": "BugBody/HeadGroup__BugOrange",
     "tris": 1760
    },
    {
-    "name": "BugBody/Hip0-1__Black@sway_y_14_12.57_0.5#-0.5,0.32,0.72",
+    "name": "BugBody/Hip0-1__Black",
     "tris": 544
    },
    {
-    "name": "BugBody/Hip0-1__BugOrange@sway_y_14_12.57_0.5#-0.5,0.32,0.72",
+    "name": "BugBody/Hip0-1__BugOrange",
     "tris": 500
    },
    {
-    "name": "BugBody/Hip01__Black@sway_y_14_12.57_0#0.5,0.32,0.72",
+    "name": "BugBody/Hip01__Black",
     "tris": 544
    },
    {
-    "name": "BugBody/Hip01__BugOrange@sway_y_14_12.57_0#0.5,0.32,0.72",
+    "name": "BugBody/Hip01__BugOrange",
     "tris": 500
    },
    {
-    "name": "BugBody/Hip1-1__Black@sway_y_14_12.57_0#-0.5,0.32,0.25",
+    "name": "BugBody/Hip1-1__Black",
     "tris": 544
    },
    {
-    "name": "BugBody/Hip1-1__BugOrange@sway_y_14_12.57_0#-0.5,0.32,0.25",
+    "name": "BugBody/Hip1-1__BugOrange",
     "tris": 500
    },
    {
-    "name": "BugBody/Hip11__Black@sway_y_14_12.57_0.5#0.5,0.32,0.25",
+    "name": "BugBody/Hip11__Black",
     "tris": 544
    },
    {
-    "name": "BugBody/Hip11__BugOrange@sway_y_14_12.57_0.5#0.5,0.32,0.25",
+    "name": "BugBody/Hip11__BugOrange",
     "tris": 500
    },
    {
-    "name": "BugBody/Hip2-1__Black@sway_y_14_12.57_0.5#-0.5,0.32,-0.25",
+    "name": "BugBody/Hip2-1__Black",
     "tris": 544
    },
    {
-    "name": "BugBody/Hip2-1__BugOrange@sway_y_14_12.57_0.5#-0.5,0.32,-0.25",
+    "name": "BugBody/Hip2-1__BugOrange",
     "tris": 500
    },
    {
-    "name": "BugBody/Hip21__Black@sway_y_14_12.57_0#0.5,0.32,-0.25",
+    "name": "BugBody/Hip21__Black",
     "tris": 544
    },
    {
-    "name": "BugBody/Hip21__BugOrange@sway_y_14_12.57_0#0.5,0.32,-0.25",
+    "name": "BugBody/Hip21__BugOrange",
     "tris": 500
    }
   ],
   "tris": 15266
  },
  "Centrifuge": {
+  "groups": {
+   "PanelLed": {
+    "anim": "pulse_2",
+    "pivot": null
+   },
+   "Rotor": {
+    "anim": "spin_y_720",
+    "pivot": "0,1.4,0"
+   }
+  },
   "labels": {},
   "parts": [
    {
@@ -1280,21 +1518,22 @@
     "tris": 576
    },
    {
-    "name": "PanelLed__NeonGreen@pulse_2",
+    "name": "PanelLed__NeonGreen",
     "tris": 108
    },
    {
-    "name": "Rotor__Chrome@spin_y_720#0,1.4,0",
+    "name": "Rotor__Chrome",
     "tris": 190
    },
    {
-    "name": "Rotor__NeonCyan@spin_y_720#0,1.4,0",
+    "name": "Rotor__NeonCyan",
     "tris": 432
    }
   ],
   "tris": 2430
  },
  "CoolingTower": {
+  "groups": {},
   "labels": {},
   "parts": [
    {
@@ -1317,6 +1556,12 @@
   "tris": 4820
  },
  "CryoCapsule": {
+  "groups": {
+   "Led": {
+    "anim": "pulse_0.8",
+    "pivot": null
+   }
+  },
   "labels": {},
   "parts": [
    {
@@ -1340,13 +1585,14 @@
     "tris": 144
    },
    {
-    "name": "Led__NeonCyan@pulse_0.8",
+    "name": "Led__NeonCyan",
     "tris": 108
    }
   ],
   "tris": 2564
  },
  "CryoTunnel": {
+  "groups": {},
   "labels": {
    "1": {
     "face": "Back",
@@ -1418,6 +1664,48 @@
   "tris": 5716
  },
  "DripSystem": {
+  "groups": {
+   "Drop-1": {
+    "anim": "pulse_2",
+    "pivot": null
+   },
+   "Drop-3": {
+    "anim": "pulse_2",
+    "pivot": null
+   },
+   "Drop-5": {
+    "anim": "pulse_2",
+    "pivot": null
+   },
+   "Drop-7": {
+    "anim": "pulse_2",
+    "pivot": null
+   },
+   "Drop-9": {
+    "anim": "pulse_2",
+    "pivot": null
+   },
+   "Drop1": {
+    "anim": "pulse_2",
+    "pivot": null
+   },
+   "Drop3": {
+    "anim": "pulse_2",
+    "pivot": null
+   },
+   "Drop5": {
+    "anim": "pulse_2",
+    "pivot": null
+   },
+   "Drop7": {
+    "anim": "pulse_2",
+    "pivot": null
+   },
+   "Drop9": {
+    "anim": "pulse_2",
+    "pivot": null
+   }
+  },
   "labels": {},
   "parts": [
    {
@@ -1457,139 +1745,183 @@
     "tris": 190
    },
    {
-    "name": "Drop-1__Water@pulse_2",
+    "name": "Drop-1__Water",
     "tris": 40
    },
    {
-    "name": "Drop-3__Water@pulse_2",
+    "name": "Drop-3__Water",
     "tris": 40
    },
    {
-    "name": "Drop-5__Water@pulse_2",
+    "name": "Drop-5__Water",
     "tris": 40
    },
    {
-    "name": "Drop-7__Water@pulse_2",
+    "name": "Drop-7__Water",
     "tris": 40
    },
    {
-    "name": "Drop-9__Water@pulse_2",
+    "name": "Drop-9__Water",
     "tris": 40
    },
    {
-    "name": "Drop1__Water@pulse_2",
+    "name": "Drop1__Water",
     "tris": 40
    },
    {
-    "name": "Drop3__Water@pulse_2",
+    "name": "Drop3__Water",
     "tris": 40
    },
    {
-    "name": "Drop5__Water@pulse_2",
+    "name": "Drop5__Water",
     "tris": 40
    },
    {
-    "name": "Drop7__Water@pulse_2",
+    "name": "Drop7__Water",
     "tris": 40
    },
    {
-    "name": "Drop9__Water@pulse_2",
+    "name": "Drop9__Water",
     "tris": 40
    }
   ],
   "tris": 6260
  },
  "Drone": {
+  "groups": {
+   "DroneBody": {
+    "anim": "bob_0.12_3.14",
+    "pivot": "0,1.6,0"
+   },
+   "DroneBody/Claw": {
+    "anim": "sway_x_6_3.14_0.25",
+    "pivot": "0,0.94,-0.12"
+   },
+   "DroneBody/Prop0": {
+    "anim": "spin_y_1440",
+    "pivot": "-0.98,1.86,0.98"
+   },
+   "DroneBody/Prop1": {
+    "anim": "spin_y_-1440",
+    "pivot": "0.98,1.86,0.98"
+   },
+   "DroneBody/Prop2": {
+    "anim": "spin_y_1440",
+    "pivot": "0.98,1.86,-0.98"
+   },
+   "DroneBody/Prop3": {
+    "anim": "spin_y_-1440",
+    "pivot": "-0.98,1.86,-0.98"
+   }
+  },
   "labels": {},
   "parts": [
    {
-    "name": "DroneBody__Black@bob_0.12_3.14#0,1.6,0",
+    "name": "DroneBody__Black",
     "tris": 320
    },
    {
-    "name": "DroneBody__Chrome@bob_0.12_3.14#0,1.6,0",
+    "name": "DroneBody__Chrome",
     "tris": 44
    },
    {
-    "name": "DroneBody__Glass@bob_0.12_3.14#0,1.6,0",
+    "name": "DroneBody__Glass",
     "tris": 190
    },
    {
-    "name": "DroneBody__Grey@bob_0.12_3.14#0,1.6,0",
+    "name": "DroneBody__Grey",
     "tris": 2430
    },
    {
-    "name": "DroneBody__MetalDark@bob_0.12_3.14#0,1.6,0",
+    "name": "DroneBody__MetalDark",
     "tris": 1250
    },
    {
-    "name": "DroneBody__NeonGreen@bob_0.12_3.14#0,1.6,0",
+    "name": "DroneBody__NeonGreen",
     "tris": 570
    },
    {
-    "name": "DroneBody__NeonRed@bob_0.12_3.14#0,1.6,0",
+    "name": "DroneBody__NeonRed",
     "tris": 570
    },
    {
-    "name": "DroneBody__Orange@bob_0.12_3.14#0,1.6,0",
+    "name": "DroneBody__Orange",
     "tris": 252
    },
    {
-    "name": "DroneBody__Rubber@bob_0.12_3.14#0,1.6,0",
+    "name": "DroneBody__Rubber",
     "tris": 1480
    },
    {
-    "name": "DroneBody__White@bob_0.12_3.14#0,1.6,0",
+    "name": "DroneBody__White",
     "tris": 3918
    },
    {
-    "name": "DroneBody/Claw__Chrome@sway_x_6_3.14_0.25#0,0.94,-0.12",
+    "name": "DroneBody/Claw__Chrome",
     "tris": 2220
    },
    {
-    "name": "DroneBody/Claw__MetalDark@sway_x_6_3.14_0.25#0,0.94,-0.12",
+    "name": "DroneBody/Claw__MetalDark",
     "tris": 256
    },
    {
-    "name": "DroneBody/Claw__Potato@sway_x_6_3.14_0.25#0,0.94,-0.12",
+    "name": "DroneBody/Claw__Potato",
     "tris": 288
    },
    {
-    "name": "DroneBody/Prop0__Black@spin_y_1440#-0.98,1.86,0.98",
+    "name": "DroneBody/Prop0__Black",
     "tris": 280
    },
    {
-    "name": "DroneBody/Prop0__MetalDark@spin_y_1440#-0.98,1.86,0.98",
+    "name": "DroneBody/Prop0__MetalDark",
     "tris": 190
    },
    {
-    "name": "DroneBody/Prop1__Black@spin_y_-1440#0.98,1.86,0.98",
+    "name": "DroneBody/Prop1__Black",
     "tris": 280
    },
    {
-    "name": "DroneBody/Prop1__MetalDark@spin_y_-1440#0.98,1.86,0.98",
+    "name": "DroneBody/Prop1__MetalDark",
     "tris": 190
    },
    {
-    "name": "DroneBody/Prop2__Black@spin_y_1440#0.98,1.86,-0.98",
+    "name": "DroneBody/Prop2__Black",
     "tris": 280
    },
    {
-    "name": "DroneBody/Prop2__MetalDark@spin_y_1440#0.98,1.86,-0.98",
+    "name": "DroneBody/Prop2__MetalDark",
     "tris": 190
    },
    {
-    "name": "DroneBody/Prop3__Black@spin_y_-1440#-0.98,1.86,-0.98",
+    "name": "DroneBody/Prop3__Black",
     "tris": 280
    },
    {
-    "name": "DroneBody/Prop3__MetalDark@spin_y_-1440#-0.98,1.86,-0.98",
+    "name": "DroneBody/Prop3__MetalDark",
     "tris": 190
    }
   ],
   "tris": 15668
  },
  "DroneStation": {
+  "groups": {
+   "AntennaTip": {
+    "anim": "pulse_1",
+    "pivot": null
+   },
+   "Ring0": {
+    "anim": "pulse_1",
+    "pivot": null
+   },
+   "Ring1": {
+    "anim": "pulse_1.5",
+    "pivot": null
+   },
+   "Windsock": {
+    "anim": "sway_y_15_3.14",
+    "pivot": "3.6,2.8,-2.7"
+   }
+  },
   "labels": {
    "1": {
     "face": "Back",
@@ -1598,7 +1930,7 @@
   },
   "parts": [
    {
-    "name": "AntennaTip__NeonRed@pulse_1",
+    "name": "AntennaTip__NeonRed",
     "tris": 190
    },
    {
@@ -1614,7 +1946,7 @@
     "tris": 196
    },
    {
-    "name": "Body__Grey",
+    "name": "Body__Grey~2",
     "tris": 110
    },
    {
@@ -1630,21 +1962,27 @@
     "tris": 252
    },
    {
-    "name": "Ring0__NeonCyan@pulse_1",
+    "name": "Ring0__NeonCyan",
     "tris": 768
    },
    {
-    "name": "Ring1__NeonCyan@pulse_1.5",
+    "name": "Ring1__NeonCyan",
     "tris": 768
    },
    {
-    "name": "Windsock__Orange@sway_y_15_3.14#3.6,2.8,-2.7",
+    "name": "Windsock__Orange",
     "tris": 124
    }
   ],
   "tris": 4008
  },
  "Extruder": {
+  "groups": {
+   "Screw": {
+    "anim": "spin_x_239",
+    "pivot": "-0.2,3.19,-0.3"
+   }
+  },
   "labels": {
    "1": {
     "face": "Back",
@@ -1705,17 +2043,18 @@
     "tris": 2640
    },
    {
-    "name": "Screw__Chrome@spin_x_239#-0.2,3.19,-0.3",
+    "name": "Screw__Chrome",
     "tris": 44
    },
    {
-    "name": "Screw__Orange@spin_x_239#-0.2,3.19,-0.3",
+    "name": "Screw__Orange",
     "tris": 1412
    }
   ],
   "tris": 8620
  },
  "FactoryHall": {
+  "groups": {},
   "labels": {
    "1": {
     "face": "Back",
@@ -1760,51 +2099,51 @@
     "tris": 108
    },
    {
-    "name": "Body__Grey",
+    "name": "Body__Grey~2",
     "tris": 108
    },
    {
-    "name": "Body__Grey",
+    "name": "Body__Grey~3",
     "tris": 108
    },
    {
-    "name": "Body__Grey",
+    "name": "Body__Grey~4",
     "tris": 108
    },
    {
-    "name": "Body__Grey",
+    "name": "Body__Grey~5",
     "tris": 108
    },
    {
-    "name": "Body__Grey",
+    "name": "Body__Grey~6",
     "tris": 108
    },
    {
-    "name": "Body__Grey",
+    "name": "Body__Grey~7",
     "tris": 108
    },
    {
-    "name": "Body__Grey",
+    "name": "Body__Grey~8",
     "tris": 108
    },
    {
-    "name": "Body__Grey",
+    "name": "Body__Grey~9",
     "tris": 108
    },
    {
-    "name": "Body__Grey",
+    "name": "Body__Grey~10",
     "tris": 108
    },
    {
-    "name": "Body__Grey",
+    "name": "Body__Grey~11",
     "tris": 108
    },
    {
-    "name": "Body__Grey",
+    "name": "Body__Grey~12",
     "tris": 108
    },
    {
-    "name": "Body__Grey",
+    "name": "Body__Grey~13",
     "tris": 1296
    },
    {
@@ -1812,7 +2151,7 @@
     "tris": 9936
    },
    {
-    "name": "Body__MetalDark",
+    "name": "Body__MetalDark~2",
     "tris": 1620
    },
    {
@@ -1863,6 +2202,12 @@
   "tris": 26512
  },
  "FenceWood": {
+  "groups": {
+   "GateSign": {
+    "anim": "sway_z_-2_3.14",
+    "pivot": "0,3.35,12.85"
+   }
+  },
   "labels": {
    "1": {
     "face": "Back",
@@ -1883,29 +2228,35 @@
     "tris": 3240
    },
    {
-    "name": "GateSign__MetalDark@sway_z_-2_3.14#0,3.35,12.85",
+    "name": "GateSign__MetalDark",
     "tris": 88
    },
    {
-    "name": "GateSign__Potato@sway_z_-2_3.14#0,3.35,12.85",
+    "name": "GateSign__Potato",
     "tris": 288
    },
    {
-    "name": "GateSign__WoodDark@sway_z_-2_3.14#0,3.35,12.85",
+    "name": "GateSign__WoodDark",
     "tris": 108
    },
    {
-    "name": "GateSign__WoodDark@sway_z_-2_3.14#0,3.35,12.85!1",
+    "name": "GateSign__WoodDark!1",
     "tris": 12
    },
    {
-    "name": "GateSign__WoodLight@sway_z_-2_3.14#0,3.35,12.85",
+    "name": "GateSign__WoodLight",
     "tris": 108
    }
   ],
   "tris": 11780
  },
  "Fertilizer": {
+  "groups": {
+   "DoserLed": {
+    "anim": "pulse_4",
+    "pivot": null
+   }
+  },
   "labels": {},
   "parts": [
    {
@@ -1933,13 +2284,19 @@
     "tris": 332
    },
    {
-    "name": "DoserLed__NeonGreen@pulse_4",
+    "name": "DoserLed__NeonGreen",
     "tris": 190
    }
   ],
   "tris": 1612
  },
  "Flagpole": {
+  "groups": {
+   "Flag": {
+    "anim": "sway_y_12_3.14",
+    "pivot": "0,11,0"
+   }
+  },
   "labels": {},
   "parts": [
    {
@@ -1955,25 +2312,31 @@
     "tris": 120
    },
    {
-    "name": "Flag__MetalDark@sway_y_12_3.14#0,11,0",
+    "name": "Flag__MetalDark",
     "tris": 252
    },
    {
-    "name": "Flag__Red@sway_y_12_3.14#0,11,0",
+    "name": "Flag__Red",
     "tris": 2120
    },
    {
-    "name": "Flag__WoodDark@sway_y_12_3.14#0,11,0",
+    "name": "Flag__WoodDark",
     "tris": 576
    },
    {
-    "name": "Flag__Yellow@sway_y_12_3.14#0,11,0",
+    "name": "Flag__Yellow",
     "tris": 416
    }
   ],
   "tris": 3832
  },
  "Fogger": {
+  "groups": {
+   "Strip": {
+    "anim": "pulse_1",
+    "pivot": null
+   }
+  },
   "labels": {},
   "parts": [
    {
@@ -1993,13 +2356,19 @@
     "tris": 188
    },
    {
-    "name": "Strip__NeonCyan@pulse_1",
+    "name": "Strip__NeonCyan",
     "tris": 108
    }
   ],
   "tris": 830
  },
  "ForceDome": {
+  "groups": {
+   "Orb": {
+    "anim": "pulse_1.5",
+    "pivot": null
+   }
+  },
   "labels": {},
   "parts": [
    {
@@ -2015,13 +2384,14 @@
     "tris": 2286
    },
    {
-    "name": "Orb__NeonCyan@pulse_1.5",
+    "name": "Orb__NeonCyan",
     "tris": 280
    }
   ],
   "tris": 4756
  },
  "FounderStatue": {
+  "groups": {},
   "labels": {
    "1": {
     "face": "Back",
@@ -2049,6 +2419,7 @@
   "tris": 9330
  },
  "Fryer": {
+  "groups": {},
   "labels": {
    "1": {
     "face": "Back",
@@ -2116,6 +2487,16 @@
   "tris": 6578
  },
  "Fusion": {
+  "groups": {
+   "Plasma": {
+    "anim": "pulse_3",
+    "pivot": null
+   },
+   "Torus": {
+    "anim": "spin_y_40",
+    "pivot": "0,3.2,0"
+   }
+  },
   "labels": {},
   "parts": [
    {
@@ -2131,21 +2512,27 @@
     "tris": 190
    },
    {
-    "name": "Plasma__NeonPurple@pulse_3",
+    "name": "Plasma__NeonPurple",
     "tris": 144
    },
    {
-    "name": "Torus__Copper@spin_y_40#0,3.2,0",
+    "name": "Torus__Copper",
     "tris": 2256
    },
    {
-    "name": "Torus__NeonOrange@spin_y_40#0,3.2,0",
+    "name": "Torus__NeonOrange",
     "tris": 864
    }
   ],
   "tris": 5914
  },
  "GenDiesel100": {
+  "groups": {
+   "Beacon": {
+    "anim": "pulse_3",
+    "pivot": null
+   }
+  },
   "labels": {
    "1": {
     "face": "Back",
@@ -2154,7 +2541,7 @@
   },
   "parts": [
    {
-    "name": "Beacon__NeonOrange@pulse_3",
+    "name": "Beacon__NeonOrange",
     "tris": 190
    },
    {
@@ -2185,6 +2572,12 @@
   "tris": 8234
  },
  "GenDiesel25": {
+  "groups": {
+   "RunLed": {
+    "anim": "pulse_2",
+    "pivot": null
+   }
+  },
   "labels": {
    "1": {
     "face": "Back",
@@ -2229,59 +2622,66 @@
     "tris": 108
    },
    {
-    "name": "RunLed__NeonGreen@pulse_2",
+    "name": "RunLed__NeonGreen",
     "tris": 190
    }
   ],
   "tris": 5484
  },
  "GenPetrol": {
+  "groups": {
+   "Motor": {
+    "anim": "slide_x_0.012_37.70",
+    "pivot": "0,0,0"
+   }
+  },
   "labels": {},
   "parts": [
    {
-    "name": "Body__Black@slide_x_0.012_37.70#0,0,0",
-    "tris": 2400
-   },
-   {
     "name": "Body__Black",
     "tris": 740
-   },
-   {
-    "name": "Body__Chrome@slide_x_0.012_37.70#0,0,0",
-    "tris": 1240
-   },
-   {
-    "name": "Body__Grey@slide_x_0.012_37.70#0,0,0",
-    "tris": 648
-   },
-   {
-    "name": "Body__MetalDark@slide_x_0.012_37.70#0,0,0",
-    "tris": 368
    },
    {
     "name": "Body__MetalDark",
     "tris": 376
    },
    {
-    "name": "Body__NeonGreen@slide_x_0.012_37.70#0,0,0",
-    "tris": 190
-   },
-   {
-    "name": "Body__Red@slide_x_0.012_37.70#0,0,0",
-    "tris": 960
-   },
-   {
     "name": "Body__Rubber",
     "tris": 1752
    },
    {
-    "name": "Body__White@slide_x_0.012_37.70#0,0,0",
+    "name": "Motor__Black",
+    "tris": 2400
+   },
+   {
+    "name": "Motor__Chrome",
+    "tris": 1240
+   },
+   {
+    "name": "Motor__Grey",
+    "tris": 648
+   },
+   {
+    "name": "Motor__MetalDark",
+    "tris": 368
+   },
+   {
+    "name": "Motor__NeonGreen",
+    "tris": 190
+   },
+   {
+    "name": "Motor__Red",
+    "tris": 960
+   },
+   {
+    "name": "Motor__White",
     "tris": 368
    }
   ],
   "tris": 9042
  },
  "Geothermal": {
+  "groups": {},
   "labels": {
    "1": {
     "face": "Back",
@@ -2325,6 +2725,20 @@
   "tris": 8798
  },
  "GodMonument": {
+  "groups": {
+   "Flame-1_6": {
+    "anim": "pulse_3",
+    "pivot": null
+   },
+   "Flame1_6": {
+    "anim": "pulse_3",
+    "pivot": null
+   },
+   "Idol": {
+    "anim": "bob_0.3_3.14",
+    "pivot": "0,2.35,0"
+   }
+  },
   "labels": {
    "1": {
     "face": "Back",
@@ -2353,33 +2767,39 @@
     "tris": 252
    },
    {
-    "name": "Flame-1.6__NeonOrange@pulse_3",
+    "name": "Flame-1_6__NeonOrange",
     "tris": 40
    },
    {
-    "name": "Flame1.6__NeonOrange@pulse_3",
+    "name": "Flame1_6__NeonOrange",
     "tris": 40
    },
    {
-    "name": "Idol__Black@bob_0.3_3.14#0,2.35,0",
+    "name": "Idol__Black",
     "tris": 880
    },
    {
-    "name": "Idol__Gold@bob_0.3_3.14#0,2.35,0",
+    "name": "Idol__Gold",
     "tris": 2708
    },
    {
-    "name": "Idol__NeonRed@bob_0.3_3.14#0,2.35,0",
+    "name": "Idol__NeonRed",
     "tris": 950
    },
    {
-    "name": "Idol__White@bob_0.3_3.14#0,2.35,0",
+    "name": "Idol__White",
     "tris": 380
    }
   ],
   "tris": 5694
  },
  "GoldenPedestal": {
+  "groups": {
+   "Tuber": {
+    "anim": "bob_0.3_3.14",
+    "pivot": "0,3.6,0"
+   }
+  },
   "labels": {},
   "parts": [
    {
@@ -2395,13 +2815,14 @@
     "tris": 72
    },
    {
-    "name": "Tuber__Gold@bob_0.3_3.14#0,3.6,0",
+    "name": "Tuber__Gold",
     "tris": 288
    }
   ],
   "tris": 1316
  },
  "GreenhousePro": {
+  "groups": {},
   "labels": {},
   "parts": [
    {
@@ -2456,6 +2877,7 @@
   "tris": 9152
  },
  "GreenhouseSmall": {
+  "groups": {},
   "labels": {},
   "parts": [
    {
@@ -2498,6 +2920,12 @@
   "tris": 8462
  },
  "HallOfFame": {
+  "groups": {
+   "TrophyStar": {
+    "anim": "pulse_1.5",
+    "pivot": null
+   }
+  },
   "labels": {},
   "parts": [
    {
@@ -2513,13 +2941,23 @@
     "tris": 108
    },
    {
-    "name": "TrophyStar__NeonYellow@pulse_1.5",
+    "name": "TrophyStar__NeonYellow",
     "tris": 72
    }
   ],
   "tris": 4108
  },
  "HarvestTower": {
+  "groups": {
+   "Beacon": {
+    "anim": "pulse_3",
+    "pivot": null
+   },
+   "Radar": {
+    "anim": "spin_y_90",
+    "pivot": "0,13.55,-0.15"
+   }
+  },
   "labels": {
    "1": {
     "face": "Back",
@@ -2528,7 +2966,7 @@
   },
   "parts": [
    {
-    "name": "Beacon__NeonRed@pulse_3",
+    "name": "Beacon__NeonRed",
     "tris": 254
    },
    {
@@ -2572,21 +3010,31 @@
     "tris": 516
    },
    {
-    "name": "Radar__Chrome@spin_y_90#0,13.55,-0.15",
+    "name": "Radar__Chrome",
     "tris": 44
    },
    {
-    "name": "Radar__MetalDark@spin_y_90#0,13.55,-0.15",
+    "name": "Radar__MetalDark",
     "tris": 532
    },
    {
-    "name": "Radar__White@spin_y_90#0,13.55,-0.15",
+    "name": "Radar__White",
     "tris": 576
    }
   ],
   "tris": 6256
  },
  "HoloTerminal": {
+  "groups": {
+   "Holo": {
+    "anim": "spin_y_40",
+    "pivot": "0,1.4,0"
+   },
+   "Projector": {
+    "anim": "pulse_1",
+    "pivot": null
+   }
+  },
   "labels": {},
   "parts": [
    {
@@ -2602,17 +3050,18 @@
     "tris": 216
    },
    {
-    "name": "Holo__NeonCyan@spin_y_40#0,1.4,0",
+    "name": "Holo__NeonCyan",
     "tris": 726
    },
    {
-    "name": "Projector__NeonCyan@pulse_1",
+    "name": "Projector__NeonCyan",
     "tris": 108
    }
   ],
   "tris": 1266
  },
  "HydroRack2": {
+  "groups": {},
   "labels": {},
   "parts": [
    {
@@ -2655,6 +3104,7 @@
   "tris": 11832
  },
  "HydroRack3": {
+  "groups": {},
   "labels": {},
   "parts": [
    {
@@ -2697,6 +3147,12 @@
   "tris": 17204
  },
  "HydroTower": {
+  "groups": {
+   "Tower": {
+    "anim": "spin_y_12",
+    "pivot": "0,1,0"
+   }
+  },
   "labels": {},
   "parts": [
    {
@@ -2712,21 +3168,22 @@
     "tris": 158
    },
    {
-    "name": "Tower__Leaf@spin_y_12#0,1,0",
+    "name": "Tower__Leaf",
     "tris": 1536
    },
    {
-    "name": "Tower__LeafDark@spin_y_12#0,1,0",
+    "name": "Tower__LeafDark",
     "tris": 1536
    },
    {
-    "name": "Tower__White@spin_y_12#0,1,0",
+    "name": "Tower__White",
     "tris": 2558
    }
   ],
   "tris": 6460
  },
  "HydroTray": {
+  "groups": {},
   "labels": {},
   "parts": [
    {
@@ -2761,6 +3218,7 @@
   "tris": 6460
  },
  "Incubator": {
+  "groups": {},
   "labels": {},
   "parts": [
    {
@@ -2795,6 +3253,16 @@
   "tris": 8380
  },
  "Ionizer": {
+  "groups": {
+   "Orb": {
+    "anim": "pulse_2",
+    "pivot": null
+   },
+   "Rings": {
+    "anim": "spin_y_45",
+    "pivot": "0,2,0"
+   }
+  },
   "labels": {},
   "parts": [
    {
@@ -2806,17 +3274,59 @@
     "tris": 286
    },
    {
-    "name": "Orb__NeonCyan@pulse_2",
+    "name": "Orb__NeonCyan",
     "tris": 240
    },
    {
-    "name": "Rings__NeonCyan@spin_y_45#0,2,0",
+    "name": "Rings__NeonCyan",
     "tris": 1920
    }
   ],
   "tris": 7944
  },
  "Lab": {
+  "groups": {
+   "Helix": {
+    "anim": "spin_y_45",
+    "pivot": "-0.5,0.3,-1"
+   },
+   "Laser": {
+    "anim": "pulse_6",
+    "pivot": null
+   },
+   "ScanPad": {
+    "anim": "pulse_2",
+    "pivot": null
+   },
+   "ServerLed0": {
+    "anim": "pulse_1",
+    "pivot": null
+   },
+   "ServerLed1": {
+    "anim": "pulse_1.3",
+    "pivot": null
+   },
+   "ServerLed2": {
+    "anim": "pulse_1.6",
+    "pivot": null
+   },
+   "ServerLed3": {
+    "anim": "pulse_1.9",
+    "pivot": null
+   },
+   "ServerLed4": {
+    "anim": "pulse_2.2",
+    "pivot": null
+   },
+   "ServerLed5": {
+    "anim": "pulse_2.5",
+    "pivot": null
+   },
+   "ServerLed6": {
+    "anim": "pulse_2.8",
+    "pivot": null
+   }
+  },
   "labels": {
    "1": {
     "face": "Back",
@@ -2849,23 +3359,23 @@
     "tris": 12
    },
    {
-    "name": "Body__Glass",
+    "name": "Body__Glass~2",
     "tris": 12
    },
    {
-    "name": "Body__Glass",
+    "name": "Body__Glass~3",
     "tris": 12
    },
    {
-    "name": "Body__Glass",
+    "name": "Body__Glass~4",
     "tris": 12
    },
    {
-    "name": "Body__Glass",
+    "name": "Body__Glass~5",
     "tris": 12
    },
    {
-    "name": "Body__Glass",
+    "name": "Body__Glass~6",
     "tris": 1144
    },
    {
@@ -2905,65 +3415,66 @@
     "tris": 1800
    },
    {
-    "name": "Body__White",
+    "name": "Body__White~2",
     "tris": 108
    },
    {
-    "name": "Helix__Black@spin_y_45#-0.5,0.3,-1",
+    "name": "Helix__Black",
     "tris": 190
    },
    {
-    "name": "Helix__NeonCyan@spin_y_45#-0.5,0.3,-1",
+    "name": "Helix__NeonCyan",
     "tris": 2316
    },
    {
-    "name": "Helix__NeonPurple@spin_y_45#-0.5,0.3,-1",
+    "name": "Helix__NeonPurple",
     "tris": 2316
    },
    {
-    "name": "Helix__White@spin_y_45#-0.5,0.3,-1",
+    "name": "Helix__White",
     "tris": 396
    },
    {
-    "name": "Laser__NeonRed@pulse_6",
+    "name": "Laser__NeonRed",
     "tris": 44
    },
    {
-    "name": "ScanPad__NeonGreen@pulse_2",
+    "name": "ScanPad__NeonGreen",
     "tris": 108
    },
    {
-    "name": "ServerLed0__NeonCyan@pulse_1",
+    "name": "ServerLed0__NeonCyan",
     "tris": 108
    },
    {
-    "name": "ServerLed1__NeonCyan@pulse_1.3",
+    "name": "ServerLed1__NeonCyan",
     "tris": 108
    },
    {
-    "name": "ServerLed2__NeonCyan@pulse_1.6",
+    "name": "ServerLed2__NeonCyan",
     "tris": 108
    },
    {
-    "name": "ServerLed3__NeonCyan@pulse_1.9",
+    "name": "ServerLed3__NeonCyan",
     "tris": 108
    },
    {
-    "name": "ServerLed4__NeonCyan@pulse_2.2",
+    "name": "ServerLed4__NeonCyan",
     "tris": 108
    },
    {
-    "name": "ServerLed5__NeonCyan@pulse_2.5",
+    "name": "ServerLed5__NeonCyan",
     "tris": 108
    },
    {
-    "name": "ServerLed6__NeonCyan@pulse_2.8",
+    "name": "ServerLed6__NeonCyan",
     "tris": 108
    }
   ],
   "tris": 15280
  },
  "LampBasic": {
+  "groups": {},
   "labels": {},
   "parts": [
    {
@@ -2994,6 +3505,7 @@
   "tris": 4086
  },
  "LampLed": {
+  "groups": {},
   "labels": {},
   "parts": [
    {
@@ -3020,6 +3532,16 @@
   "tris": 5254
  },
  "LampQuantum": {
+  "groups": {
+   "Ring-1": {
+    "anim": "spin_y_90",
+    "pivot": "0,5.95,5"
+   },
+   "Ring1": {
+    "anim": "spin_y_90",
+    "pivot": "0,5.95,-5"
+   }
+  },
   "labels": {},
   "parts": [
    {
@@ -3039,25 +3561,43 @@
     "tris": 376
    },
    {
-    "name": "Ring-1__NeonCyan@spin_y_90#0,5.95,5",
+    "name": "Ring-1__NeonCyan",
     "tris": 960
    },
    {
-    "name": "Ring-1__NeonWhite@spin_y_90#0,5.95,5",
+    "name": "Ring-1__NeonWhite",
     "tris": 216
    },
    {
-    "name": "Ring1__NeonCyan@spin_y_90#0,5.95,-5",
+    "name": "Ring1__NeonCyan",
     "tris": 960
    },
    {
-    "name": "Ring1__NeonWhite@spin_y_90#0,5.95,-5",
+    "name": "Ring1__NeonWhite",
     "tris": 216
    }
   ],
   "tris": 4654
  },
  "LaunchPad": {
+  "groups": {
+   "Lamp-1-1": {
+    "anim": "pulse_1.5",
+    "pivot": null
+   },
+   "Lamp-11": {
+    "anim": "pulse_1.5",
+    "pivot": null
+   },
+   "Lamp1-1": {
+    "anim": "pulse_1.5",
+    "pivot": null
+   },
+   "Lamp11": {
+    "anim": "pulse_1.5",
+    "pivot": null
+   }
+  },
   "labels": {},
   "parts": [
    {
@@ -3093,25 +3633,31 @@
     "tris": 384
    },
    {
-    "name": "Lamp-1-1__NeonRed@pulse_1.5",
+    "name": "Lamp-1-1__NeonRed",
     "tris": 254
    },
    {
-    "name": "Lamp-11__NeonRed@pulse_1.5",
+    "name": "Lamp-11__NeonRed",
     "tris": 254
    },
    {
-    "name": "Lamp1-1__NeonRed@pulse_1.5",
+    "name": "Lamp1-1__NeonRed",
     "tris": 254
    },
    {
-    "name": "Lamp11__NeonRed@pulse_1.5",
+    "name": "Lamp11__NeonRed",
     "tris": 254
    }
   ],
   "tris": 6280
  },
  "LaunchTower": {
+  "groups": {
+   "TopBeacon": {
+    "anim": "pulse_1",
+    "pivot": null
+   }
+  },
   "labels": {},
   "parts": [
    {
@@ -3135,13 +3681,14 @@
     "tris": 2052
    },
    {
-    "name": "TopBeacon__NeonRed@pulse_1",
+    "name": "TopBeacon__NeonRed",
     "tris": 190
    }
   ],
   "tris": 6790
  },
  "LedBoard": {
+  "groups": {},
   "labels": {},
   "parts": [
    {
@@ -3164,40 +3711,52 @@
   "tris": 1938
  },
  "Mascot": {
+  "groups": {
+   "Plush": {
+    "anim": "bob_0.25_3.14",
+    "pivot": "0,0,0"
+   }
+  },
   "labels": {},
   "parts": [
    {
-    "name": "Plush__Black@bob_0.25_3.14#0,0,0",
+    "name": "Plush__Black",
     "tris": 380
    },
    {
-    "name": "Plush__FabricRed@bob_0.25_3.14#0,0,0",
+    "name": "Plush__FabricRed",
     "tris": 744
    },
    {
-    "name": "Plush__FabricWhite@bob_0.25_3.14#0,0,0",
+    "name": "Plush__FabricWhite",
     "tris": 3102
    },
    {
-    "name": "Plush__Potato@bob_0.25_3.14#0,0,0",
+    "name": "Plush__Potato",
     "tris": 3400
    },
    {
-    "name": "Plush__PotatoDark@bob_0.25_3.14#0,0,0",
+    "name": "Plush__PotatoDark",
     "tris": 760
    },
    {
-    "name": "Plush__Red@bob_0.25_3.14#0,0,0",
+    "name": "Plush__Red",
     "tris": 3316
    },
    {
-    "name": "Plush__White@bob_0.25_3.14#0,0,0",
+    "name": "Plush__White",
     "tris": 760
    }
   ],
   "tris": 12462
  },
  "Megapack": {
+  "groups": {
+   "Strip": {
+    "anim": "pulse_0.7",
+    "pivot": null
+   }
+  },
   "labels": {},
   "parts": [
    {
@@ -3221,17 +3780,31 @@
     "tris": 188
    },
    {
-    "name": "Strip__NeonCyan@pulse_0.7",
+    "name": "Strip__NeonCyan",
     "tris": 108
    }
   ],
   "tris": 2894
  },
  "MoleTrap": {
+  "groups": {
+   "AntennaTip": {
+    "anim": "pulse_2",
+    "pivot": null
+   },
+   "Wave0": {
+    "anim": "pulse_2",
+    "pivot": null
+   },
+   "Wave1": {
+    "anim": "pulse_3",
+    "pivot": null
+   }
+  },
   "labels": {},
   "parts": [
    {
-    "name": "AntennaTip__NeonRed@pulse_2",
+    "name": "AntennaTip__NeonRed",
     "tris": 190
    },
    {
@@ -3259,17 +3832,23 @@
     "tris": 1944
    },
    {
-    "name": "Wave0__NeonCyan@pulse_2",
+    "name": "Wave0__NeonCyan",
     "tris": 768
    },
    {
-    "name": "Wave1__NeonCyan@pulse_3",
+    "name": "Wave1__NeonCyan",
     "tris": 768
    }
   ],
   "tris": 6304
  },
  "Mutagenesis": {
+  "groups": {
+   "Warning": {
+    "anim": "pulse_2",
+    "pivot": null
+   }
+  },
   "labels": {},
   "parts": [
    {
@@ -3293,13 +3872,14 @@
     "tris": 216
    },
    {
-    "name": "Warning__NeonGreen@pulse_2",
+    "name": "Warning__NeonGreen",
     "tris": 190
    }
   ],
   "tris": 1288
  },
  "NeonSign": {
+  "groups": {},
   "labels": {},
   "parts": [
    {
@@ -3326,6 +3906,7 @@
   "tris": 5468
  },
  "Office": {
+  "groups": {},
   "labels": {
    "1": {
     "face": "Back",
@@ -3370,7 +3951,7 @@
     "tris": 432
    },
    {
-    "name": "Body__MetalDark",
+    "name": "Body__MetalDark~2",
     "tris": 108
    },
    {
@@ -3394,31 +3975,31 @@
     "tris": 108
    },
    {
-    "name": "Body__White",
+    "name": "Body__White~2",
     "tris": 108
    },
    {
-    "name": "Body__White",
+    "name": "Body__White~3",
     "tris": 108
    },
    {
-    "name": "Body__White",
+    "name": "Body__White~4",
     "tris": 108
    },
    {
-    "name": "Body__White",
+    "name": "Body__White~5",
     "tris": 108
    },
    {
-    "name": "Body__White",
+    "name": "Body__White~6",
     "tris": 108
    },
    {
-    "name": "Body__White",
+    "name": "Body__White~7",
     "tris": 108
    },
    {
-    "name": "Body__White",
+    "name": "Body__White~8",
     "tris": 126
    },
    {
@@ -3433,6 +4014,7 @@
   "tris": 3006
  },
  "Packer": {
+  "groups": {},
   "labels": {
    "1": {
     "face": "Back",
@@ -3500,6 +4082,7 @@
   "tris": 4870
  },
  "Peeler": {
+  "groups": {},
   "labels": {
    "1": {
     "face": "Back",
@@ -3567,6 +4150,36 @@
   "tris": 6924
  },
  "PotatoReactor": {
+  "groups": {
+   "Bubble0": {
+    "anim": "pulse_1",
+    "pivot": null
+   },
+   "Bubble1": {
+    "anim": "pulse_1.5",
+    "pivot": null
+   },
+   "Bubble2": {
+    "anim": "pulse_2",
+    "pivot": null
+   },
+   "Bubble3": {
+    "anim": "pulse_1",
+    "pivot": null
+   },
+   "Bubble4": {
+    "anim": "pulse_1.5",
+    "pivot": null
+   },
+   "Bubble5": {
+    "anim": "pulse_2",
+    "pivot": null
+   },
+   "Tuber": {
+    "anim": "bob_0.3_3.14",
+    "pivot": "0,2.4,0"
+   }
+  },
   "labels": {},
   "parts": [
    {
@@ -3590,37 +4203,43 @@
     "tris": 160
    },
    {
-    "name": "Bubble0__NeonGreen@pulse_1",
+    "name": "Bubble0__NeonGreen",
     "tris": 60
    },
    {
-    "name": "Bubble1__NeonGreen@pulse_1.5",
+    "name": "Bubble1__NeonGreen",
     "tris": 60
    },
    {
-    "name": "Bubble2__NeonGreen@pulse_2",
+    "name": "Bubble2__NeonGreen",
     "tris": 60
    },
    {
-    "name": "Bubble3__NeonGreen@pulse_1",
+    "name": "Bubble3__NeonGreen",
     "tris": 60
    },
    {
-    "name": "Bubble4__NeonGreen@pulse_1.5",
+    "name": "Bubble4__NeonGreen",
     "tris": 60
    },
    {
-    "name": "Bubble5__NeonGreen@pulse_2",
+    "name": "Bubble5__NeonGreen",
     "tris": 60
    },
    {
-    "name": "Tuber__Potato@bob_0.3_3.14#0,2.4,0",
+    "name": "Tuber__Potato",
     "tris": 288
    }
   ],
   "tris": 3372
  },
  "PureeVat": {
+  "groups": {
+   "Mixer": {
+    "anim": "spin_y_70",
+    "pivot": "-0.4,4.19,-0.3"
+   }
+  },
   "labels": {
    "1": {
     "face": "Back",
@@ -3681,13 +4300,23 @@
     "tris": 216
    },
    {
-    "name": "Mixer__Chrome@spin_y_70#-0.4,4.19,-0.3",
+    "name": "Mixer__Chrome",
     "tris": 262
    }
   ],
   "tris": 6412
  },
  "QuantumConverter": {
+  "groups": {
+   "Core": {
+    "anim": "bob_0.35_3.14",
+    "pivot": "0,4.3,0"
+   },
+   "Ring": {
+    "anim": "spin_z_50",
+    "pivot": "0,4.3,0"
+   }
+  },
   "labels": {
    "1": {
     "face": "Back",
@@ -3724,25 +4353,31 @@
     "tris": 286
    },
    {
-    "name": "Core__Gold@bob_0.35_3.14#0,4.3,0",
+    "name": "Core__Gold",
     "tris": 288
    },
    {
-    "name": "Ring__MetalDark@spin_z_50#0,4.3,0",
+    "name": "Ring__MetalDark",
     "tris": 1536
    },
    {
-    "name": "Ring__NeonCyan@spin_z_50#0,4.3,0",
+    "name": "Ring__NeonCyan",
     "tris": 1080
    },
    {
-    "name": "Ring__NeonPurple@spin_z_50#0,4.3,0",
+    "name": "Ring__NeonPurple",
     "tris": 1080
    }
   ],
   "tris": 6176
  },
  "QuantumIrradiator": {
+  "groups": {
+   "Rings": {
+    "anim": "bob_0.4_3.14",
+    "pivot": "0,2.8,0"
+   }
+  },
   "labels": {},
   "parts": [
    {
@@ -3766,13 +4401,51 @@
     "tris": 400
    },
    {
-    "name": "Rings__NeonCyan@bob_0.4_3.14#0,2.8,0",
+    "name": "Rings__NeonCyan",
     "tris": 2304
    }
   ],
   "tris": 3454
  },
  "RebirthGate": {
+  "groups": {
+   "Rune-3_80": {
+    "anim": "pulse_1",
+    "pivot": null
+   },
+   "Rune-3_81": {
+    "anim": "pulse_1.3",
+    "pivot": null
+   },
+   "Rune-3_82": {
+    "anim": "pulse_1.6",
+    "pivot": null
+   },
+   "Rune-3_83": {
+    "anim": "pulse_1.9",
+    "pivot": null
+   },
+   "Rune3_80": {
+    "anim": "pulse_1",
+    "pivot": null
+   },
+   "Rune3_81": {
+    "anim": "pulse_1.3",
+    "pivot": null
+   },
+   "Rune3_82": {
+    "anim": "pulse_1.6",
+    "pivot": null
+   },
+   "Rune3_83": {
+    "anim": "pulse_1.9",
+    "pivot": null
+   },
+   "Swirl": {
+    "anim": "spin_z_59",
+    "pivot": "0,4.7,0"
+   }
+  },
   "labels": {},
   "parts": [
    {
@@ -3788,45 +4461,67 @@
     "tris": 1152
    },
    {
-    "name": "Rune-3.80__NeonPurple@pulse_1",
+    "name": "Rune-3_80__NeonPurple",
     "tris": 108
    },
    {
-    "name": "Rune-3.81__NeonPurple@pulse_1.3",
+    "name": "Rune-3_81__NeonPurple",
     "tris": 108
    },
    {
-    "name": "Rune-3.82__NeonPurple@pulse_1.6",
+    "name": "Rune-3_82__NeonPurple",
     "tris": 108
    },
    {
-    "name": "Rune-3.83__NeonPurple@pulse_1.9",
+    "name": "Rune-3_83__NeonPurple",
     "tris": 108
    },
    {
-    "name": "Rune3.80__NeonPurple@pulse_1",
+    "name": "Rune3_80__NeonPurple",
     "tris": 108
    },
    {
-    "name": "Rune3.81__NeonPurple@pulse_1.3",
+    "name": "Rune3_81__NeonPurple",
     "tris": 108
    },
    {
-    "name": "Rune3.82__NeonPurple@pulse_1.6",
+    "name": "Rune3_82__NeonPurple",
     "tris": 108
    },
    {
-    "name": "Rune3.83__NeonPurple@pulse_1.9",
+    "name": "Rune3_83__NeonPurple",
     "tris": 108
    },
    {
-    "name": "Swirl__NeonCyan@spin_z_59#0,4.7,0",
+    "name": "Swirl__NeonCyan",
     "tris": 4728
    }
   ],
   "tris": 8064
  },
  "Robot": {
+  "groups": {
+   "ChestLed0": {
+    "anim": "pulse_1",
+    "pivot": null
+   },
+   "ChestLed1": {
+    "anim": "pulse_2",
+    "pivot": null
+   },
+   "ChestLed2": {
+    "anim": "pulse_3",
+    "pivot": null
+   },
+   "Head": {
+    "anim": "sway_y_20_3.14",
+    "pivot": "0,1.6,0"
+   },
+   "Head/Visor": {
+    "anim": "pulse_2",
+    "pivot": null
+   }
+  },
   "labels": {},
   "parts": [
    {
@@ -3850,41 +4545,47 @@
     "tris": 704
    },
    {
-    "name": "ChestLed0__NeonGreen@pulse_1",
+    "name": "ChestLed0__NeonGreen",
     "tris": 190
    },
    {
-    "name": "ChestLed1__NeonYellow@pulse_2",
+    "name": "ChestLed1__NeonYellow",
     "tris": 190
    },
    {
-    "name": "ChestLed2__NeonRed@pulse_3",
+    "name": "ChestLed2__NeonRed",
     "tris": 190
    },
    {
-    "name": "Head__Chrome@sway_y_20_3.14#0,1.6,0",
+    "name": "Head__Chrome",
     "tris": 30
    },
    {
-    "name": "Head__MetalDark@sway_y_20_3.14#0,1.6,0",
+    "name": "Head__MetalDark",
     "tris": 126
    },
    {
-    "name": "Head__NeonRed@sway_y_20_3.14#0,1.6,0",
+    "name": "Head__NeonRed",
     "tris": 190
    },
    {
-    "name": "Head__White@sway_y_20_3.14#0,1.6,0",
+    "name": "Head__White",
     "tris": 188
    },
    {
-    "name": "Head/Visor__NeonCyan@pulse_2",
+    "name": "Head/Visor__NeonCyan",
     "tris": 108
    }
   ],
   "tris": 4344
  },
  "Satellite": {
+  "groups": {
+   "Dish": {
+    "anim": "spin_y_15",
+    "pivot": "0,3.4,0"
+   }
+  },
   "labels": {},
   "parts": [
    {
@@ -3896,21 +4597,22 @@
     "tris": 94
    },
    {
-    "name": "Dish__MetalDark@spin_y_15#0,3.4,0",
+    "name": "Dish__MetalDark",
     "tris": 258
    },
    {
-    "name": "Dish__NeonRed@spin_y_15#0,3.4,0",
+    "name": "Dish__NeonRed",
     "tris": 126
    },
    {
-    "name": "Dish__White@spin_y_15#0,3.4,0",
+    "name": "Dish__White",
     "tris": 720
    }
   ],
   "tris": 1306
  },
  "SeedVault": {
+  "groups": {},
   "labels": {
    "1": {
     "face": "Back",
@@ -3946,6 +4648,12 @@
   "tris": 4146
  },
  "SellStand": {
+  "groups": {
+   "ScalePan": {
+    "anim": "bob_0.03_6.28",
+    "pivot": "-2.3,2.22,2.3"
+   }
+  },
   "labels": {
    "1": {
     "face": "Back",
@@ -3994,7 +4702,7 @@
     "tris": 9912
    },
    {
-    "name": "Body__Potato",
+    "name": "Body__Potato~2",
     "tris": 1176
    },
    {
@@ -4030,17 +4738,18 @@
     "tris": 108
    },
    {
-    "name": "ScalePan__Chrome@bob_0.03_6.28#-2.3,2.22,2.3",
+    "name": "ScalePan__Chrome",
     "tris": 320
    },
    {
-    "name": "ScalePan__Potato@bob_0.03_6.28#-2.3,2.22,2.3",
+    "name": "ScalePan__Potato",
     "tris": 504
    }
   ],
   "tris": 24194
  },
  "Shuttle": {
+  "groups": {},
   "labels": {},
   "parts": [
    {
@@ -4083,6 +4792,16 @@
   "tris": 13754
  },
  "Slicer": {
+  "groups": {
+   "BladeDisc": {
+    "anim": "spin_y_720",
+    "pivot": "0.1,2.89,-0.35"
+   },
+   "Chips": {
+    "anim": "slide_x_0.19_6.28",
+    "pivot": "0,0,0"
+   }
+  },
   "labels": {
    "1": {
     "face": "Back",
@@ -4091,15 +4810,15 @@
   },
   "parts": [
    {
-    "name": "BladeDisc__Chrome@spin_y_720#0.1,2.89,-0.35",
+    "name": "BladeDisc__Chrome",
     "tris": 648
    },
    {
-    "name": "BladeDisc__Gold@spin_y_720#0.1,2.89,-0.35",
+    "name": "BladeDisc__Gold",
     "tris": 188
    },
    {
-    "name": "BladeDisc__MetalDark@spin_y_720#0.1,2.89,-0.35",
+    "name": "BladeDisc__MetalDark",
     "tris": 140
    },
    {
@@ -4163,13 +4882,14 @@
     "tris": 2312
    },
    {
-    "name": "Chips__Yellow@slide_x_0.19_6.28#0,0,0",
+    "name": "Chips__Yellow",
     "tris": 2352
    }
   ],
   "tris": 13428
  },
  "SoilSensor": {
+  "groups": {},
   "labels": {},
   "parts": [
    {
@@ -4200,22 +4920,28 @@
   "tris": 4594
  },
  "SolarMono": {
+  "groups": {
+   "Array": {
+    "anim": "sway_y_20_3.14",
+    "pivot": "0,2.5,0"
+   }
+  },
   "labels": {},
   "parts": [
    {
-    "name": "Array__Chrome@sway_y_20_3.14#0,2.5,0",
+    "name": "Array__Chrome",
     "tris": 432
    },
    {
-    "name": "Array__MetalDark@sway_y_20_3.14#0,2.5,0",
+    "name": "Array__MetalDark",
     "tris": 126
    },
    {
-    "name": "Array__SolarCell@sway_y_20_3.14#0,2.5,0",
+    "name": "Array__SolarCell",
     "tris": 7776
    },
    {
-    "name": "Array__Steel@sway_y_20_3.14#0,2.5,0",
+    "name": "Array__Steel",
     "tris": 108
    },
    {
@@ -4230,6 +4956,12 @@
   "tris": 8694
  },
  "SolarSmall": {
+  "groups": {
+   "InverterLed": {
+    "anim": "pulse_1",
+    "pivot": null
+   }
+  },
   "labels": {},
   "parts": [
    {
@@ -4273,13 +5005,19 @@
     "tris": 1296
    },
    {
-    "name": "InverterLed__NeonGreen@pulse_1",
+    "name": "InverterLed__NeonGreen",
     "tris": 190
    }
   ],
   "tris": 8736
  },
  "SpiceDrum": {
+  "groups": {
+   "Drum": {
+    "anim": "spin_x_59",
+    "pivot": "0,4.09,-0.2"
+   }
+  },
   "labels": {
    "1": {
     "face": "Back",
@@ -4336,21 +5074,27 @@
     "tris": 344
    },
    {
-    "name": "Drum__Chrome@spin_x_59#0,4.09,-0.2",
+    "name": "Drum__Chrome",
     "tris": 756
    },
    {
-    "name": "Drum__Orange@spin_x_59#0,4.09,-0.2",
+    "name": "Drum__Orange",
     "tris": 384
    },
    {
-    "name": "Drum__Red@spin_x_59#0,4.09,-0.2",
+    "name": "Drum__Red",
     "tris": 504
    }
   ],
   "tris": 6188
  },
  "Sprinkler": {
+  "groups": {
+   "Head": {
+    "anim": "spin_y_180",
+    "pivot": "0,2.2,0"
+   }
+  },
   "labels": {},
   "parts": [
    {
@@ -4366,25 +5110,31 @@
     "tris": 804
    },
    {
-    "name": "Head__Black@spin_y_180#0,2.2,0",
+    "name": "Head__Black",
     "tris": 380
    },
    {
-    "name": "Head__Chrome@spin_y_180#0,2.2,0",
+    "name": "Head__Chrome",
     "tris": 1000
    },
    {
-    "name": "Head__Water@spin_y_180#0,2.2,0",
+    "name": "Head__Water",
     "tris": 3880
    },
    {
-    "name": "Head__Yellow@spin_y_180#0,2.2,0",
+    "name": "Head__Yellow",
     "tris": 318
    }
   ],
   "tris": 6946
  },
  "StarTerminal": {
+  "groups": {
+   "Star": {
+    "anim": "bob_0.3_3.14",
+    "pivot": "0,3.45,-0.3"
+   }
+  },
   "labels": {
    "1": {
     "face": "Back",
@@ -4413,13 +5163,19 @@
     "tris": 12
    },
    {
-    "name": "Star__NeonYellow@bob_0.3_3.14#0,3.45,-0.3",
+    "name": "Star__NeonYellow",
     "tris": 276
    }
   ],
   "tris": 1304
  },
  "StarchMill": {
+  "groups": {
+   "Stones": {
+    "anim": "spin_y_50",
+    "pivot": "-0.8,2.39,-0.3"
+   }
+  },
   "labels": {
    "1": {
     "face": "Back",
@@ -4484,17 +5240,18 @@
     "tris": 108
    },
    {
-    "name": "Stones__Stone@spin_y_50#-0.8,2.39,-0.3",
+    "name": "Stones__Stone",
     "tris": 318
    },
    {
-    "name": "Stones__StoneDark@spin_y_50#-0.8,2.39,-0.3",
+    "name": "Stones__StoneDark",
     "tris": 190
    }
   ],
   "tris": 7698
  },
  "StreetLight": {
+  "groups": {},
   "labels": {},
   "parts": [
    {
@@ -4509,6 +5266,7 @@
   "tris": 1342
  },
  "Sublimator": {
+  "groups": {},
   "labels": {
    "1": {
     "face": "Back",
@@ -4572,6 +5330,7 @@
   "tris": 7380
  },
  "Substation": {
+  "groups": {},
   "labels": {
    "1": {
     "face": "Back",
@@ -4623,6 +5382,7 @@
   "tris": 9688
  },
  "TrashBin": {
+  "groups": {},
   "labels": {},
   "parts": [
    {
@@ -4649,6 +5409,7 @@
   "tris": 2108
  },
  "Tree": {
+  "groups": {},
   "labels": {},
   "parts": [
    {
@@ -4667,6 +5428,12 @@
   "tris": 1510
  },
  "Washer": {
+  "groups": {
+   "Drum": {
+    "anim": "spin_x_90",
+    "pivot": "-0.3,4.39,-0.2"
+   }
+  },
   "labels": {
    "1": {
     "face": "Back",
@@ -4727,21 +5494,31 @@
     "tris": 108
    },
    {
-    "name": "Drum__Blue@spin_x_90#-0.3,4.39,-0.2",
+    "name": "Drum__Blue",
     "tris": 1008
    },
    {
-    "name": "Drum__BlueDark@spin_x_90#-0.3,4.39,-0.2",
+    "name": "Drum__BlueDark",
     "tris": 864
    },
    {
-    "name": "Drum__Steel@spin_x_90#-0.3,4.39,-0.2",
+    "name": "Drum__Steel",
     "tris": 384
    }
   ],
   "tris": 5996
  },
  "WateringCan": {
+  "groups": {
+   "Can": {
+    "anim": "sway_z_-10_3.14",
+    "pivot": "0.35,0.95,0"
+   },
+   "TimerLed": {
+    "anim": "pulse_3",
+    "pivot": null
+   }
+  },
   "labels": {},
   "parts": [
    {
@@ -4769,33 +5546,43 @@
     "tris": 648
    },
    {
-    "name": "Can__Chrome@sway_z_-10_3.14#0.35,0.95,0",
+    "name": "Can__Chrome",
     "tris": 190
    },
    {
-    "name": "Can__Green@sway_z_-10_3.14#0.35,0.95,0",
+    "name": "Can__Green",
     "tris": 1012
    },
    {
-    "name": "Can__GreenDark@sway_z_-10_3.14#0.35,0.95,0",
+    "name": "Can__GreenDark",
     "tris": 1244
    },
    {
-    "name": "Can__Water@sway_z_-10_3.14#0.35,0.95,0",
+    "name": "Can__Water",
     "tris": 2940
    },
    {
-    "name": "TimerLed__NeonCyan@pulse_3",
+    "name": "TimerLed__NeonCyan",
     "tris": 190
    }
   ],
   "tris": 7304
  },
  "Wind50": {
+  "groups": {
+   "Blink": {
+    "anim": "pulse_1",
+    "pivot": null
+   },
+   "Rotor": {
+    "anim": "spin_z_-70",
+    "pivot": "0,17.9,1.8"
+   }
+  },
   "labels": {},
   "parts": [
    {
-    "name": "Blink__NeonRed@pulse_1",
+    "name": "Blink__NeonRed",
     "tris": 190
    },
    {
@@ -4815,17 +5602,27 @@
     "tris": 422
    },
    {
-    "name": "Rotor__Red@spin_z_-70#0,17.9,1.8",
+    "name": "Rotor__Red",
     "tris": 132
    },
    {
-    "name": "Rotor__White@spin_z_-70#0,17.9,1.8",
+    "name": "Rotor__White",
     "tris": 794
    }
   ],
   "tris": 1974
  },
  "WindSmall": {
+  "groups": {
+   "Head": {
+    "anim": "sway_y_6_3.14",
+    "pivot": "0,8.75,0"
+   },
+   "Head/Rotor": {
+    "anim": "spin_z_-180",
+    "pivot": "0,9.3,0.64"
+   }
+  },
   "labels": {},
   "parts": [
    {
@@ -4845,31 +5642,31 @@
     "tris": 880
    },
    {
-    "name": "Head__MetalDark@sway_y_6_3.14#0,8.75,0",
+    "name": "Head__MetalDark",
     "tris": 190
    },
    {
-    "name": "Head__Red@sway_y_6_3.14#0,8.75,0",
+    "name": "Head__Red",
     "tris": 360
    },
    {
-    "name": "Head__Steel@sway_y_6_3.14#0,8.75,0",
+    "name": "Head__Steel",
     "tris": 44
    },
    {
-    "name": "Head__White@sway_y_6_3.14#0,8.75,0",
+    "name": "Head__White",
     "tris": 448
    },
    {
-    "name": "Head/Rotor__MetalDark@spin_z_-180#0,9.3,0.64",
+    "name": "Head/Rotor__MetalDark",
     "tris": 126
    },
    {
-    "name": "Head/Rotor__Red@spin_z_-180#0,9.3,0.64",
+    "name": "Head/Rotor__Red",
     "tris": 132
    },
    {
-    "name": "Head/Rotor__White@spin_z_-180#0,9.3,0.64",
+    "name": "Head/Rotor__White",
     "tris": 738
    }
   ],
