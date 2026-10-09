@@ -12,6 +12,7 @@ local fs = require("@lune/fs")
 local luau = require("@lune/luau")
 local process = require("@lune/process")
 local roblox = require("@lune/roblox") :: any
+local serde = require("@lune/serde")
 local task = require("@lune/task")
 
 local placePath = process.args[1] or "build/PotatoTycoon.rbxlx"
@@ -366,6 +367,166 @@ check("Модели из Blender: имена деталей и шаблоны", 
 	assert((hip.WorldPivot.Position - Vector3.new(-1.5, 0.96, 2.16)).Magnitude < 1e-3, "масштаб босса")
 	assert(boss.model:FindFirstChild("Hitbox"), "хитбокс жука удалён")
 	folder:Destroy()
+	assets:Destroy()
+	Templates.reset()
+end)
+
+check("Модели из Blender: короткие имена и Config.AssetMeta", function()
+	local AssetName = requireModule(Shared.AssetName)
+	local AssetMeta = requireModule(Shared.Config.AssetMeta)
+	assert(AssetName.clean("Origin__Pivot.024") == "Origin__Pivot", "суффикс Blender")
+	assert(
+		AssetName.clean("A__Leaf#0,1,-1.867") == "A__Leaf#0,1,-1.867",
+		"точка вращения не суффикс"
+	)
+	local info = AssetName.parse("Body__Wood~2!3")
+	assert(info and info.key == "Wood" and #info.path == 0 and info.label == 3, "parse: ~n и !n")
+	info = AssetName.parse("DroneBody/Prop0__MetalDark.012")
+	assert(
+		info and info.key == "MetalDark" and info.path[2] == "Prop0" and not info.anim,
+		"parse: короткое имя"
+	)
+	-- у настоящих моделей группы с анимацией описаны в AssetMeta
+	assert(AssetMeta.Drone and AssetMeta.Drone["DroneBody/Prop0"], "нет анимации винта дрона")
+	assert(
+		AssetMeta.BedWood and AssetMeta.BedWood["Bush/Plant0"].pivot,
+		"нет точки вращения куста"
+	)
+
+	local saved = AssetMeta.BedWood
+	AssetMeta.BedWood = {
+		["Bush/Plant0"] = { anim = "sway_x_2.5_3.14_0.15", pivot = { 0, 0.8, -2 } },
+		Lamp = { anim = "pulse_1.5" },
+	}
+	local assets = Instance.new("Folder")
+	assets.Name = "Assets"
+	assets.Parent = getService("ServerStorage")
+	local tpl = Instance.new("Model")
+	tpl.Name = "BedWood"
+	tpl.Parent = assets
+	-- «импорт» развёрнут на 180° вокруг Y, в сантиметрах и со сдвигом: всё это видно по трём маркерам
+	local k = 100
+	local import = CFrame.new(40, 2, -30) * CFrame.Angles(0, math.pi, 0)
+	local function part(name: string, size, pos, baked: boolean?)
+		local p = Instance.new("Part")
+		p.Name = name
+		p.Size = size * k
+		-- baked: импортёр «запёк» поворот в вершины, а деталь оставил без поворота
+		p.CFrame = if baked then CFrame.new(import * (pos * k)) else import * CFrame.new(pos * k)
+		p.Parent = tpl
+	end
+	part("Origin__Pivot.007", Vector3.new(1, 1, 1), Vector3.zero)
+	part("Origin__AxisX", Vector3.new(0.2, 0.2, 0.2), Vector3.new(1, 0, 0))
+	part("Origin__AxisZ", Vector3.new(0.2, 0.2, 0.2), Vector3.new(0, 0, 1))
+	part("Body__Wood", Vector3.new(4, 0.9, 6), Vector3.new(0, 0.45, 0))
+	part("Body__Wood~2", Vector3.new(4, 0.2, 6), Vector3.new(0, 1, 0))
+	part("Bush/Plant0__Leaf", Vector3.new(1.2, 1, 1.2), Vector3.new(0, 1.3, -2))
+	part("Lamp__NeonRed", Vector3.new(0.1, 0.1, 0.1), Vector3.new(1.5, 0.6, 2.9))
+	part("Body__NeonYellow!1", Vector3.new(2, 0.4, 0.04), Vector3.new(0, 1.5, 3), true)
+	local ModelText = requireModule(Shared.Config.ModelText)
+	local savedText = ModelText.BedWood
+	ModelText.BedWood = { [1] = { text = "TEST SIGN", face = "Back" } }
+	local Templates = requireModule(Server.World.Templates)
+	Templates.reset()
+	local item
+	for _, it in ipairs(Config.Items.List) do
+		if it.model == "BedWood" then
+			item = it
+			break
+		end
+	end
+	local folder = Instance.new("Folder")
+	folder.Parent = workspace
+	local model = Library.build(item, CFrame.new(10, 0, 0), folder)
+	AssetMeta.BedWood = saved
+	ModelText.BedWood = savedText
+	assert(
+		model:GetAttribute("Template") == "BedWood",
+		"шаблон с маркером Origin__Pivot.007 не найден"
+	)
+	local leaf = model.Bush.Plant0:FindFirstChildWhichIsA("BasePart")
+	assert(
+		leaf and (leaf.CFrame.Position - Vector3.new(10, 1.3, -2)).Magnitude < 1e-3,
+		"поворот импорта не учтён"
+	)
+	assert(math.abs(leaf.Size.X - 1.2) < 1e-3, "масштаб по точкам осей")
+	local sign = model:FindFirstChild("Body__NeonYellow!1") :: any
+	assert(sign and (sign.CFrame.Position - Vector3.new(10, 1.5, 3)).Magnitude < 1e-3, "позиция надписи")
+	-- деталь осталась без поворота, а модель развёрнута: текст переезжает на противоположную грань детали
+	assert(
+		sign.ModelText.Face == roblox.Enum.NormalId.Front,
+		"грань надписи после разворота импорта"
+	)
+	local plant = model:FindFirstChild("Bush") and model.Bush:FindFirstChild("Plant0")
+	assert(plant and plant:HasTag("Sway"), "куст без покачивания из AssetMeta")
+	assert(
+		(plant.WorldPivot.Position - Vector3.new(10, 0.8, -2)).Magnitude < 1e-3,
+		"точка вращения из AssetMeta"
+	)
+	local lamp = model:FindFirstChild("Lamp") and model.Lamp:FindFirstChildWhichIsA("BasePart")
+	assert(lamp and lamp:HasTag("Pulse"), "лампа без мигания из AssetMeta")
+	local bodies = 0
+	for _, c in ipairs(model:GetChildren()) do
+		if c:IsA("BasePart") and string.match(c.Name, "^Body__Wood") then
+			bodies += 1
+		end
+	end
+	assert(bodies == 2, "детали с одинаковым именем (~2) потерялись")
+	folder:Destroy()
+	assets:Destroy()
+	Templates.reset()
+end)
+
+check("Модели из Blender: шаблоны с именами из экспорта", function()
+	-- те же имена, что лежат в art/export/fbx/*.fbx (их проверяет tools/check_fbx.py)
+	local manifest = serde.decode("json", fs.readFile("art/export/manifest.json"))
+	local AssetMeta = requireModule(Shared.Config.AssetMeta)
+	local Templates = requireModule(Server.World.Templates)
+	local assets = Instance.new("Folder")
+	assets.Name = "Assets"
+	assets.Parent = getService("ServerStorage")
+	local count = 0
+	for key, info in pairs(manifest) do
+		local tpl = Instance.new("Model")
+		tpl.Name = key
+		for _, rec in ipairs({ { name = "Origin__Pivot" }, table.unpack(info.parts) }) do
+			local p = Instance.new("Part")
+			p.Name = rec.name
+			p.Size = Vector3.new(1, 1, 1)
+			p.Parent = tpl
+		end
+		for name, pos in pairs({ Origin__AxisX = Vector3.xAxis, Origin__AxisZ = Vector3.zAxis }) do
+			local p = Instance.new("Part")
+			p.Name = name
+			p.Size = Vector3.new(0.2, 0.2, 0.2)
+			p.CFrame = CFrame.new(pos)
+			p.Parent = tpl
+		end
+		tpl.Parent = assets
+		count += 1
+	end
+	Templates.reset()
+	local animated = { Spin = true, Sway = true, Bob = true, Slide = true, Pulse = true }
+	for key in pairs(manifest) do
+		local holder = Kit.new(key, CFrame.new())
+		assert(Templates.dress(holder.model, key, CFrame.new()), key .. ": шаблон не найден")
+		for path, group in pairs(AssetMeta[key] or {}) do
+			local node: Instance? = holder.model
+			for _, name in ipairs(string.split(path, "/")) do
+				node = node and node:FindFirstChild(name)
+			end
+			assert(node, key .. ": нет группы " .. path)
+			local tagged = false
+			for _, d in ipairs({ node :: Instance, table.unpack((node :: Instance):GetDescendants()) }) do
+				for tag in pairs(animated) do
+					tagged = tagged or d:HasTag(tag)
+				end
+			end
+			assert(tagged, key .. ": группа " .. path .. " без анимации " .. group.anim)
+		end
+		holder.model:Destroy()
+	end
+	assert(count >= 90, "в manifest.json меньше 90 моделей")
 	assets:Destroy()
 	Templates.reset()
 end)

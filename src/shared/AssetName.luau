@@ -1,10 +1,13 @@
 -- Разбор имён деталей, экспортированных из Blender (art/blender/build.py):
---   «Путь/Групп__КлючПалитры[@анимация][#x,y,z][!номер надписи]»
+--   «Путь/Групп__КлючПалитры[~n][!номер надписи]»
 -- Путь — вложенные группы (Bush/Plant0); ключ — цвет и материал из Config.Palette;
--- анимация — spin_<ось>_<град/с>, sway_<ось>_<град>_<рад/с>[_фаза], bob_<амплитуда>_<рад/с>[_фаза],
--- slide_<ось>_<расстояние>_<рад/с>[_фаза], pulse_<скорость>;
--- #x,y,z — точка вращения группы в координатах модели (тогда анимируется группа, а не деталь);
--- !n — метка надписи: текст берётся из Config.ModelText и рисуется на детали как текст Roblox.
+-- ~n — номер детали с тем же именем (куски большой группы); !n — метка надписи: текст берётся
+-- из Config.ModelText и рисуется на детали как текст Roblox.
+-- Анимация и точка вращения группы — в Config.AssetMeta (имена в FBX не длиннее 50 символов:
+-- 3D Importer Roblox обрезает длинные). Старый формат с анимацией в имени тоже понимается:
+--   «…[@анимация][#x,y,z]» — #x,y,z — точка вращения группы в координатах модели.
+-- Анимация — spin_<ось>_<град/с>, sway_<ось>_<град>_<рад/с>[_фаза], bob_<амплитуда>_<рад/с>[_фаза],
+-- slide_<ось>_<расстояние>_<рад/с>[_фаза], pulse_<скорость>.
 
 local AssetName = {}
 
@@ -16,17 +19,26 @@ export type Parsed = {
 	label: number?,
 }
 
+-- Суффикс Blender «.001» (имена в сцене Blender уникальны): в новом формате имя никогда
+-- не кончается на «.цифры», в старом так кончается точка вращения — её не трогаем
+function AssetName.clean(name: string): string
+	if not string.find(name, "#", 1, true) then
+		return (string.gsub(name, "%.%d+$", ""))
+	end
+	return name
+end
+
 function AssetName.parse(name: string): Parsed?
-	local base, rest = string.match(name, "^(.-)__(.+)$")
+	local base, rest = string.match(AssetName.clean(name), "^(.-)__(.+)$")
 	if not base or not rest then
 		return nil
 	end
-	local key = string.match(rest, "^[^@#!]+")
+	local key = string.match(rest, "^[^@#!~]+")
 	if not key then
 		return nil
 	end
-	local anim = string.match(rest, "@([^#!]+)")
-	local pivotText = string.match(rest, "#([^!]+)")
+	local anim = string.match(rest, "@([^#!~]+)")
+	local pivotText = string.match(rest, "#([^!~]+)")
 	local label = tonumber(string.match(rest, "!(%d+)$"))
 	local pivot = nil
 	if pivotText then

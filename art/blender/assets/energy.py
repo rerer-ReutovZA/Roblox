@@ -6,7 +6,8 @@ from mathutils import Vector
 
 
 def gen_petrol(k, root):
-    body = k.empty("Body", (0, 0, 0), root)
+    # «Motor», а не «Body»: Body в именах деталей — корпус без группы, а вся рама здесь мелко вибрирует
+    body = k.empty("Motor", (0, 0, 0), root)
     # трубчатая рама с закруглёнными углами
     for side in (-1, 1):
         x = side * 1.1

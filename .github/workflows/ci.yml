@@ -28,6 +28,9 @@ jobs:
       - name: Форматирование (StyLua)
         run: stylua --check src tools
 
+      - name: Имена деталей в FBX (как их увидит 3D Importer)
+        run: python3 tools/check_fbx.py
+
       - name: Раскладка базы
         run: luau tools/layout.luau
 

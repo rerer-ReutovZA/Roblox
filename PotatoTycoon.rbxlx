@@ -70,12 +70,15 @@
         <Properties>
           <string name="Name">AssetName</string>
           <string name="Source"><![CDATA[-- Разбор имён деталей, экспортированных из Blender (art/blender/build.py):
---   «Путь/Групп__КлючПалитры[@анимация][#x,y,z][!номер надписи]»
+--   «Путь/Групп__КлючПалитры[~n][!номер надписи]»
 -- Путь — вложенные группы (Bush/Plant0); ключ — цвет и материал из Config.Palette;
--- анимация — spin_<ось>_<град/с>, sway_<ось>_<град>_<рад/с>[_фаза], bob_<амплитуда>_<рад/с>[_фаза],
--- slide_<ось>_<расстояние>_<рад/с>[_фаза], pulse_<скорость>;
--- #x,y,z — точка вращения группы в координатах модели (тогда анимируется группа, а не деталь);
--- !n — метка надписи: текст берётся из Config.ModelText и рисуется на детали как текст Roblox.
+-- ~n — номер детали с тем же именем (куски большой группы); !n — метка надписи: текст берётся
+-- из Config.ModelText и рисуется на детали как текст Roblox.
+-- Анимация и точка вращения группы — в Config.AssetMeta (имена в FBX не длиннее 50 символов:
+-- 3D Importer Roblox обрезает длинные). Старый формат с анимацией в имени тоже понимается:
+--   «…[@анимация][#x,y,z]» — #x,y,z — точка вращения группы в координатах модели.
+-- Анимация — spin_<ось>_<град/с>, sway_<ось>_<град>_<рад/с>[_фаза], bob_<амплитуда>_<рад/с>[_фаза],
+-- slide_<ось>_<расстояние>_<рад/с>[_фаза], pulse_<скорость>.
 
 local AssetName = {}
 
@@ -87,17 +90,26 @@ export type Parsed = {
 	label: number?,
 }
 
+-- Суффикс Blender «.001» (имена в сцене Blender уникальны): в новом формате имя никогда
+-- не кончается на «.цифры», в старом так кончается точка вращения — её не трогаем
+function AssetName.clean(name: string): string
+	if not string.find(name, "#", 1, true) then
+		return (string.gsub(name, "%.%d+$", ""))
+	end
+	return name
+end
+
 function AssetName.parse(name: string): Parsed?
-	local base, rest = string.match(name, "^(.-)__(.+)$")
+	local base, rest = string.match(AssetName.clean(name), "^(.-)__(.+)$")
 	if not base or not rest then
 		return nil
 	end
-	local key = string.match(rest, "^[^@#!]+")
+	local key = string.match(rest, "^[^@#!~]+")
 	if not key then
 		return nil
 	end
-	local anim = string.match(rest, "@([^#!]+)")
-	local pivotText = string.match(rest, "#([^!]+)")
+	local anim = string.match(rest, "@([^#!~]+)")
+	local pivotText = string.match(rest, "#([^!~]+)")
 	local label = tonumber(string.match(rest, "!(%d+)$"))
 	local pivot = nil
 	if pivotText then
@@ -162,6 +174,306 @@ return {
 ]]></string>
         </Properties>
         <Item class="ModuleScript" referent="9">
+          <Properties>
+            <string name="Name">AssetMeta</string>
+            <string name="Source"><![CDATA[-- Анимированные группы моделей из Blender: ключ модели → путь группы → анимация и точка вращения
+-- (координаты модели Roblox, стады). Формат анимации — в src/shared/AssetName.luau.
+-- Сгенерировано art/blender/build.py.
+
+export type Group = { anim: string, pivot: { number }? }
+
+local AssetMeta: { [string]: { [string]: Group } } = {
+	Aeroponic = {
+		["PanelLed"] = { anim = "pulse_2" },
+	},
+	AiSorter = {
+		["Arm"] = { anim = "sway_y_50_3.14", pivot = { 1.2, 2.1, -0.2 } },
+		["Lens"] = { anim = "pulse_2" },
+	},
+	AutoBedT1 = {
+		["Auger"] = { anim = "spin_z_-360", pivot = { 1.38, 0.66, 0 } },
+		["Bush/Plant0"] = { anim = "sway_x_2.5_3.14_0.15", pivot = { -0.503, 0.97, 1.9 } },
+		["Bush/Plant1"] = { anim = "sway_x_2.5_3.14_0.45", pivot = { -0.397, 0.97, 0 } },
+		["Bush/Plant2"] = { anim = "sway_x_2.5_3.14_0.75", pivot = { -0.384, 0.97, -1.9 } },
+	},
+	AutoBedT2 = {
+		["Bush/Plant0"] = { anim = "sway_x_2.5_3.14_0.15", pivot = { 0.025, 1.03, 1.867 } },
+		["Bush/Plant1"] = { anim = "sway_x_2.5_3.14_0.45", pivot = { 0.089, 1.03, 0 } },
+		["Bush/Plant2"] = { anim = "sway_x_2.5_3.14_0.75", pivot = { -0.097, 1.03, -1.867 } },
+		["Nozzle"] = { anim = "slide_z_-1.8_3.14", pivot = { 0, 0, 0 } },
+	},
+	AutoBedT3 = {
+		["Bush/Plant0"] = { anim = "sway_x_2.5_3.14_0.15", pivot = { 0.059, 1.03, 1.867 } },
+		["Bush/Plant1"] = { anim = "sway_x_2.5_3.14_0.45", pivot = { -0.025, 1.03, 0 } },
+		["Bush/Plant2"] = { anim = "sway_x_2.5_3.14_0.75", pivot = { -0.061, 1.03, -1.867 } },
+		["Laser"] = { anim = "slide_z_-2.3_3.14", pivot = { 0, 0, 0 } },
+		["WarnLamp"] = { anim = "pulse_4" },
+	},
+	Battery = {
+		["Led-10"] = { anim = "pulse_1" },
+		["Led-11"] = { anim = "pulse_1.4" },
+		["Led-12"] = { anim = "pulse_1.8" },
+		["Led-13"] = { anim = "pulse_2.2" },
+		["Led-14"] = { anim = "pulse_2.6" },
+		["Led10"] = { anim = "pulse_1" },
+		["Led11"] = { anim = "pulse_1.4" },
+		["Led12"] = { anim = "pulse_1.8" },
+		["Led13"] = { anim = "pulse_2.2" },
+		["Led14"] = { anim = "pulse_2.6" },
+	},
+	Beacon = {
+		["Lamp"] = { anim = "pulse_1.2" },
+	},
+	BedMetal = {
+		["Bush/Plant0"] = { anim = "sway_x_2.5_3.14_0.15", pivot = { -0.052, 1.13, 2 } },
+		["Bush/Plant1"] = { anim = "sway_x_2.5_3.14_0.45", pivot = { -0.048, 1.13, 0 } },
+		["Bush/Plant2"] = { anim = "sway_x_2.5_3.14_0.75", pivot = { 0.027, 1.13, -2 } },
+		["HeatLamp"] = { anim = "pulse_2" },
+	},
+	BedStone = {
+		["Bush/Plant0"] = { anim = "sway_x_2.5_3.14_0.15", pivot = { 0.091, 1.01, 1.867 } },
+		["Bush/Plant1"] = { anim = "sway_x_2.5_3.14_0.45", pivot = { 0.021, 1.01, 0 } },
+		["Bush/Plant2"] = { anim = "sway_x_2.5_3.14_0.75", pivot = { 0.09, 1.01, -1.867 } },
+	},
+	BedWood = {
+		["Bush/Plant0"] = { anim = "sway_x_2.5_3.14_0.15", pivot = { -0.073, 0.85, 2 } },
+		["Bush/Plant1"] = { anim = "sway_x_2.5_3.14_0.45", pivot = { -0.081, 0.85, 0 } },
+		["Bush/Plant2"] = { anim = "sway_x_2.5_3.14_0.75", pivot = { -0.054, 0.85, -2 } },
+	},
+	Biogas = {
+		["FlareFlame"] = { anim = "pulse_4" },
+	},
+	Breaker = {
+		["Led0"] = { anim = "pulse_1" },
+		["Led1"] = { anim = "pulse_2" },
+		["Led2"] = { anim = "pulse_3" },
+	},
+	Bug = {
+		["BugBody"] = { anim = "bob_0.03_25.13", pivot = { 0, 0, 0 } },
+		["BugBody/HeadGroup"] = { anim = "sway_y_8_6.28", pivot = { 0, 0.4, 1.28 } },
+		["BugBody/Hip0-1"] = { anim = "sway_y_14_12.57_0.5", pivot = { -0.5, 0.32, 0.72 } },
+		["BugBody/Hip01"] = { anim = "sway_y_14_12.57_0", pivot = { 0.5, 0.32, 0.72 } },
+		["BugBody/Hip1-1"] = { anim = "sway_y_14_12.57_0", pivot = { -0.5, 0.32, 0.25 } },
+		["BugBody/Hip11"] = { anim = "sway_y_14_12.57_0.5", pivot = { 0.5, 0.32, 0.25 } },
+		["BugBody/Hip2-1"] = { anim = "sway_y_14_12.57_0.5", pivot = { -0.5, 0.32, -0.25 } },
+		["BugBody/Hip21"] = { anim = "sway_y_14_12.57_0", pivot = { 0.5, 0.32, -0.25 } },
+	},
+	Centrifuge = {
+		["PanelLed"] = { anim = "pulse_2" },
+		["Rotor"] = { anim = "spin_y_720", pivot = { 0, 1.4, 0 } },
+	},
+	CryoCapsule = {
+		["Led"] = { anim = "pulse_0.8" },
+	},
+	DripSystem = {
+		["Drop-1"] = { anim = "pulse_2" },
+		["Drop-3"] = { anim = "pulse_2" },
+		["Drop-5"] = { anim = "pulse_2" },
+		["Drop-7"] = { anim = "pulse_2" },
+		["Drop-9"] = { anim = "pulse_2" },
+		["Drop1"] = { anim = "pulse_2" },
+		["Drop3"] = { anim = "pulse_2" },
+		["Drop5"] = { anim = "pulse_2" },
+		["Drop7"] = { anim = "pulse_2" },
+		["Drop9"] = { anim = "pulse_2" },
+	},
+	Drone = {
+		["DroneBody"] = { anim = "bob_0.12_3.14", pivot = { 0, 1.6, 0 } },
+		["DroneBody/Claw"] = { anim = "sway_x_6_3.14_0.25", pivot = { 0, 0.94, -0.12 } },
+		["DroneBody/Prop0"] = { anim = "spin_y_1440", pivot = { -0.98, 1.86, 0.98 } },
+		["DroneBody/Prop1"] = { anim = "spin_y_-1440", pivot = { 0.98, 1.86, 0.98 } },
+		["DroneBody/Prop2"] = { anim = "spin_y_1440", pivot = { 0.98, 1.86, -0.98 } },
+		["DroneBody/Prop3"] = { anim = "spin_y_-1440", pivot = { -0.98, 1.86, -0.98 } },
+	},
+	DroneStation = {
+		["AntennaTip"] = { anim = "pulse_1" },
+		["Ring0"] = { anim = "pulse_1" },
+		["Ring1"] = { anim = "pulse_1.5" },
+		["Windsock"] = { anim = "sway_y_15_3.14", pivot = { 3.6, 2.8, -2.7 } },
+	},
+	Extruder = {
+		["Screw"] = { anim = "spin_x_239", pivot = { -0.2, 3.19, -0.3 } },
+	},
+	FenceWood = {
+		["GateSign"] = { anim = "sway_z_-2_3.14", pivot = { 0, 3.35, 12.85 } },
+	},
+	Fertilizer = {
+		["DoserLed"] = { anim = "pulse_4" },
+	},
+	Flagpole = {
+		["Flag"] = { anim = "sway_y_12_3.14", pivot = { 0, 11, 0 } },
+	},
+	Fogger = {
+		["Strip"] = { anim = "pulse_1" },
+	},
+	ForceDome = {
+		["Orb"] = { anim = "pulse_1.5" },
+	},
+	Fusion = {
+		["Plasma"] = { anim = "pulse_3" },
+		["Torus"] = { anim = "spin_y_40", pivot = { 0, 3.2, 0 } },
+	},
+	GenDiesel100 = {
+		["Beacon"] = { anim = "pulse_3" },
+	},
+	GenDiesel25 = {
+		["RunLed"] = { anim = "pulse_2" },
+	},
+	GenPetrol = {
+		["Motor"] = { anim = "slide_x_0.012_37.70", pivot = { 0, 0, 0 } },
+	},
+	GodMonument = {
+		["Flame-1_6"] = { anim = "pulse_3" },
+		["Flame1_6"] = { anim = "pulse_3" },
+		["Idol"] = { anim = "bob_0.3_3.14", pivot = { 0, 2.35, 0 } },
+	},
+	GoldenPedestal = {
+		["Tuber"] = { anim = "bob_0.3_3.14", pivot = { 0, 3.6, 0 } },
+	},
+	HallOfFame = {
+		["TrophyStar"] = { anim = "pulse_1.5" },
+	},
+	HarvestTower = {
+		["Beacon"] = { anim = "pulse_3" },
+		["Radar"] = { anim = "spin_y_90", pivot = { 0, 13.55, -0.15 } },
+	},
+	HoloTerminal = {
+		["Holo"] = { anim = "spin_y_40", pivot = { 0, 1.4, 0 } },
+		["Projector"] = { anim = "pulse_1" },
+	},
+	HydroTower = {
+		["Tower"] = { anim = "spin_y_12", pivot = { 0, 1, 0 } },
+	},
+	Ionizer = {
+		["Orb"] = { anim = "pulse_2" },
+		["Rings"] = { anim = "spin_y_45", pivot = { 0, 2, 0 } },
+	},
+	Lab = {
+		["Helix"] = { anim = "spin_y_45", pivot = { -0.5, 0.3, -1 } },
+		["Laser"] = { anim = "pulse_6" },
+		["ScanPad"] = { anim = "pulse_2" },
+		["ServerLed0"] = { anim = "pulse_1" },
+		["ServerLed1"] = { anim = "pulse_1.3" },
+		["ServerLed2"] = { anim = "pulse_1.6" },
+		["ServerLed3"] = { anim = "pulse_1.9" },
+		["ServerLed4"] = { anim = "pulse_2.2" },
+		["ServerLed5"] = { anim = "pulse_2.5" },
+		["ServerLed6"] = { anim = "pulse_2.8" },
+	},
+	LampQuantum = {
+		["Ring-1"] = { anim = "spin_y_90", pivot = { 0, 5.95, 5 } },
+		["Ring1"] = { anim = "spin_y_90", pivot = { 0, 5.95, -5 } },
+	},
+	LaunchPad = {
+		["Lamp-1-1"] = { anim = "pulse_1.5" },
+		["Lamp-11"] = { anim = "pulse_1.5" },
+		["Lamp1-1"] = { anim = "pulse_1.5" },
+		["Lamp11"] = { anim = "pulse_1.5" },
+	},
+	LaunchTower = {
+		["TopBeacon"] = { anim = "pulse_1" },
+	},
+	Mascot = {
+		["Plush"] = { anim = "bob_0.25_3.14", pivot = { 0, 0, 0 } },
+	},
+	Megapack = {
+		["Strip"] = { anim = "pulse_0.7" },
+	},
+	MoleTrap = {
+		["AntennaTip"] = { anim = "pulse_2" },
+		["Wave0"] = { anim = "pulse_2" },
+		["Wave1"] = { anim = "pulse_3" },
+	},
+	Mutagenesis = {
+		["Warning"] = { anim = "pulse_2" },
+	},
+	PotatoReactor = {
+		["Bubble0"] = { anim = "pulse_1" },
+		["Bubble1"] = { anim = "pulse_1.5" },
+		["Bubble2"] = { anim = "pulse_2" },
+		["Bubble3"] = { anim = "pulse_1" },
+		["Bubble4"] = { anim = "pulse_1.5" },
+		["Bubble5"] = { anim = "pulse_2" },
+		["Tuber"] = { anim = "bob_0.3_3.14", pivot = { 0, 2.4, 0 } },
+	},
+	PureeVat = {
+		["Mixer"] = { anim = "spin_y_70", pivot = { -0.4, 4.19, -0.3 } },
+	},
+	QuantumConverter = {
+		["Core"] = { anim = "bob_0.35_3.14", pivot = { 0, 4.3, 0 } },
+		["Ring"] = { anim = "spin_z_50", pivot = { 0, 4.3, 0 } },
+	},
+	QuantumIrradiator = {
+		["Rings"] = { anim = "bob_0.4_3.14", pivot = { 0, 2.8, 0 } },
+	},
+	RebirthGate = {
+		["Rune-3_80"] = { anim = "pulse_1" },
+		["Rune-3_81"] = { anim = "pulse_1.3" },
+		["Rune-3_82"] = { anim = "pulse_1.6" },
+		["Rune-3_83"] = { anim = "pulse_1.9" },
+		["Rune3_80"] = { anim = "pulse_1" },
+		["Rune3_81"] = { anim = "pulse_1.3" },
+		["Rune3_82"] = { anim = "pulse_1.6" },
+		["Rune3_83"] = { anim = "pulse_1.9" },
+		["Swirl"] = { anim = "spin_z_59", pivot = { 0, 4.7, 0 } },
+	},
+	Robot = {
+		["ChestLed0"] = { anim = "pulse_1" },
+		["ChestLed1"] = { anim = "pulse_2" },
+		["ChestLed2"] = { anim = "pulse_3" },
+		["Head"] = { anim = "sway_y_20_3.14", pivot = { 0, 1.6, 0 } },
+		["Head/Visor"] = { anim = "pulse_2" },
+	},
+	Satellite = {
+		["Dish"] = { anim = "spin_y_15", pivot = { 0, 3.4, 0 } },
+	},
+	SellStand = {
+		["ScalePan"] = { anim = "bob_0.03_6.28", pivot = { -2.3, 2.22, 2.3 } },
+	},
+	Slicer = {
+		["BladeDisc"] = { anim = "spin_y_720", pivot = { 0.1, 2.89, -0.35 } },
+		["Chips"] = { anim = "slide_x_0.19_6.28", pivot = { 0, 0, 0 } },
+	},
+	SolarMono = {
+		["Array"] = { anim = "sway_y_20_3.14", pivot = { 0, 2.5, 0 } },
+	},
+	SolarSmall = {
+		["InverterLed"] = { anim = "pulse_1" },
+	},
+	SpiceDrum = {
+		["Drum"] = { anim = "spin_x_59", pivot = { 0, 4.09, -0.2 } },
+	},
+	Sprinkler = {
+		["Head"] = { anim = "spin_y_180", pivot = { 0, 2.2, 0 } },
+	},
+	StarTerminal = {
+		["Star"] = { anim = "bob_0.3_3.14", pivot = { 0, 3.45, -0.3 } },
+	},
+	StarchMill = {
+		["Stones"] = { anim = "spin_y_50", pivot = { -0.8, 2.39, -0.3 } },
+	},
+	Washer = {
+		["Drum"] = { anim = "spin_x_90", pivot = { -0.3, 4.39, -0.2 } },
+	},
+	WateringCan = {
+		["Can"] = { anim = "sway_z_-10_3.14", pivot = { 0.35, 0.95, 0 } },
+		["TimerLed"] = { anim = "pulse_3" },
+	},
+	Wind50 = {
+		["Blink"] = { anim = "pulse_1" },
+		["Rotor"] = { anim = "spin_z_-70", pivot = { 0, 17.9, 1.8 } },
+	},
+	WindSmall = {
+		["Head"] = { anim = "sway_y_6_3.14", pivot = { 0, 8.75, 0 } },
+		["Head/Rotor"] = { anim = "spin_z_-180", pivot = { 0, 9.3, 0.64 } },
+	},
+}
+
+return AssetMeta
+]]></string>
+          </Properties>
+        </Item>
+        <Item class="ModuleScript" referent="10">
           <Properties>
             <string name="Name">Game</string>
             <string name="Source"><![CDATA[-- Общие константы игры. Модуль «чистый» (без API Roblox), его читает и симулятор баланса.
@@ -259,7 +571,7 @@ return {
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="10">
+        <Item class="ModuleScript" referent="11">
           <Properties>
             <string name="Name">GamePasses</string>
             <string name="Source"><![CDATA[-- Геймпассы (ГДД, раздел 6).
@@ -304,7 +616,7 @@ return {
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="11">
+        <Item class="ModuleScript" referent="12">
           <Properties>
             <string name="Name">Items</string>
             <string name="Source"><![CDATA[-- Каталог построек тайкона (напольные кнопки). Модуль «чистый» — его читает и симулятор баланса.
@@ -1783,7 +2095,7 @@ return {
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="12">
+        <Item class="ModuleScript" referent="13">
           <Properties>
             <string name="Name">ModelText</string>
             <string name="Source"><![CDATA[-- Надписи на моделях из Blender: ключ модели → номер метки → текст и грань детали.
@@ -1907,7 +2219,7 @@ return ModelText
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="13">
+        <Item class="ModuleScript" referent="14">
           <Properties>
             <string name="Name">Palette</string>
             <string name="Source"><![CDATA[-- Палитра моделей из Blender: ключ → цвет и материал Roblox.
@@ -1980,7 +2292,7 @@ return Palette
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="14">
+        <Item class="ModuleScript" referent="15">
           <Properties>
             <string name="Name">Sounds</string>
             <string name="Source"><![CDATA[-- Звуки игры. Все из официальных библиотек каталога Roblox (Pro Sound Effects, APM Music, Roblox) —
@@ -2054,7 +2366,7 @@ return {
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="15">
+        <Item class="ModuleScript" referent="16">
           <Properties>
             <string name="Name">Staff</string>
             <string name="Source"><![CDATA[-- Меню найма персонала и дронов (ГДД: ассет 194, категория 5).
@@ -2320,7 +2632,7 @@ return {
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="16">
+        <Item class="ModuleScript" referent="17">
           <Properties>
             <string name="Name">StarTech</string>
             <string name="Source"><![CDATA[-- Древо звёздных технологий (открывается после Rebirth, валюта — Картофельные Звезды).
@@ -2403,7 +2715,7 @@ return {
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="17">
+        <Item class="ModuleScript" referent="18">
           <Properties>
             <string name="Name">Varieties</string>
             <string name="Source"><![CDATA[-- Сорта картофеля (ГДД 2.1). price — базовая цена $/кг из ГДД.
@@ -2559,7 +2871,7 @@ return {
           </Properties>
         </Item>
       </Item>
-      <Item class="ModuleScript" referent="18">
+      <Item class="ModuleScript" referent="19">
         <Properties>
           <string name="Name">Economy</string>
           <string name="Source"><![CDATA[-- Экономика и формулы (ГДД, раздел 2). «Чистый» модуль: конфиг передаётся параметром,
@@ -2813,7 +3125,7 @@ return Economy
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="19">
+      <Item class="ModuleScript" referent="20">
         <Properties>
           <string name="Name">Format</string>
           <string name="Source"><![CDATA[-- Форматирование чисел и времени для интерфейса
@@ -2887,7 +3199,7 @@ return Format
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="20">
+      <Item class="ModuleScript" referent="21">
         <Properties>
           <string name="Name">Remotes</string>
           <string name="Source"><![CDATA[-- Сетевые события. Сервер создаёт их, клиент ждёт.
@@ -2947,15 +3259,15 @@ return Remotes
       </Item>
     </Item>
   </Item>
-  <Item class="ServerScriptService" referent="21">
+  <Item class="ServerScriptService" referent="22">
     <Properties>
       <string name="Name">ServerScriptService</string>
     </Properties>
-    <Item class="Folder" referent="22">
+    <Item class="Folder" referent="23">
       <Properties>
         <string name="Name">Server</string>
       </Properties>
-      <Item class="Script" referent="23">
+      <Item class="Script" referent="24">
         <Properties>
           <string name="Name">Main</string>
           <token name="RunContext">0</token>
@@ -3176,11 +3488,11 @@ print(
 ]]></string>
         </Properties>
       </Item>
-      <Item class="Folder" referent="24">
+      <Item class="Folder" referent="25">
         <Properties>
           <string name="Name">Services</string>
         </Properties>
-        <Item class="ModuleScript" referent="25">
+        <Item class="ModuleScript" referent="26">
           <Properties>
             <string name="Name">DataService</string>
             <string name="Source"><![CDATA[-- Сохранение прогресса в DataStore (с повторами). Если DataStore недоступен
@@ -3351,7 +3663,7 @@ return DataService
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="26">
+        <Item class="ModuleScript" referent="27">
           <Properties>
             <string name="Name">EventService</string>
             <string name="Source"><![CDATA[-- Случайные события (ГДД, раздел 6):
@@ -3535,7 +3847,7 @@ return EventService
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="27">
+        <Item class="ModuleScript" referent="28">
           <Properties>
             <string name="Name">IncomeService</string>
             <string name="Source"><![CDATA[-- Пассивный доход (Direct Auto-Harvest & Instant Auto-Sell), золотые клубни, табло и Зал Славы
@@ -3680,7 +3992,7 @@ return IncomeService
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="28">
+        <Item class="ModuleScript" referent="29">
           <Properties>
             <string name="Name">ManualFarm</string>
             <string name="Source"><![CDATA[-- Этап 1: ручной огород. Лопата, созревание кустов, мешок, сдача скупщику, советы Деда Матвея.
@@ -3928,7 +4240,7 @@ return ManualFarm
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="29">
+        <Item class="ModuleScript" referent="30">
           <Properties>
             <string name="Name">PassService</string>
             <string name="Source"><![CDATA[-- Геймпассы (ГДД, раздел 6): x2 Cash, Бесконечная Энергия, Авто-дрон Магната, VIP Фермер
@@ -4065,7 +4377,7 @@ return PassService
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="30">
+        <Item class="ModuleScript" referent="31">
           <Properties>
             <string name="Name">PlotService</string>
             <string name="Source"><![CDATA[-- Базы игроков: выдача базы, постройка моделей, напольные кнопки, визуал персонала
@@ -4401,7 +4713,7 @@ return PlotService
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="31">
+        <Item class="ModuleScript" referent="32">
           <Properties>
             <string name="Name">PurchaseService</string>
             <string name="Source"><![CDATA[-- Покупки: постройки (кнопки), исследования сортов, найм персонала, звёздные технологии
@@ -4594,7 +4906,7 @@ return PurchaseService
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="32">
+        <Item class="ModuleScript" referent="33">
           <Properties>
             <string name="Name">RebirthService</string>
             <string name="Source"><![CDATA[-- Rebirth (ГДД 2.1 и этап 5): запуск шаттла, сброс базы, множитель 3^N и Картофельные Звезды
@@ -4684,7 +4996,7 @@ return RebirthService
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="33">
+        <Item class="ModuleScript" referent="34">
           <Properties>
             <string name="Name">Sessions</string>
             <string name="Source"><![CDATA[-- Состояние игроков на сервере: профиль, расчёт статистики, синхронизация с клиентом
@@ -4886,11 +5198,11 @@ return Sessions
           </Properties>
         </Item>
       </Item>
-      <Item class="Folder" referent="34">
+      <Item class="Folder" referent="35">
         <Properties>
           <string name="Name">World</string>
         </Properties>
-        <Item class="ModuleScript" referent="35">
+        <Item class="ModuleScript" referent="36">
           <Properties>
             <string name="Name">ModelKit</string>
             <string name="Source"><![CDATA[-- Конструктор моделей из деталей (Part). Все координаты — в локальной системе модели:
@@ -5438,7 +5750,7 @@ return Kit
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="36">
+        <Item class="ModuleScript" referent="37">
           <Properties>
             <string name="Name">ModelLibrary</string>
             <string name="Source"><![CDATA[-- Реестр всех моделей построек: ключ из Config.Items[...].model → функция-строитель
@@ -5483,11 +5795,11 @@ return Library
 ]]></string>
           </Properties>
         </Item>
-        <Item class="Folder" referent="37">
+        <Item class="Folder" referent="38">
           <Properties>
             <string name="Name">Models</string>
           </Properties>
-          <Item class="ModuleScript" referent="38">
+          <Item class="ModuleScript" referent="39">
             <Properties>
               <string name="Name">Agro</string>
               <string name="Source"><![CDATA[-- Модели агро-блока (сектор 1). Каждая функция строит модель в своей локальной системе:
@@ -6113,7 +6425,7 @@ return Models
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="39">
+          <Item class="ModuleScript" referent="40">
             <Properties>
               <string name="Name">Energy</string>
               <string name="Source"><![CDATA[-- Модели сектора 3: энергетика, дрон-сервис, офис менеджера
@@ -6515,7 +6827,7 @@ return Models
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="40">
+          <Item class="ModuleScript" referent="41">
             <Properties>
               <string name="Name">Factory</string>
               <string name="Source"><![CDATA[-- Модели сектора 2: фабричный корпус и автономные модули-множители
@@ -6874,7 +7186,7 @@ return Models
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="41">
+          <Item class="ModuleScript" referent="42">
             <Properties>
               <string name="Name">Misc</string>
               <string name="Source"><![CDATA[-- Кнопки покупки, вредители, персонал, лопата и объекты центральной площади
@@ -7208,7 +7520,7 @@ return Models
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="42">
+          <Item class="ModuleScript" referent="43">
             <Properties>
               <string name="Name">Science</string>
               <string name="Source"><![CDATA[-- Модели сектора 4: НИИ квантовой селекции, космодром и Rebirth
@@ -7520,7 +7832,7 @@ return Models
             </Properties>
           </Item>
         </Item>
-        <Item class="ModuleScript" referent="43">
+        <Item class="ModuleScript" referent="44">
           <Properties>
             <string name="Name">Templates</string>
             <string name="Source"><![CDATA[-- Модели из Blender (art/blender) поверх процедурных построек.
@@ -7533,6 +7845,7 @@ return Models
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
 
+local AssetMeta = require(ReplicatedStorage.Shared.Config.AssetMeta)
 local AssetName = require(ReplicatedStorage.Shared.AssetName)
 local ModelText = require(ReplicatedStorage.Shared.Config.ModelText)
 local Palette = require(ReplicatedStorage.Shared.Config.Palette)
@@ -7541,6 +7854,7 @@ local Templates = {}
 
 local ANIM_TAGS = { "Spin", "Slide", "Bob", "Sway", "Pulse" }
 local MARKER = "Origin__Pivot"
+local AXIS_X, AXIS_Z = "Origin__AxisX", "Origin__AxisZ"
 -- группы, которые остаются видимыми (NPC-фигуры до перехода на аватары)
 local KEEP_VISIBLE = { Figure = true }
 
@@ -7551,13 +7865,45 @@ type Prepared = {
 
 local cache: { [string]: Prepared | false } = {}
 
+-- Калибровочные маркеры: куб Origin__Pivot в начале координат и точки осей Origin__AxisX/AxisZ
+-- (в старых FBX у куба суффикс Blender: Origin__Pivot.024)
+local function isMarker(inst: Instance): boolean
+	return inst:IsA("BasePart") and string.sub(AssetName.clean(inst.Name), 1, 8) == "Origin__"
+end
+
+local function findMarker(model: Instance, name: string?): BasePart?
+	local want = name or MARKER
+	for _, d in ipairs(model:GetDescendants()) do
+		if d:IsA("BasePart") and AssetName.clean(d.Name) == want then
+			return d :: BasePart
+		end
+	end
+	return nil
+end
+
+-- Система координат модели после импорта: начало — куб, оси — по точкам +X и +Z (1 стад в Blender).
+-- Так неважно, повернул ли 3D Importer модель и в каких единицах он её прочитал.
+local function importFrame(template: Model, marker: BasePart): (CFrame, number)
+	local ax, az = findMarker(template, AXIS_X), findMarker(template, AXIS_Z)
+	if ax and az then
+		local o = marker.CFrame.Position
+		local vx, vz = ax.CFrame.Position - o, az.CFrame.Position - o
+		if vx.Magnitude > 1e-4 and vz.Magnitude > 1e-4 then
+			local x, z = vx.Unit, vz.Unit
+			return CFrame.fromMatrix(o, x, z:Cross(x), z), 1 / vx.Magnitude
+		end
+	end
+	-- старый экспорт без точек осей: ориентация куба, масштаб по его размеру (куб 1x1x1)
+	return marker.CFrame, 1 / math.max(marker.Size.X, 1e-3)
+end
+
 local function findTemplate(key: string): Model?
 	local folder = ServerStorage:FindFirstChild("Assets")
 	if not folder then
 		return nil
 	end
 	for _, d in ipairs(folder:GetDescendants()) do
-		if d:IsA("Model") and d.Name == key and d:FindFirstChild(MARKER, true) then
+		if d:IsA("Model") and AssetName.clean(d.Name) == key and findMarker(d) then
 			return d
 		end
 	end
@@ -7575,15 +7921,23 @@ local function prepare(key: string): Prepared?
 		cache[key] = false
 		return nil
 	end
-	local marker = template:FindFirstChild(MARKER, true) :: BasePart
-	-- маркер — куб 1x1x1: по нему видно, в каких единицах импортирован файл
-	local scale = 1 / math.max(marker.Size.X, 1e-3)
-	local root = marker.CFrame
+	local marker = findMarker(template) :: BasePart
+	local root, scale = importFrame(template, marker)
 	local prepared: Prepared = { parts = {}, scale = scale }
+	local groups = AssetMeta[key] or {}
 	for _, d in ipairs(template:GetDescendants()) do
-		if d:IsA("BasePart") and d.Name ~= MARKER then
+		if d:IsA("BasePart") and not isMarker(d) then
 			local info = AssetName.parse(d.Name)
 			if info then
+				-- анимация и точка вращения группы — из Config.AssetMeta (если их нет в самом имени)
+				local meta = groups[table.concat(info.path, "/")]
+				if meta and not info.anim then
+					info.anim = meta.anim
+					local p = meta.pivot
+					if p then
+						info.pivot = Vector3.new(p[1], p[2], p[3])
+					end
+				end
 				table.insert(prepared.parts, { part = d, info = info, rel = root:ToObjectSpace(d.CFrame) })
 			end
 		end
@@ -7654,8 +8008,13 @@ end
 local NO_COLLIDE_GROUPS = { Bush = true, Tubers = true, Flames = true }
 
 local function collides(info: AssetName.Parsed): boolean
-	if info.anim or info.pivot then
-		return false
+	if info.anim then
+		-- мигание и мелкая вибрация (мотор генератора) не мешают стоять рядом, остальное движется — насквозь
+		local tag, attrs = AssetName.animation(info.anim)
+		local still = tag == "Pulse" or (tag == "Slide" and math.abs(attrs.Amplitude or 0) < 0.05)
+		if not still then
+			return false
+		end
 	end
 	for _, name in ipairs(info.path) do
 		if NO_COLLIDE_GROUPS[name] then
@@ -7698,12 +8057,34 @@ end
 
 -- Надпись на модели: текст Roblox на грани плоской метки. Исходный текст английский;
 -- TextLabel.AutoLocalize (включён по умолчанию) отдаёт его автопереводу Roblox.
-local function addLabel(part: BasePart, label: ModelText.Label, color: Color3, neon: boolean)
+local NORMALS = {
+	Right = Vector3.new(1, 0, 0),
+	Left = Vector3.new(-1, 0, 0),
+	Top = Vector3.new(0, 1, 0),
+	Bottom = Vector3.new(0, -1, 0),
+	Back = Vector3.new(0, 0, 1),
+	Front = Vector3.new(0, 0, -1),
+}
+
+-- Грань в осях модели → грань детали (если импорт развернул деталь относительно модели)
+local function localFace(face: string, rel: CFrame): Enum.NormalId
+	local normal = rel:VectorToObjectSpace(NORMALS[face] or NORMALS.Back)
+	local best, bestDot = "Back", -math.huge
+	for name, n in pairs(NORMALS) do
+		local d = n:Dot(normal)
+		if d > bestDot then
+			best, bestDot = name, d
+		end
+	end
+	return (Enum.NormalId :: any)[best]
+end
+
+local function addLabel(part: BasePart, label: ModelText.Label, color: Color3, neon: boolean, rel: CFrame)
 	part.Transparency = 1
 	part.CastShadow = false
 	local gui = Instance.new("SurfaceGui")
 	gui.Name = "ModelText"
-	gui.Face = (Enum.NormalId :: any)[label.face] or Enum.NormalId.Back
+	gui.Face = localFace(label.face, rel)
 	gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
 	gui.PixelsPerStud = 60
 	gui.LightInfluence = if neon then 0 else 1
@@ -7786,7 +8167,7 @@ function Templates.dress(model: Model, key: string, origin: CFrame, opts: DressO
 		local labels = ModelText[key]
 		local label = info.label and labels and labels[info.label]
 		if label then
-			addLabel(part, label, part.Color, part.Material == Enum.Material.Neon)
+			addLabel(part, label, part.Color, part.Material == Enum.Material.Neon, rec.rel)
 			part.CanCollide = false
 			part.CanQuery = false
 		elseif info.label then
@@ -7812,7 +8193,7 @@ return Templates
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="44">
+        <Item class="ModuleScript" referent="45">
           <Properties>
             <string name="Name">WorldBuilder</string>
             <string name="Source"><![CDATA[-- Генерация мира: центральная площадь, дорожки и 6 баз игроков 80x80 по кругу.
@@ -8067,29 +8448,29 @@ return World
       </Item>
     </Item>
   </Item>
-  <Item class="SoundService" referent="45">
+  <Item class="SoundService" referent="46">
     <Properties>
       <string name="Name">SoundService</string>
     </Properties>
   </Item>
-  <Item class="StarterPlayer" referent="46">
+  <Item class="StarterPlayer" referent="47">
     <Properties>
       <string name="Name">StarterPlayer</string>
       <float name="CharacterWalkSpeed">20</float>
     </Properties>
-    <Item class="StarterPlayerScripts" referent="47">
+    <Item class="StarterPlayerScripts" referent="48">
       <Properties>
         <string name="Name">StarterPlayerScripts</string>
       </Properties>
-      <Item class="Folder" referent="48">
+      <Item class="Folder" referent="49">
         <Properties>
           <string name="Name">Client</string>
         </Properties>
-        <Item class="Folder" referent="49">
+        <Item class="Folder" referent="50">
           <Properties>
             <string name="Name">Controllers</string>
           </Properties>
-          <Item class="ModuleScript" referent="50">
+          <Item class="ModuleScript" referent="51">
             <Properties>
               <string name="Name">Animator</string>
               <string name="Source"><![CDATA[-- Локальные анимации объектов по тегам CollectionService (сервер их только помечает):
@@ -8307,7 +8688,7 @@ return Animator
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="51">
+          <Item class="ModuleScript" referent="52">
             <Properties>
               <string name="Name">Beds</string>
               <string name="Source"><![CDATA[-- Рост кустов на ручных грядках (Этап 1): сервер присылает время созревания, клиент анимирует
@@ -8453,7 +8834,7 @@ return Beds
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="52">
+          <Item class="ModuleScript" referent="53">
             <Properties>
               <string name="Name">Click</string>
               <string name="Source"><![CDATA[-- Клики по миру: копка грядок лопатой и ловля жуков
@@ -8547,7 +8928,7 @@ return Click
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="53">
+          <Item class="ModuleScript" referent="54">
             <Properties>
               <string name="Name">Effects</string>
               <string name="Source"><![CDATA[-- Визуальные эффекты (ГДД, ассеты 205–210): всплывающие «+$», золотое сияние, искры перегрузки,
@@ -8859,7 +9240,7 @@ return Effects
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="54">
+          <Item class="ModuleScript" referent="55">
             <Properties>
               <string name="Name">Sound</string>
               <string name="Source"><![CDATA[-- Воспроизведение звуков по ключу из Config.Sounds: короткие эффекты, 3D-петли цехов и фоновая музыка.
@@ -9072,7 +9453,7 @@ return Sound
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="55">
+          <Item class="ModuleScript" referent="56">
             <Properties>
               <string name="Name">WorldFx</string>
               <string name="Source"><![CDATA[-- Живой мир базы: цвет кнопок покупки, анимация постройки, «+$» над полями,
@@ -9360,7 +9741,7 @@ return WorldFx
             </Properties>
           </Item>
         </Item>
-        <Item class="LocalScript" referent="56">
+        <Item class="LocalScript" referent="57">
           <Properties>
             <string name="Name">Main</string>
             <string name="Source"><![CDATA[-- Potato Tycoon — точка входа клиента: интерфейс, эффекты, управление
@@ -9430,7 +9811,7 @@ Toasts.show("🥔 Welcome to Potato Tycoon! Talk to Grandpa Matvey at the entran
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="57">
+        <Item class="ModuleScript" referent="58">
           <Properties>
             <string name="Name">State</string>
             <string name="Source"><![CDATA[-- Клиентское состояние: данные синхронизации с сервера и атрибуты игрока
@@ -9475,11 +9856,11 @@ return State
 ]]></string>
           </Properties>
         </Item>
-        <Item class="Folder" referent="58">
+        <Item class="Folder" referent="59">
           <Properties>
             <string name="Name">UI</string>
           </Properties>
-          <Item class="ModuleScript" referent="59">
+          <Item class="ModuleScript" referent="60">
             <Properties>
               <string name="Name">Hud</string>
               <string name="Source"><![CDATA[-- Верхний HUD-бар (ГДД 192): баланс, прирост $/сек, энергия, звёзды, этап.
@@ -9777,7 +10158,7 @@ return Hud
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="60">
+          <Item class="ModuleScript" referent="61">
             <Properties>
               <string name="Name">Root</string>
               <string name="Source"><![CDATA[-- Корневой ScreenGui с автоматическим масштабом под размер экрана
@@ -9834,7 +10215,7 @@ return Root
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="61">
+          <Item class="ModuleScript" referent="62">
             <Properties>
               <string name="Name">Theme</string>
               <string name="Source"><![CDATA[-- Оформление интерфейса и помощники для создания элементов
@@ -9937,7 +10318,7 @@ return Theme
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="62">
+          <Item class="ModuleScript" referent="63">
             <Properties>
               <string name="Name">Toasts</string>
               <string name="Source"><![CDATA[-- Всплывающие уведомления в правом нижнем углу
@@ -10057,7 +10438,7 @@ return Toasts
 ]]></string>
             </Properties>
           </Item>
-          <Item class="ModuleScript" referent="63">
+          <Item class="ModuleScript" referent="64">
             <Properties>
               <string name="Name">Windows</string>
               <string name="Source"><![CDATA[-- Окна меню: исследования семян (ГДД 193), найм персонала и дронов (194), подтверждение Rebirth (195),
@@ -10753,19 +11134,19 @@ return Windows
       </Item>
     </Item>
   </Item>
-  <Item class="TextChatService" referent="64">
+  <Item class="TextChatService" referent="65">
     <Properties>
       <string name="Name">TextChatService</string>
       <token name="ChatVersion">1</token>
     </Properties>
   </Item>
-  <Item class="Workspace" referent="65">
+  <Item class="Workspace" referent="66">
     <Properties>
       <string name="Name">Workspace</string>
       <bool name="NeedsPivotMigration">false</bool>
       <bool name="StreamingEnabled">false</bool>
     </Properties>
-    <Item class="Part" referent="66">
+    <Item class="Part" referent="67">
       <Properties>
         <string name="Name">Ground</string>
         <bool name="Anchored">true</bool>
@@ -10786,7 +11167,7 @@ return Windows
         <token name="TopSurface">0</token>
       </Properties>
     </Item>
-    <Item class="SpawnLocation" referent="67">
+    <Item class="SpawnLocation" referent="68">
       <Properties>
         <string name="Name">SpawnLocation</string>
         <bool name="Anchored">true</bool>
