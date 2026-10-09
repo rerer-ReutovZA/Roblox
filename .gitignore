@@ -1,0 +1,7 @@
+# сборки и временные файлы
+build/
+sourcemap.json
+*.rbxl.lock
+*.rbxlx.lock
+.DS_Store
+__pycache__/
