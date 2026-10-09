@@ -36,7 +36,7 @@ def slicer(k, root):
     rnd = random.Random(5)
     from .factory2 import machine
 
-    top = machine(k, root, "Yellow", "Red", h=0.6, label="ЧИПСЫ x2.5", label_key="NeonYellow")
+    top = machine(k, root, "Yellow", "Red", h=0.6, label="CHIPS x2.5", label_key="NeonYellow")
     # бункер с картошкой
     hopper = k.cylinder("Hopper", 1.0, 1.1, (-1.6, 0.4, top + 0.85), "Steel", radius2=0.45, rot=(180, 0, 0), verts=4,
                         bevel=0.06)

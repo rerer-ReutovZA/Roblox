@@ -67,7 +67,7 @@ local function updateBoards()
 			local label = board:FindFirstChild("BoardText", true) :: TextLabel?
 			if label then
 				label.Text = string.format(
-					"ВЫРАБОТКА: %s\n%s/сек",
+					"OUTPUT: %s\n%s/sec",
 					Format.mass(session.profile.totalKg),
 					Format.money(session.stats and session.stats.incomePerSec or 0)
 				)
@@ -100,7 +100,7 @@ local function updateHallOfFame()
 		local e = entries[i]
 		table.insert(lines, string.format("%d. %s — ⭐%d, %s", i, e.name, e.rebirths, Format.money(e.earned)))
 	end
-	local text = if #lines > 0 then table.concat(lines, "\n") else "Пока пусто"
+	local text = if #lines > 0 then table.concat(lines, "\n") else "No records yet"
 	for _, d in ipairs(model:GetDescendants()) do
 		if d:IsA("TextLabel") and d.Name == "List" then
 			d.Text = text

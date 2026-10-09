@@ -62,7 +62,7 @@ function PlotService.assign(session: Session): boolean
 			(info :: any).owner = session.player
 			session.plot = info
 			info.folder:SetAttribute("OwnerUserId", session.player.UserId)
-			info.sign.Text = "База: " .. session.player.DisplayName
+			info.sign.Text = "Base: " .. session.player.DisplayName
 			session.player:SetAttribute("PlotIndex", info.index)
 			return true
 		end
@@ -93,7 +93,7 @@ function PlotService.release(session: Session)
 	PlotService.clear(session);
 	(info :: any).owner = nil
 	info.folder:SetAttribute("OwnerUserId", nil)
-	info.sign.Text = "Свободная база"
+	info.sign.Text = "Free Base"
 	session.plot = nil
 end
 

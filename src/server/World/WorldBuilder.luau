@@ -124,7 +124,7 @@ local function buildPlotBase(index: number, cf: CFrame): PlotInfo
 	-- табличка владельца у входа
 	b:box(V(0.4, 4, 0.4), V(-7, 2.2, 41.5), C.woodDark, M.Wood)
 	local board = b:box(V(7, 2.2, 0.3), V(-7, 4.6, 41.5), C.woodLight, M.WoodPlanks, { name = "OwnerSign" })
-	local sign = b:label(board, Enum.NormalId.Back, "Свободная база", { color = C.woodDark })
+	local sign = b:label(board, Enum.NormalId.Back, "Free Base", { color = C.woodDark })
 	local base = b.model
 	base.Parent = folder
 

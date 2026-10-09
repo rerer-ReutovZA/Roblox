@@ -59,7 +59,7 @@ def fence_wood(k, root):
     sign = k.empty("GateSign", (0, front - 0.05, 3.35), root)
     k.box("SignBoard", (4.6, 0.14, 1.0), (0, 0, 0), "WoodLight", bevel=0.06, parent=sign)
     k.box("SignFrame", (4.8, 0.1, 1.2), (0, 0.04, 0), "WoodDark", bevel=0.05, parent=sign)
-    k.text("SignText", "ФЕРМА", 0.62, (0.25, -0.09, 0), "WoodDark", extrude=0.04, parent=sign, max_width=3.2)
+    k.text("SignText", "FARM", 0.62, (0.25, -0.09, 0), "WoodDark", extrude=0.04, parent=sign, max_width=3.2)
     k.potato("SignPotato", (-1.75, -0.12, 0), 0.62, parent=sign, seed=4, rot=(90, 20, 0))
     for x in (-1.9, 1.9):
         k.tube(f"SignChain{x}", [(x, 0, 0.5), (x, 0, 0.85)], 0.03, "MetalDark", parent=sign, smooth_path=False)
@@ -123,7 +123,7 @@ def big_sack(k, root):
     # кожаная нашивка «XL» спереди
     patch = k.empty("Patch", (0, -0.96, 1.05), root, rot=(-8, 0, 0))
     k.box("PatchLeather", (0.78, 0.06, 0.52), (0, 0, 0), "WoodDark", bevel=0.05, parent=patch)
-    k.text("PatchText", "XL", 0.36, (0, -0.05, 0), "Red", extrude=0.03, parent=patch, max_width=0.6)
+    k.text("PatchText", "XL", 0.36, (0, -0.05, 0), "Red", extrude=0.03, parent=patch, max_width=0.6, logo=True)
 
 
 # ----------------------------------------------------------------------
@@ -277,7 +277,7 @@ def neon_sign(k, root):
         y = side * 0.21
         rot = (90, 0, 0) if side < 0 else (90, 0, 180)
         k.text(f"Title{side}", "POTATO TYCOON", 1.0, (0.45 * -side, y + side * 0.02, 8.95), "NeonYellow", rot=rot,
-               extrude=0.05, parent=root, max_width=7.4)
+               extrude=0.05, parent=root, max_width=7.4, logo=True)
         k.potato(f"Logo{side}", (-4.0 * -side, y + side * 0.06, 9.0), 0.75, parent=root, key="Gold", seed=9,
                  rot=(90, 15, 0))
         for z in (7.8, 10.2):

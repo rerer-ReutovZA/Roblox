@@ -297,6 +297,11 @@ check("Модели из Blender: имена деталей и шаблоны", 
 	part("Bush/Plant0__Leaf@sway_x_2.5_3.14_0.15#0,0.8,-2", Vector3.new(120, 100, 120), Vector3.new(0, 130, -200))
 	part("Tubers__Potato", Vector3.new(50, 30, 40), Vector3.new(70, 90, -200))
 	part("Lamp__NeonRed@pulse_1.5", Vector3.new(10, 10, 10), Vector3.new(150, 60, 290))
+	part("Body__NeonYellow!1", Vector3.new(200, 40, 4), Vector3.new(0, 150, 300))
+	local ModelText = requireModule(Shared.Config.ModelText)
+	ModelText.BedWood = { [1] = { text = "TEST SIGN", face = "Back" } }
+	local labelInfo = AssetName.parse("Flag__Red@sway_y_12_3.14#0,11,0!2")
+	assert(labelInfo and labelInfo.label == 2 and labelInfo.pivot and labelInfo.key == "Red", "parse: надпись")
 	local Templates = requireModule(Server.World.Templates)
 	Templates.reset()
 	local item
@@ -337,6 +342,13 @@ check("Модели из Blender: имена деталей и шаблоны", 
 	local bodyPart = model:FindFirstChild("Body__Wood") :: any
 	assert(bodyPart and bodyPart.CanCollide, "корпус из Blender без коллизии")
 	assert(model.Tubers:FindFirstChildWhichIsA("BasePart"), "нет клубней")
+	local sign = model:FindFirstChild("Body__NeonYellow!1") :: any
+	local gui = sign and sign:FindFirstChild("ModelText")
+	assert(
+		gui and gui.Text.Text == "TEST SIGN" and sign.Transparency == 1,
+		"надпись не стала текстом Roblox"
+	)
+	ModelText.BedWood = nil
 	-- жук-босс: шаблон в 3 раза крупнее
 	local bugTpl = Instance.new("Model")
 	bugTpl.Name = "Bug"

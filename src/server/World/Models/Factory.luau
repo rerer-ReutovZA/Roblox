@@ -111,7 +111,7 @@ function Models.FactoryHall(b: Builder)
 	end
 	-- вывеска
 	local s = b:box(V(12, 1.4, 0.3), V(0, H - 1.1, hd + 0.4), C.blue, M.SmoothPlastic, { collide = false })
-	b:label(s, Enum.NormalId.Back, "ЗАВОД ПЕРЕРАБОТКИ", { color = C.white })
+	b:label(s, Enum.NormalId.Back, "PROCESSING PLANT", { color = C.white })
 	-- декор: ящики чипсов и мешки (ГДД 183–184)
 	for i = 0, 2 do
 		local box = b:box(V(1.2, 0.9, 0.9), V(hw - 1.4, 0.55 + i * 0.9, -hd + 3.2), C.yellow, M.Cardboard)
@@ -133,7 +133,7 @@ function Models.Washer(b: Builder)
 	local spray = b:box(V(4, 0.2, 0.2), V(-0.3, 5.3, -0.2), C.metal, M.Metal, { collide = false })
 	local p = particles(spray, Color3.fromRGB(150, 210, 255), 25, 4, 0.3)
 	p.EmissionDirection = Enum.NormalId.Bottom
-	sign(b, "МОЙКА x1.5", C.cyan, V(-0.8, 2.6, 1.76))
+	sign(b, "WASHER x1.5", C.cyan, V(-0.8, 2.6, 1.76))
 end
 
 function Models.Peeler(b: Builder)
@@ -144,7 +144,7 @@ function Models.Peeler(b: Builder)
 	steam(valve, 0.2)
 	local gauge = b:cylZ(0.15, 0.8, V(0.8, 4.2, 1.0), C.white, M.SmoothPlastic, { collide = false })
 	local _ = gauge
-	sign(b, "ПИЛЕР +0.5", C.orange, V(-0.8, 2.6, 1.76))
+	sign(b, "PEELER +0.5", C.orange, V(-0.8, 2.6, 1.76))
 end
 
 function Models.Slicer(b: Builder)
@@ -167,7 +167,7 @@ function Models.Slicer(b: Builder)
 			{ collide = false }
 		)
 	end
-	sign(b, "ЧИПСЫ x2.5", C.yellow, V(-0.8, 2.6, 1.76))
+	sign(b, "CHIPS x2.5", C.yellow, V(-0.8, 2.6, 1.76))
 	b.model:SetAttribute("Sound", "Blade")
 end
 
@@ -186,7 +186,7 @@ function Models.Fryer(b: Builder)
 	local chimney = b:cyl(1.6, 0.6, V(0, 6, -1.2), C.metal, M.Metal)
 	steam(chimney, 0.18)
 	local _ = hood
-	sign(b, "ФРИТЮР x4", C.orange, V(-0.8, 2.6, 1.76))
+	sign(b, "FRYER x4", C.orange, V(-0.8, 2.6, 1.76))
 	b.model:SetAttribute("Sound", "Sizzle")
 end
 
@@ -200,7 +200,7 @@ function Models.SpiceDrum(b: Builder)
 	local hopper =
 		b:wedge(V(1.2, 1.4, 1.2), V(-1.6, 5.9, -0.2), C.red, M.Metal, { rot = V(180, 0, 0), collide = false })
 	particles(hopper, Color3.fromRGB(230, 120, 40), 10, 2, 0.15)
-	sign(b, "СПЕЦИИ x6", C.yellow, V(-0.8, 2.6, 1.76))
+	sign(b, "SPICES x6", C.yellow, V(-0.8, 2.6, 1.76))
 end
 
 function Models.PureeVat(b: Builder)
@@ -212,7 +212,7 @@ function Models.PureeVat(b: Builder)
 	mixer:box(V(2.6, 0.15, 0.3), V(-0.4, 4.8, -0.3), C.metal, M.Metal, { collide = false })
 	b:tag(mixer:groupModel(), "Spin", { Axis = "Y", Speed = 70 })
 	b:box(V(0.6, 1.2, 0.6), V(-0.4, 6.6, -0.3), C.blue, M.Metal, { collide = false })
-	sign(b, "ПЮРЕ +1", C.yellow, V(-0.8, 2.6, 1.76))
+	sign(b, "PUREE +1", C.yellow, V(-0.8, 2.6, 1.76))
 end
 
 function Models.Packer(b: Builder)
@@ -229,7 +229,7 @@ function Models.Packer(b: Builder)
 			{ collide = false }
 		)
 	end
-	sign(b, "УПАКОВКА +0.5", C.blue, V(-0.8, 2.6, 1.76))
+	sign(b, "PACKING +0.5", C.blue, V(-0.8, 2.6, 1.76))
 end
 
 function Models.CryoTunnel(b: Builder)
@@ -242,7 +242,7 @@ function Models.CryoTunnel(b: Builder)
 	end
 	local frost = b:box(V(5, 0.2, 0.2), V(0, 2.3, 1.3), C.white, M.Ice, { collide = false })
 	particles(frost, Color3.fromRGB(230, 245, 255), 15, 1, 0.6).Acceleration = V(0, -1, 0)
-	sign(b, "КРИО x10", C.cyan, V(-0.8, 2.6, 1.76))
+	sign(b, "CRYO x10", C.cyan, V(-0.8, 2.6, 1.76))
 end
 
 function Models.Sublimator(b: Builder)
@@ -253,7 +253,7 @@ function Models.Sublimator(b: Builder)
 	b:box(V(1.2, 1.2, 1.2), V(-1.8, 5.3, -0.3), C.purple, M.Metal)
 	b:pipe(V(-1.8, 4.7, -0.3), V(-1.8, 4.9, -0.3), 0.3, C.black)
 	b:light(hatch, C.purple, 8, 1)
-	sign(b, "СУБЛИМАЦИЯ x18", C.purple, V(-0.8, 2.6, 1.76))
+	sign(b, "FREEZE-DRY x18", C.purple, V(-0.8, 2.6, 1.76))
 end
 
 function Models.Autoclave(b: Builder)
@@ -264,7 +264,7 @@ function Models.Autoclave(b: Builder)
 	local vent = b:cyl(0.8, 0.4, V(-1.2, 5.3, -0.3), C.metal, M.Metal)
 	steam(vent, 0.2)
 	local _ = door
-	sign(b, "АВТОКЛАВ +1.5", C.red, V(-0.8, 2.6, 1.76))
+	sign(b, "AUTOCLAVE +1.5", C.red, V(-0.8, 2.6, 1.76))
 end
 
 function Models.StarchMill(b: Builder)
@@ -275,7 +275,7 @@ function Models.StarchMill(b: Builder)
 	b:tag(stones:groupModel(), "Spin", { Axis = "Y", Speed = 50 })
 	b:box(V(1.8, 2.6, 1.8), V(1.6, 3.3, -0.3), C.steel, M.Metal)
 	b:ellipsoid(V(1.6, 0.8, 1.2), V(1.6, 2.4, 1.3), C.white, M.Sand, { collide = false })
-	sign(b, "КРАХМАЛ +2", C.white, V(-0.8, 2.6, 1.76))
+	sign(b, "STARCH +2", C.white, V(-0.8, 2.6, 1.76))
 end
 
 function Models.Bioreactor(b: Builder)
@@ -303,7 +303,7 @@ function Models.Bioreactor(b: Builder)
 		b:cyl(0.15, 1.2, V(2.8, y, -1), C.yellow, M.Metal, { collide = false })
 	end
 	b:pipe(V(0, 4.5, -0.6), V(2.8, 6.5, -1), 0.25, C.metal)
-	sign(b, "БИОРЕАКТОР x35", Color3.fromRGB(120, 255, 80), V(-1.3, 1.6, 2.45))
+	sign(b, "BIOREACTOR x35", Color3.fromRGB(120, 255, 80), V(-1.3, 1.6, 2.45))
 end
 
 function Models.Extruder(b: Builder)
@@ -318,7 +318,7 @@ function Models.Extruder(b: Builder)
 	for i = 0, 4 do
 		b:cylX(1.6, 0.15, V(2.8, 2.5 + i * 0.15, 0.2 + (i % 2) * 0.2), C.potato, M.SmoothPlastic, { collide = false })
 	end
-	sign(b, "ПАЛОЧКИ +1", C.yellow, V(-0.8, 2.6, 1.76))
+	sign(b, "STICKS +1", C.yellow, V(-0.8, 2.6, 1.76))
 end
 
 function Models.QuantumConverter(b: Builder)
@@ -347,7 +347,7 @@ function Models.QuantumConverter(b: Builder)
 	sparks.SparkleColor = C.purple
 	sparks.Parent = core
 	local s = b:box(V(4, 0.7, 0.1), V(0, 1.3, 4.3), C.black, M.SmoothPlastic, { collide = false })
-	b:label(s, Enum.NormalId.Back, "КВАНТ x100", { color = C.purple })
+	b:label(s, Enum.NormalId.Back, "QUANTUM x100", { color = C.purple })
 end
 
 return Models

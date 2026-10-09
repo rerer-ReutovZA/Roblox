@@ -63,7 +63,7 @@ function Models.GenDiesel25(b: Builder)
 	local stack = b:cyl(1.6, 0.4, V(1.1, 3.4, -1), C.metal, M.Metal)
 	smoke(stack)
 	local label = b:box(V(1.6, 0.5, 0.05), V(-0.8, 2.4, 1.63), C.white, M.SmoothPlastic, { collide = false })
-	b:label(label, Enum.NormalId.Back, "25 кВт", { color = C.black })
+	b:label(label, Enum.NormalId.Back, "25 kW", { color = C.black })
 end
 
 function Models.GenDiesel100(b: Builder)
@@ -76,7 +76,7 @@ function Models.GenDiesel100(b: Builder)
 		smoke(stack, nil, 0.2)
 	end
 	local label = b:box(V(2.4, 0.7, 0.05), V(0, 2.6, 2.11), C.black, M.SmoothPlastic, { collide = false })
-	b:label(label, Enum.NormalId.Back, "100 кВт", { color = C.yellow })
+	b:label(label, Enum.NormalId.Back, "100 kW", { color = C.yellow })
 end
 
 function Models.Biogas(b: Builder)
@@ -94,7 +94,7 @@ function Models.Biogas(b: Builder)
 	fire.Parent = tip
 	local _ = flare
 	local label = b:box(V(2.6, 0.7, 0.05), V(0, 1.6, 2.62), C.white, M.SmoothPlastic, { collide = false })
-	b:label(label, Enum.NormalId.Back, "БИОГАЗ", { color = Color3.fromRGB(40, 120, 50) })
+	b:label(label, Enum.NormalId.Back, "BIOGAS", { color = Color3.fromRGB(40, 120, 50) })
 end
 
 function Models.BiogasTurbine(b: Builder)
@@ -106,7 +106,7 @@ function Models.BiogasTurbine(b: Builder)
 	local stack = b:cyl(3.4, 0.7, V(-1.5, 4.6, -1.8), C.metal, M.Metal)
 	smoke(stack, Color3.fromRGB(200, 200, 200), 0.1)
 	local label = b:box(V(2, 0.6, 0.05), V(2.4, 2.4, 1.31), C.white, M.SmoothPlastic, { collide = false })
-	b:label(label, Enum.NormalId.Back, "250 кВт", { color = C.blue })
+	b:label(label, Enum.NormalId.Back, "250 kW", { color = C.blue })
 end
 
 local function panel(b: Builder, w: number, d: number, pos: Vector3, tilt: number)
@@ -203,7 +203,7 @@ function Models.Geothermal(b: Builder)
 	local vent = b:cyl(1.2, 0.8, V(-1.8, 4.3, -1.6), C.metal, M.Metal)
 	smoke(vent, Color3.fromRGB(240, 240, 240), 0.2)
 	local label = b:box(V(2.6, 0.6, 0.05), V(-0.8, 2.6, 0.71), C.white, M.SmoothPlastic, { collide = false })
-	b:label(label, Enum.NormalId.Back, "ГЕОТЕРМ 300 кВт", { color = C.red })
+	b:label(label, Enum.NormalId.Back, "GEOTHERMAL 300 kW", { color = C.red })
 end
 
 function Models.Substation(b: Builder)
@@ -226,7 +226,7 @@ function Models.Substation(b: Builder)
 		b:box(V(0.1, 2, 4.8), V(x, 1, 0), C.metal, M.DiamondPlate, { transparency = 0.5, collide = false })
 	end
 	local sign = b:box(V(1.4, 1, 0.05), V(0, 1.3, 2.4), C.yellow, M.SmoothPlastic, { collide = false })
-	b:label(sign, Enum.NormalId.Back, "⚡ ОПАСНО", { color = C.black })
+	b:label(sign, Enum.NormalId.Back, "⚡ DANGER", { color = C.black })
 	b.model:SetAttribute("Sparks", true)
 end
 
@@ -240,7 +240,7 @@ function Models.Battery(b: Builder)
 		end
 	end
 	local sign = b:box(V(1.8, 0.5, 0.05), V(0, 3.1, 1.71), C.white, M.SmoothPlastic, { collide = false })
-	b:label(sign, Enum.NormalId.Back, "50 кВт*ч", { color = C.green })
+	b:label(sign, Enum.NormalId.Back, "50 kWh", { color = C.green })
 end
 
 function Models.Megapack(b: Builder)
@@ -302,7 +302,7 @@ function Models.Office(b: Builder)
 	b:box(V(2, 1, 0.3), V(-0.1, 3.65, 2.85), wall, M.Metal)
 	b:box(V(7.4, 0.3, 6.4), V(0, 4.3, 0), C.metalDark, M.Metal)
 	local sign = b:box(V(3, 0.8, 0.1), V(0, 4.85, 3.0), C.blue, M.SmoothPlastic, { collide = false })
-	b:label(sign, Enum.NormalId.Back, "ОФИС", { color = C.white })
+	b:label(sign, Enum.NormalId.Back, "OFFICE", { color = C.white })
 	-- интерьер: стол, кресло, мониторинг биржи, кулер, шкаф (ГДД 173–177)
 	b:box(V(2.6, 0.15, 1.2), V(0.6, 1.1, -1.6), C.woodDark, M.Wood)
 	b:box(V(0.15, 0.95, 1.1), V(-0.6, 0.6, -1.6), C.woodDark, M.Wood)
@@ -310,7 +310,7 @@ function Models.Office(b: Builder)
 	b:box(V(0.9, 0.2, 0.9), V(0.6, 0.75, -0.5), C.black, M.Fabric)
 	b:box(V(0.9, 1.1, 0.2), V(0.6, 1.4, -0.1), C.black, M.Fabric)
 	local screen = b:box(V(1.4, 0.8, 0.08), V(0.6, 1.65, -2.05), C.black, M.SmoothPlastic, { collide = false })
-	b:label(screen, Enum.NormalId.Back, "📈 БИРЖА", { color = C.green, background = C.black })
+	b:label(screen, Enum.NormalId.Back, "📈 MARKET", { color = C.green, background = C.black })
 	b:cyl(1.3, 0.6, V(-2.6, 0.65, -2.2), C.white, M.SmoothPlastic)
 	b:cyl(0.7, 0.55, V(-2.6, 1.65, -2.2), Color3.fromRGB(120, 190, 255), M.Glass, { transparency = 0.3 })
 	b:box(V(1, 2.4, 0.7), V(2.6, 1.35, -2.3), C.metal, M.Metal)
@@ -331,7 +331,7 @@ function Models.DroneStation(b: Builder)
 		b:tag(ring, "Pulse", { Speed = 1 + i * 0.5 })
 	end
 	local sign = b:box(V(3.2, 0.7, 0.1), V(-1.6, 3.2, 1.2), C.white, M.SmoothPlastic, { collide = false })
-	b:label(sign, Enum.NormalId.Back, "ДРОНЫ", { color = C.blue })
+	b:label(sign, Enum.NormalId.Back, "DRONES", { color = C.blue })
 	openMenu(sign, "Staff", "Нанять дронов", "Станция дронов")
 end
 
@@ -350,7 +350,7 @@ function Models.AiSorter(b: Builder)
 		b:box(V(1.2, 1, 1.2), V(-2 + i * 1.3, 0.8, 1.3), color, M.SmoothPlastic)
 	end
 	local label = b:box(V(2.2, 0.5, 0.05), V(0, 1.6, 0.41), C.black, M.SmoothPlastic, { collide = false })
-	b:label(label, Enum.NormalId.Back, "ИИ-ОТК", { color = C.cyan })
+	b:label(label, Enum.NormalId.Back, "AI QC", { color = C.cyan })
 end
 
 function Models.CoolingTower(b: Builder)

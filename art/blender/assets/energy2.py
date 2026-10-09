@@ -71,7 +71,7 @@ def gen_diesel25(k, root):
     k.tag(led, "pulse_2")
     k.lathe("EStop", [(0.07, 0), (0.07, 0.05), (0.11, 0.06), (0.1, 0.1), (0.0, 0.11)], (-0.72, -1.65, 1.38), "Red",
             rot=(90, 0, 0), parent=root)
-    plate_text(k, "Label", "25 кВт", 1.4, 0.42, (-0.85, -1.63, 2.35), "White", "Black", root)
+    plate_text(k, "Label", "25 kW", 1.4, 0.42, (-0.85, -1.63, 2.35), "White", "Black", root)
     stack(k, "Stack", 1.1, 1.0, 2.8, 1.0, 0.18, root)
     for x in (-1.2, 1.2):
         k.torus(f"LiftEye{x}", 0.12, 0.03, (x, 0, 2.86), "MetalDark", rot=(90, 0, 0), parent=root)
@@ -91,7 +91,7 @@ def gen_diesel100(k, root):
         k.box(f"DoorSeam{x}", (0.03, 0.05, 2.5), (x + 0.77, -2.12, 1.85), "MetalDark", bevel=0.0, parent=root)
         k.box(f"Latch{x}", (0.08, 0.08, 0.4), (x + 0.55, -2.17, 1.9), "Chrome", bevel=0.02, parent=root)
     k.box("Label", (2.4, 0.06, 0.7), (0, -2.13, 2.9), "Black", bevel=0.03, parent=root)
-    k.text("LabelText", "100 кВт", 0.42, (0, -2.18, 2.9), "Yellow", extrude=0.015, parent=root, max_width=2.1)
+    k.text("LabelText", "100 kW", 0.42, (0, -2.18, 2.9), "Yellow", extrude=0.015, parent=root, max_width=2.1)
     for x in (-1.2, 1.2):
         stack(k, f"Stack{x}", x, 1.2, 3.4, 1.3, 0.24, root)
     for x in (-2.4, 2.4):
@@ -129,7 +129,7 @@ def biogas(k, root):
                     "NeonOrange", segments=12, parent=root)
     k.tag(flame, "pulse_4")
     # надпись на стенке и лестница
-    plate_text(k, "Label", "БИОГАЗ", 2.4, 0.7, (0, -2.68, 1.7), "White", "GreenDark", root)
+    plate_text(k, "Label", "BIOGAS", 2.4, 0.7, (0, -2.68, 1.7), "White", "GreenDark", root)
     for x in (-1.0, 1.0):
         k.box(f"LabelBracket{x}", (0.08, 0.2, 0.5), (x, -2.6, 1.7), "MetalDark", bevel=0.02, parent=root)
     for i in range(2):
@@ -163,7 +163,7 @@ def biogas_turbine(k, root):
     k.tube("Duct", [(-1.5, 0.9, 3.0), (-1.5, 1.8, 3.2), (-1.5, 1.8, 3.4)], 0.3, "Steel", parent=root)
     stack(k, "Stack", -1.5, 1.8, 3.3, 2.8, 0.32, root)
     k.box("Label", (2.0, 0.06, 0.6), (2.4, -1.33, 2.5), "White", bevel=0.02, parent=root)
-    k.text("LabelText", "250 кВт", 0.34, (2.4, -1.38, 2.5), "Blue", extrude=0.015, parent=root, max_width=1.8)
+    k.text("LabelText", "250 kW", 0.34, (2.4, -1.38, 2.5), "Blue", extrude=0.015, parent=root, max_width=1.8)
     for x in (-3.3, 3.3):
         k.box(f"Rail{x}", (0.08, 6.0, 0.08), (x, 0, 1.2), "Yellow", bevel=0.02, parent=root)
         for y in (-2.8, 0, 2.8):
@@ -227,7 +227,7 @@ def geothermal(k, root):
     k.box("RoofBand", (3.6, 3.2, 0.3), (-0.8, 0.8, 3.65), "Red", bevel=0.06, parent=root)
     louvers(k, "HouseLouver", 1.6, 0.8, (-1.4, -0.7, 2.4), -1, "MetalDark", root)
     k.box("Door", (0.9, 0.05, 1.9), (0.2, -0.72, 1.25), "Grey", bevel=0.03, parent=root)
-    plate_text(k, "Label", "ГЕОТЕРМ 300 кВт", 2.6, 0.5, (-0.8, -0.73, 3.05), "White", "Red", root, size=0.26)
+    plate_text(k, "Label", "GEOTHERMAL 300 kW", 2.6, 0.5, (-0.8, -0.73, 3.05), "White", "Red", root, size=0.26)
     for i, x in enumerate((1.4, 2.2)):
         key = "Red" if i == 0 else "Blue"
         wellhead(k, f"Well{i}", x, -1.8, key, root)
@@ -290,7 +290,7 @@ def substation(k, root):
     k.box("SignPlate", (1.4, 0.04, 1.0), (0, 0, 0), "Yellow", bevel=0.03, parent=sign)
     k.prism("Bolt", [(-0.1, 0.3), (0.12, 0.3), (0.0, 0.05), (0.15, 0.05), (-0.12, -0.32), (-0.02, -0.04),
                      (-0.16, -0.04)], 0.03, (-0.35, -0.03, 0.05), "Black", parent=sign, bevel=0.0)
-    k.text("SignText", "ОПАСНО", 0.22, (0.2, -0.03, -0.25), "Black", extrude=0.01, parent=sign, max_width=0.8)
+    k.text("SignText", "DANGER", 0.22, (0.2, -0.03, -0.25), "Black", extrude=0.01, parent=sign, max_width=0.8)
 
 
 # ----------------------------------------------------------------------
@@ -307,7 +307,7 @@ def battery(k, root):
             louvers_x(k, f"Vent{x}{i}", 0.4, 0.5, (x * 1.8, y, 1.2), x, "Grey", root, step=0.12, depth=0.05)
     k.box("CableTray", (2.4, 0.3, 0.1), (0, 1.3, 2.95), "Grey", bevel=0.02, parent=root)
     k.box("Sign", (1.8, 0.06, 0.5), (0, -1.73, 3.1), "White", bevel=0.02, parent=root)
-    k.text("SignText", "50 кВт·ч", 0.28, (0, -1.78, 3.1), "Green", extrude=0.015, parent=root, max_width=1.6)
+    k.text("SignText", "50 kWh", 0.28, (0, -1.78, 3.1), "Green", extrude=0.015, parent=root, max_width=1.6)
     k.lathe("Bolt", [(0.18, 0), (0.18, 0.04), (0.0, 0.04)], (0, -1.74, 2.6), "Yellow", rot=(90, 0, 0), parent=root)
 
 
@@ -318,7 +318,7 @@ def megapack(k, root):
         x = -2.42 + i * 0.97
         k.box(f"Seam{i}", (0.03, 3.22, 2.5), (x + 0.485, 0, 1.7), "Grey", bevel=0.0, parent=root)
         k.box(f"Handle{i}", (0.05, 0.06, 0.3), (x + 0.75, -1.62, 1.6), "Grey", bevel=0.02, parent=root)
-    k.text("Logo", "MEGAPACK", 0.42, (0, -1.63, 2.45), "Red", extrude=0.02, parent=root, max_width=3.2)
+    k.text("Logo", "MEGAPACK", 0.42, (0, -1.63, 2.45), "Red", extrude=0.02, parent=root, max_width=3.2, logo=True)
     led = k.box("Strip", (5.0, 0.04, 0.08), (0, -1.62, 3.0), "NeonCyan", bevel=0.01, parent=root)
     k.tag(led, "pulse_0.7")
     for x in (-1.8, 0.0, 1.8):
@@ -406,14 +406,14 @@ def office(k, root):
     k.box("Canopy", (2.6, 1.2, 0.12), (-0.1, -3.5, 3.4), "Blue", bevel=0.04, rot=(-6, 0, 0), parent=root)
     sign = k.empty("Sign", (0, -3.0, 4.85), root)
     k.box("SignBox", (3.0, 0.2, 0.8), (0, 0, 0), "Blue", bevel=0.06, parent=sign)
-    k.text("SignText", "ОФИС", 0.5, (0, -0.12, 0), "White", extrude=0.03, parent=sign, max_width=2.6)
+    k.text("SignText", "OFFICE", 0.5, (0, -0.12, 0), "White", extrude=0.03, parent=sign, max_width=2.6)
     # интерьер
     k.box("Desk", (2.6, 1.2, 0.12), (0.6, 1.6, 1.1), "WoodDark", bevel=0.03, parent=root)
     for x in (-0.6, 1.8):
         k.box(f"DeskLeg{x}", (0.12, 1.1, 0.95), (x, 1.6, 0.6), "WoodDark", bevel=0.02, parent=root)
     k.box("Monitor", (1.4, 0.08, 0.8), (0.6, 2.05, 1.65), "Black", bevel=0.03, parent=root)
     k.box("MonitorScreen", (1.3, 0.02, 0.7), (0.6, 2.0, 1.65), "NeonGreen", bevel=0.0, parent=root)
-    k.text("MonitorText", "БИРЖА", 0.2, (0.6, 1.98, 1.65), "Black", extrude=0.005, parent=root, max_width=1.0)
+    k.text("MonitorText", "MARKET", 0.2, (0.6, 1.98, 1.65), "Black", extrude=0.005, parent=root, max_width=1.0)
     k.box("ChairSeat", (0.8, 0.8, 0.14), (0.6, 0.5, 0.75), "Black", bevel=0.06, parent=root)
     k.box("ChairBack", (0.8, 0.14, 0.9), (0.6, 0.12, 1.25), "Black", bevel=0.06, parent=root)
     k.lathe("ChairStem", [(0.06, 0), (0.06, 0.4), (0.0, 0.4)], (0.6, 0.5, 0.3), "Chrome", parent=root)
@@ -443,7 +443,7 @@ def drone_station(k, root):
     k.box("Doorway", (3.0, 0.06, 2.2), (hx, hy - 2.02, 1.4), "Black", bevel=0.02, parent=root)
     sign = k.empty("Sign", (hx, -1.25, 3.2), root)
     k.box("SignBox", (3.2, 0.12, 0.7), (0, 0, 0), "White", bevel=0.05, parent=sign)
-    k.text("SignText", "ДРОНЫ", 0.42, (0, -0.08, 0), "Blue", extrude=0.02, parent=sign, max_width=2.8)
+    k.text("SignText", "DRONES", 0.42, (0, -0.08, 0), "Blue", extrude=0.02, parent=sign, max_width=2.8)
     for x in (-1.0, 1.0):
         k.tube(f"SignPole{x}", [(hx + x, -1.25, 2.4), (hx + x, -1.25, 2.85)], 0.04, "MetalDark", parent=root,
                smooth_path=False)
@@ -451,7 +451,7 @@ def drone_station(k, root):
     for i, y in enumerate((1.6, -1.4)):
         k.lathe(f"Landing{i}", [(1.2, 0), (1.2, 0.12), (0.0, 0.12)], (2.6, y, 0.3), "Yellow", segments=32,
                 parent=root)
-        k.text(f"H{i}", "H", 0.9, (2.6, y, 0.43), "Black", rot=(0, 0, 0), extrude=0.01, parent=root)
+        k.text(f"H{i}", "H", 0.9, (2.6, y, 0.43), "Black", rot=(0, 0, 0), extrude=0.01, parent=root, logo=True)
         ring = k.torus(f"Ring{i}", 1.3, 0.04, (2.6, y, 0.33), "NeonCyan", parent=root, seg=48, ring=8)
         k.tag(ring, f"pulse_{1 + i * 0.5:g}")
     # ветроуказатель
@@ -484,7 +484,7 @@ def ai_sorter(k, root):
             rot=(90, 0, 0), parent=root)
     lens = k.lens("Lens", 0.18, (0, -0.9, 2.1), "NeonRed", rot=(90, 0, 0), parent=root, height=0.6)
     k.tag(lens, "pulse_2")
-    k.text("Label", "ИИ-ОТК", 0.3, (0, -0.42, 1.0), "NeonCyan", extrude=0.015, parent=root, max_width=1.6)
+    k.text("Label", "AI QC", 0.3, (0, -0.42, 1.0), "NeonCyan", extrude=0.015, parent=root, max_width=1.6)
     # манипулятор
     arm = k.empty("Arm", (1.2, 0.2, 2.1), root)
     k.lathe("ArmBase", [(0.3, 0), (0.3, 0.25), (0.0, 0.25)], (0, 0, 0), "MetalDark", parent=arm)
@@ -532,7 +532,7 @@ def breaker(k, root):
     k.box("SwitchBox", (1.6, 0.8, 2.6), (-0.6, 0.4, 1.4), "Grey", bevel=0.08, parent=root)
     k.box("SwitchDoor", (1.4, 0.04, 2.3), (-0.6, -0.01, 1.4), "Steel", bevel=0.03, parent=root)
     k.box("Warning", (1.2, 0.02, 0.3), (-0.6, -0.04, 2.25), "Yellow", bevel=0.01, parent=root)
-    k.text("WarningText", "380 В", 0.16, (-0.6, -0.06, 2.25), "Black", extrude=0.005, parent=root, max_width=1.0)
+    k.text("WarningText", "380 V", 0.16, (-0.6, -0.06, 2.25), "Black", extrude=0.005, parent=root, max_width=1.0)
     lever = k.empty("Lever", (-0.6, -0.1, 1.45), root)
     k.lathe("Pivot", [(0.12, 0), (0.12, 0.15), (0.0, 0.15)], (0, 0, 0), "MetalDark", rot=(90, 0, 0), parent=lever)
     k.box("Arm", (0.12, 0.12, 0.8), (0, -0.12, 0.35), "MetalDark", bevel=0.03, rot=(-15, 0, 0), parent=lever)

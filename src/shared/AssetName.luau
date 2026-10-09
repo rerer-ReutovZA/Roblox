@@ -1,9 +1,10 @@
 -- Разбор имён деталей, экспортированных из Blender (art/blender/build.py):
---   «Путь/Групп__КлючПалитры[@анимация][#x,y,z]»
+--   «Путь/Групп__КлючПалитры[@анимация][#x,y,z][!номер надписи]»
 -- Путь — вложенные группы (Bush/Plant0); ключ — цвет и материал из Config.Palette;
 -- анимация — spin_<ось>_<град/с>, sway_<ось>_<град>_<рад/с>[_фаза], bob_<амплитуда>_<рад/с>[_фаза],
 -- slide_<ось>_<расстояние>_<рад/с>[_фаза], pulse_<скорость>;
--- #x,y,z — точка вращения группы в координатах модели (тогда анимируется группа, а не деталь).
+-- #x,y,z — точка вращения группы в координатах модели (тогда анимируется группа, а не деталь);
+-- !n — метка надписи: текст берётся из Config.ModelText и рисуется на детали как текст Roblox.
 
 local AssetName = {}
 
@@ -12,6 +13,7 @@ export type Parsed = {
 	key: string,
 	anim: string?,
 	pivot: Vector3?,
+	label: number?,
 }
 
 function AssetName.parse(name: string): Parsed?
@@ -19,12 +21,13 @@ function AssetName.parse(name: string): Parsed?
 	if not base or not rest then
 		return nil
 	end
-	local key = string.match(rest, "^[^@#]+")
+	local key = string.match(rest, "^[^@#!]+")
 	if not key then
 		return nil
 	end
-	local anim = string.match(rest, "@([^#]+)")
-	local pivotText = string.match(rest, "#(.+)$")
+	local anim = string.match(rest, "@([^#!]+)")
+	local pivotText = string.match(rest, "#([^!]+)")
+	local label = tonumber(string.match(rest, "!(%d+)$"))
 	local pivot = nil
 	if pivotText then
 		local parts = string.split(pivotText, ",")
@@ -41,7 +44,7 @@ function AssetName.parse(name: string): Parsed?
 			end
 		end
 	end
-	return { path = path, key = key, anim = anim, pivot = pivot }
+	return { path = path, key = key, anim = anim, pivot = pivot, label = label }
 end
 
 -- Анимация → тег CollectionService и атрибуты для клиентского Animator.

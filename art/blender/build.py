@@ -19,7 +19,7 @@ import time
 
 import bmesh
 import bpy
-from mathutils import Vector
+from mathutils import Matrix, Vector
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
@@ -359,10 +359,13 @@ MAX_TRIS = 10000  # на одну MeshPart (лимит Roblox — 20k, берё�
 
 
 def select_only(objects):
+    bpy.context.view_layer.update()
     for o in bpy.context.view_layer.objects:
-        o.select_set(False)
+        if o is not None:
+            o.select_set(False)
     for o in objects:
-        o.select_set(True)
+        if o is not None:
+            o.select_set(True)
 
 
 def num(v):
@@ -410,13 +413,59 @@ def tri_count(obj):
     return len(obj.data.loop_triangles)
 
 
+def face_of(normal):
+    """Нормаль в Blender → грань детали в Roblox (Enum.NormalId)."""
+    r = (normal.x, normal.z, -normal.y)
+    axis = max(range(3), key=lambda i: abs(r[i]))
+    return (("Right", "Left"), ("Top", "Bottom"), ("Back", "Front"))[axis][0 if r[axis] > 0 else 1]
+
+
+def label_markers(key, coll, root):
+    """Надписи → плоские метки «…__Ключ!номер»: игра рисует на них текст Roblox (его переводит автоперевод)."""
+    labels = {}
+    for obj in [o for o in coll.objects if o.type == "MESH" and "label" in o]:
+        mw = obj.matrix_world
+        pts = [mw @ v.co for v in obj.data.vertices]
+        if not pts:
+            bpy.data.objects.remove(obj)
+            continue
+        lo = Vector((min(p.x for p in pts), min(p.y for p in pts), min(p.z for p in pts)))
+        hi = Vector((max(p.x for p in pts), max(p.y for p in pts), max(p.z for p in pts)))
+        normal = (mw.to_3x3() @ Vector((0, 0, 1))).normalized()
+        size = Vector([max(h - l, 0.02) for h, l in zip(hi, lo)])
+        # небольшие поля, чтобы перевод (часто длиннее) поместился
+        for i in range(3):
+            if abs(normal[i]) < 0.7:
+                size[i] *= 1.12
+        n = len(labels) + 1
+        labels[n] = {"text": obj["label"], "face": face_of(normal)}
+        bm = bmesh.new()
+        bmesh.ops.create_cube(bm, size=1)
+        bmesh.ops.scale(bm, vec=size, verts=bm.verts)
+        mesh = bpy.data.meshes.new(f"Label{n}")
+        bm.to_mesh(mesh)
+        bm.free()
+        marker = bpy.data.objects.new(f"Label{n}", mesh)
+        coll.objects.link(marker)
+        marker.parent = obj.parent
+        marker.matrix_world = Matrix.Translation((lo + hi) / 2)
+        marker["base"], marker["key"], marker["label_id"] = f"Label{n}", obj["key"], n
+        bpy.data.objects.remove(obj)
+    return labels
+
+
 def merge_asset(key, coll, root):
     """Детали одного материала в одной группе → одна MeshPart. Имя несёт всё, что нужно игре:
-    «Путь/Группы__КлючПалитры[@анимация][#x,y,z точки вращения в координатах Roblox]»."""
+    «Путь/Группы__КлючПалитры[@анимация][#x,y,z точки вращения в координатах Roblox][!номер надписи]»."""
+    labels = label_markers(key, coll, root)
     groups = {}
     for obj in [o for o in coll.objects if o.type == "MESH"]:
         path, scope = scope_of(obj, root)
-        if "anim" in obj:  # собственная анимация детали (например, мигающая лампа) — отдельная деталь
+        if "label_id" in obj:  # метка надписи: всегда отдельная деталь
+            pivot = roblox(scope.matrix_world.translation) if scope is not None else None
+            gid = ("/".join(path) or "Body", obj["key"], scope["anim"] if scope is not None else None, pivot,
+                   f"!{obj['label_id']}")
+        elif "anim" in obj:  # собственная анимация детали (например, мигающая лампа) — отдельная деталь
             gid = ("/".join(path + [obj["base"]]), obj["key"], obj["anim"], None)
         elif obj.get("solo"):  # стены, сквозь проёмы которых ходят игроки: своя деталь — своя коллизия
             gid = ("/".join(path) or "Body", obj["key"], None, None, obj.name)
@@ -426,8 +475,10 @@ def merge_asset(key, coll, root):
             gid = ("/".join(path) or "Body", obj["key"], None, None)
         groups.setdefault(gid, []).append(obj)
     parts = []
-    for (path, pkey, anim, pivot, *_), objs in sorted(groups.items(), key=lambda kv: kv[0][:2]):
+    for (path, pkey, anim, pivot, *extra), objs in sorted(groups.items(), key=lambda kv: kv[0][:2]):
         name = f"{path}__{pkey}" + (f"@{anim}" if anim else "") + (f"#{pivot}" if pivot else "")
+        if extra and str(extra[0]).startswith("!"):
+            name += extra[0]
         chunks, chunk, tris = [], [], 0
         for o in objs:
             t = tri_count(o)
@@ -455,7 +506,8 @@ def merge_asset(key, coll, root):
     marker.parent = root
     total = sum(t for _, t in parts)
     print(f"[merge] {key:14s} {len(parts):3d} MeshPart, {total:6d} треугольников", flush=True)
-    return {"parts": [{"name": n, "tris": t} for n, t in parts], "tris": total}
+    return {"parts": [{"name": n, "tris": t} for n, t in parts], "tris": total,
+            "labels": {str(i): v for i, v in labels.items()}}
 
 
 def export_glb(built, out_dir):
@@ -482,7 +534,37 @@ def export_fbx(built, out_dir):
     old.update(manifest)
     with open(path, "w", encoding="utf-8") as f:
         json.dump(old, f, ensure_ascii=False, indent=1, sort_keys=True)
+    write_model_text(old)
     print(f"[export] {len(built)} ассетов → art/export/fbx/*.fbx, glb/, manifest.json", flush=True)
+
+
+def luau_str(text):
+    return '"' + text.replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n") + '"'
+
+
+def write_model_text(manifest):
+    """Тексты надписей моделей → src/shared/Config/ModelText.luau (исходный язык — английский)."""
+    lines = [
+        "-- Надписи на моделях из Blender: ключ модели → номер метки → текст и грань детали.",
+        "-- Исходный язык — английский; TextLabel с AutoLocalize переводит автоперевод Roblox.",
+        "-- Сгенерировано art/blender/build.py — правьте тексты в art/blender/assets/*.py.",
+        "",
+        "export type Label = { text: string, face: string }",
+        "",
+        "local ModelText: { [string]: { [number]: Label } } = {",
+    ]
+    for key in sorted(manifest):
+        labels = manifest[key].get("labels") or {}
+        if not labels:
+            continue
+        lines.append(f"\t{key} = {{")
+        for i in sorted(labels, key=int):
+            v = labels[i]
+            lines.append(f"\t\t[{int(i)}] = {{ text = {luau_str(v['text'])}, face = {luau_str(v['face'])} }},")
+        lines.append("\t},")
+    lines += ["}", "", "return ModelText", ""]
+    with open(os.path.join(ROOT, "src", "shared", "Config", "ModelText.luau"), "w", encoding="utf-8") as f:
+        f.write("\n".join(lines))
 
 
 def main():

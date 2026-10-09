@@ -69,7 +69,7 @@ def lab(k, root):
     k.box("RoofEdge", (12.5, 8.5, 0.1), (0, 0, 4.98), "Blue", bevel=0.03, parent=root)
     sign = k.empty("Sign", (0, -4.2, 5.45), root)
     k.box("SignBox", (5.4, 0.15, 0.95), (0, 0, 0), "White", bevel=0.08, parent=sign)
-    k.text("SignText", "ЛАБОРАТОРИЯ ДНК", 0.42, (0.45, -0.09, 0), "Blue", extrude=0.02, parent=sign, max_width=4.2)
+    k.text("SignText", "DNA LAB", 0.42, (0.45, -0.09, 0), "Blue", extrude=0.02, parent=sign, max_width=4.2)
     dna(k, "SignDna", (-2.3, -0.1, -0.38), 0.76, 0.14, sign, turns=1.2)
     k.box("Scanner", (0.4, 0.1, 0.6), (1.65, -4.0, 1.8), "Black", bevel=0.04, parent=root)
     scan = k.box("ScanPad", (0.25, 0.04, 0.3), (1.65, -4.06, 1.8), "NeonGreen", bevel=0.02, parent=root)
@@ -99,7 +99,7 @@ def lab(k, root):
     term = k.empty("Terminal", (0, -1.4, 1.8), root, rot=(20, 0, 0))
     k.box("TerminalBox", (1.6, 0.2, 1.2), (0, 0, 0), "Black", bevel=0.06, parent=term)
     k.box("TerminalScreen", (1.4, 0.02, 1.0), (0, -0.11, 0), "NeonGreen", bevel=0.0, parent=term)
-    k.text("TerminalText", "СОРТА", 0.26, (0, -0.13, 0), "Black", extrude=0.005, parent=term, max_width=1.2)
+    k.text("TerminalText", "VARIETIES", 0.26, (0, -0.13, 0), "Black", extrude=0.005, parent=term, max_width=1.2)
     # голограмма ДНК в центре
     holo = k.empty("Helix", (-0.5, 1.0, 0.3), root)
     k.lathe("HoloBase", [(0.5, 0), (0.5, 0.15), (0.35, 0.2), (0.0, 0.2)], (0, 0, 0), "Black", parent=holo)
@@ -174,7 +174,7 @@ def incubator(k, root):
             for j in range(5):
                 k.seedling(f"Sprout{t}{x}{j}", (x, -1.6 + j * 0.8, z + 0.16), root, rnd, scale=1.1, leaves=5)
     k.box("Panel", (1.0, 0.08, 0.5), (0.9, -2.33, 3.4), "Black", bevel=0.03, parent=root)
-    k.text("Temp", "37°", 0.22, (0.9, -2.38, 3.4), "NeonRed", extrude=0.01, parent=root)
+    k.text("Temp", "37°", 0.22, (0.9, -2.38, 3.4), "NeonRed", extrude=0.01, parent=root, logo=True)
 
 
 def quantum_irradiator(k, root):
@@ -233,7 +233,7 @@ def seed_vault(k, root):
     for i in range(3):
         k.box(f"Spoke{i}", (0.9, 0.06, 0.06), (0, 0, 0.45), "MetalDark", bevel=0.02, rot=(0, 0, i * 60),
               parent=door)
-    k.text("Label", "ГЕНОФОНД", 0.28, (0, -2.12, 3.0), "Blue", extrude=0.015, parent=root, max_width=2.4)
+    k.text("Label", "SEED VAULT", 0.28, (0, -2.12, 3.0), "Blue", extrude=0.015, parent=root, max_width=2.4)
 
 
 def god_monument(k, root):
@@ -261,7 +261,7 @@ def god_monument(k, root):
                rot=(90, 0, math.degrees(a) + 90), parent=idol)
     k.tag(idol, k.bob(idol, amplitude=0.3, cycles=1))
     k.box("Plaque", (2.4, 0.06, 0.6), (0, -2.53, 1.6), "Gold", bevel=0.02, parent=root)
-    k.text("PlaqueText", "КАРТОФЕЛЬНЫЙ БОГ", 0.2, (0, -2.57, 1.6), "Black", extrude=0.01, parent=root,
+    k.text("PlaqueText", "POTATO GOD", 0.2, (0, -2.57, 1.6), "Black", extrude=0.01, parent=root,
            max_width=2.2)
 
 
@@ -334,7 +334,7 @@ def star_terminal(k, root):
     k.box("BaseTop", (2.4, 2.4, 0.1), (0, 0, 0.42), "Black", bevel=0.03, parent=root)
     k.box("Kiosk", (1.6, 1.0, 2.4), (0, 0.3, 1.6), "Gold", bevel=0.2, segments=3, parent=root)
     k.box("Screen", (1.4, 0.1, 1.0), (0, -0.22, 2.2), "Black", bevel=0.05, parent=root)
-    k.text("ScreenText", "ЗВЁЗДЫ", 0.26, (0, -0.28, 2.2), "NeonYellow", extrude=0.01, parent=root, max_width=1.2)
+    k.text("ScreenText", "STARS", 0.26, (0, -0.28, 2.2), "NeonYellow", extrude=0.01, parent=root, max_width=1.2)
     star = k.empty("Star", (0, 0.3, 3.45), root)
     k.prism("StarShape", star_profile(0.7, 0.3), 0.25, (0, 0, 0), "NeonYellow", parent=star, bevel=0.06)
     k.tag(star, k.bob(star, amplitude=0.3, cycles=1))

@@ -270,7 +270,7 @@ def soil_sensor(k, root):
     k.lathe("Stake", [(0.06, 0.0), (0.06, 1.35), (0.0, 1.35)], (0, 0, 0), "Chrome", segments=12, parent=root)
     k.box("Display", (0.9, 0.28, 0.7), (0, 0, 1.6), "White", bevel=0.1, parent=root)
     k.box("Screen", (0.68, 0.04, 0.42), (0, -0.15, 1.62), "NeonGreen", bevel=0.02, parent=root)
-    k.text("Reading", "pH 6.5", 0.2, (0, -0.17, 1.62), "Black", extrude=0.01, parent=root, max_width=0.6)
+    k.text("Reading", "pH 6.5", 0.2, (0, -0.17, 1.62), "Black", extrude=0.01, parent=root, max_width=0.6, logo=True)
     solar_panel(k, "Solar", 0.8, 0.5, (0, 0.05, 2.02), -20, root)
     for x in (-0.12, 0.12):
         k.lathe(f"Prong{x}", [(0.025, 0.0), (0.025, -0.4), (0.0, -0.45)], (x, 0, 0.1), "Chrome", segments=8,
@@ -344,7 +344,7 @@ def flagpole(k, root):
     for side in (-1, 1):
         rot = (90, 0, 90) if side > 0 else (90, 0, -90)
         k.text(f"Text{side}", "POTATO INC", 0.32, (side * 0.06 + 0.16 * math.sin(2.75) * 0.5, 1.9, -0.45), "Red",
-               rot=rot, extrude=0.015, parent=flag, max_width=2.2)
+               rot=rot, extrude=0.015, parent=flag, max_width=2.2, logo=True)
         k.potato(f"Emblem{side}", (side * 0.07 + 0.16 * math.sin(2.2) * 0.4, 1.5, 0.25), 0.6, parent=flag,
                  key="WoodDark", seed=12, rot=(0, 90, 0))
     for z in (-0.85, 0.85):
@@ -370,7 +370,7 @@ def mascot(k, root):
             "FabricRed", segments=32, parent=plush, rot=(-8, 0, 0))
     k.lathe("CapButton", [(0.09, 0), (0.09, 0.05), (0.0, 0.08)], (0, 0.01, 3.73), "FabricWhite", parent=plush)
     k.box("Visor", (1.15, 0.8, 0.07), (0, -0.85, 3.2), "FabricRed", bevel=0.03, rot=(-12, 0, 0), parent=plush)
-    k.text("CapLogo", "P", 0.3, (0, -0.72, 3.38), "FabricWhite", rot=(78, 0, 0), extrude=0.02, parent=plush)
+    k.text("CapLogo", "P", 0.3, (0, -0.72, 3.38), "FabricWhite", rot=(78, 0, 0), extrude=0.02, parent=plush, logo=True)
     # ручки и ножки
     for side in (-1, 1):
         k.tube(f"Arm{side}", [(side * 0.95, -0.1, 2.0), (side * 1.35, -0.25, 1.6), (side * 1.45, -0.4, 1.25)], 0.12,

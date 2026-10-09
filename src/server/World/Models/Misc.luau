@@ -107,7 +107,7 @@ function Models.Bug(b: Builder, boss: boolean)
 		local sparks = Instance.new("Sparkles")
 		sparks.SparkleColor = Color3.fromRGB(120, 255, 60)
 		sparks.Parent = hitbox
-		b:billboard(hitbox, "🪲 ЖУК-МУТАНТ", 3.5, Color3.fromRGB(150, 255, 90), 120)
+		b:billboard(hitbox, "🪲 MUTANT BEETLE", 3.5, Color3.fromRGB(150, 255, 90), 120)
 	end
 	return hitbox
 end
@@ -213,12 +213,7 @@ function Models.FounderStatue(b: Builder)
 	end
 	b:potato(V(3, 8.3, 0.8), 2, C.gold, { collide = false }).Material = M.Foil
 	local plaque = b:box(V(4.2, 0.9, 0.1), V(0, 2, 3.26), C.gold, M.Foil, { collide = false })
-	b:label(
-		plaque,
-		Enum.NormalId.Back,
-		"ОСНОВАТЕЛЬ КАРТОФЕЛЬНОЙ ИМПЕРИИ",
-		{ color = C.black }
-	)
+	b:label(plaque, Enum.NormalId.Back, "FOUNDER OF THE POTATO EMPIRE", { color = C.black })
 end
 
 -- Зал Славы игроков сервера (ГДД 151)
@@ -240,7 +235,7 @@ function Models.HallOfFame(b: Builder)
 	title.Font = Enum.Font.GothamBlack
 	title.TextColor3 = C.gold
 	title.TextScaled = true
-	title.Text = "🏆 ЗАЛ СЛАВЫ"
+	title.Text = "🏆 HALL OF FAME"
 	title.Parent = gui
 	local list = Instance.new("TextLabel")
 	list.Name = "List"
@@ -252,7 +247,7 @@ function Models.HallOfFame(b: Builder)
 	list.TextScaled = true
 	list.TextXAlignment = Enum.TextXAlignment.Left
 	list.TextYAlignment = Enum.TextYAlignment.Top
-	list.Text = "Пока пусто"
+	list.Text = "No records yet"
 	list.Parent = gui
 	local back = gui:Clone()
 	back.Face = Enum.NormalId.Front

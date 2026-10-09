@@ -9,6 +9,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
 
 local AssetName = require(ReplicatedStorage.Shared.AssetName)
+local ModelText = require(ReplicatedStorage.Shared.Config.ModelText)
 local Palette = require(ReplicatedStorage.Shared.Config.Palette)
 
 local Templates = {}
@@ -170,6 +171,30 @@ local function applyAnimation(inst: Instance, anim: string, phaseOffset: number,
 	inst:AddTag(tag)
 end
 
+-- Надпись на модели: текст Roblox на грани плоской метки. Исходный текст английский;
+-- TextLabel.AutoLocalize (включён по умолчанию) отдаёт его автопереводу Roblox.
+local function addLabel(part: BasePart, label: ModelText.Label, color: Color3, neon: boolean)
+	part.Transparency = 1
+	part.CastShadow = false
+	local gui = Instance.new("SurfaceGui")
+	gui.Name = "ModelText"
+	gui.Face = (Enum.NormalId :: any)[label.face] or Enum.NormalId.Back
+	gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+	gui.PixelsPerStud = 60
+	gui.LightInfluence = if neon then 0 else 1
+	gui.Brightness = if neon then 2 else 1
+	local text = Instance.new("TextLabel")
+	text.Name = "Text"
+	text.Size = UDim2.fromScale(1, 1)
+	text.BackgroundTransparency = 1
+	text.Font = Enum.Font.GothamBlack
+	text.TextScaled = true
+	text.TextColor3 = color
+	text.Text = label.text
+	text.Parent = gui
+	gui.Parent = part
+end
+
 export type DressOptions = {
 	scale: number?, -- например, жук-босс в 3 раза больше
 	tint: { [string]: Color3 }?, -- перекраска ключа палитры (цвет дрона по сотруднику)
@@ -232,6 +257,15 @@ function Templates.dress(model: Model, key: string, origin: CFrame, opts: DressO
 		end
 		if info.anim and not info.pivot then
 			applyAnimation(part, info.anim, phaseOffset, userScale)
+		end
+		local labels = ModelText[key]
+		local label = info.label and labels and labels[info.label]
+		if label then
+			addLabel(part, label, part.Color, part.Material == Enum.Material.Neon)
+			part.CanCollide = false
+			part.CanQuery = false
+		elseif info.label then
+			part.Transparency = 1 -- метка без текста (устаревший экспорт)
 		end
 		if table.find(info.path, "Flames") then
 			-- пламя шаттла видно только во время старта (Effects.launch)

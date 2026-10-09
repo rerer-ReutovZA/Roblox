@@ -148,14 +148,14 @@ function Models.SellStand(b: Builder)
 	b:box(V(0.9, 0.05, 0.7), V(-2.2, 2.2, 2.2), C.metalDark, M.Metal, { collide = false })
 	-- табличка цены
 	local sign = b:box(V(2.4, 1, 0.15), V(1.6, 2.4, 2.9), C.white, M.SmoothPlastic, { collide = false })
-	b:label(sign, Enum.NormalId.Back, "$1 / шт", { color = C.green })
+	b:label(sign, Enum.NormalId.Back, "$1 EACH", { color = C.green })
 	-- скупщик (ГДД 114)
 	b:figure(
 		V(0, 0, 0.6),
 		{ shirt = Color3.fromRGB(70, 110, 160), pants = Color3.fromRGB(60, 60, 70), hat = C.woodDark, avatar = true },
 		0
 	)
-	b:billboard(counter, "Деревенский скупщик", 6, C.yellow)
+	b:billboard(counter, "Village Buyer", 6, C.yellow)
 	prompt(counter, "Sell", "Сдать картофель", "Скупщик", 0.2)
 end
 
@@ -168,7 +168,7 @@ function Models.NpcMatvey(b: Builder)
 		avatar = true,
 	}, 0, 0.95)
 	local head = fig:FindFirstChild("Head") :: BasePart
-	b:billboard(head, "Дед Матвей", 2.2, C.yellow)
+	b:billboard(head, "Grandpa Matvey", 2.2, C.yellow)
 	prompt(head, "Talk", "Поговорить", "Дед Матвей")
 end
 
@@ -228,7 +228,7 @@ function Models.HarvestTower(b: Builder)
 	b:tag(dish:groupModel(), "Spin", { Axis = "Y", Speed = 60 })
 	-- табличка контракта
 	local board = b:box(V(4.4, 1.6, 0.2), V(0, 3, 2.9), C.blue, M.SmoothPlastic, { collide = false })
-	b:label(board, Enum.NormalId.Back, "КОНТРАКТ: АВТО-ПРОДАЖА", { color = C.white })
+	b:label(board, Enum.NormalId.Back, "CONTRACT: AUTO-SELL", { color = C.white })
 end
 
 local function autoBedBase(b: Builder, frame: Color3, mat: Enum.Material)
@@ -351,7 +351,7 @@ function Models.LedBoard(b: Builder)
 	b:box(V(0.3, 3, 0.3), V(-2.2, 1.5, 0), C.metalDark, M.Metal)
 	b:box(V(0.3, 3, 0.3), V(2.2, 1.5, 0), C.metalDark, M.Metal)
 	local board = b:box(V(5, 2.4, 0.35), V(0, 3.9, 0), C.black, M.SmoothPlastic, { name = "Board" })
-	local label = b:label(board, Enum.NormalId.Back, "ВЫРАБОТКА: 0 кг", {
+	local label = b:label(board, Enum.NormalId.Back, "OUTPUT: 0 kg", {
 		color = Color3.fromRGB(255, 80, 60),
 		font = Enum.Font.Arcade,
 		name = "BoardGui",

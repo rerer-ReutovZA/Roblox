@@ -54,7 +54,7 @@ def founder_statue(k, root):
     k.box("ShovelBlade", (1.0, 0.15, 1.1), (-2.25, -0.6, -0.2), "Marble", bevel=0.08, parent=s)
     plaque = k.empty("Plaque", (0, -3.26, 2.0), root, rot=(0, 0, 0))
     k.box("PlaquePlate", (4.4, 0.08, 0.9), (0, 0, 0), "Gold", bevel=0.03, parent=plaque)
-    k.text("PlaqueText", "ОСНОВАТЕЛЬ КАРТОФЕЛЬНОЙ ИМПЕРИИ", 0.24, (0, -0.06, 0), "Black", extrude=0.01,
+    k.text("PlaqueText", "FOUNDER OF THE POTATO EMPIRE", 0.24, (0, -0.06, 0), "Black", extrude=0.01,
            parent=plaque, max_width=4.1)
 
 
@@ -98,7 +98,7 @@ def rebirth_gate(k, root):
     k.box("Lintel", (9.0, 1.4, 1.2), (0, 0, 9.4), "Black", bevel=0.15, segments=3, parent=root)
     k.box("LintelTrim", (9.2, 1.5, 0.15), (0, 0, 8.85), "Gold", bevel=0.04, parent=root)
     k.box("Plaque", (5.0, 0.1, 0.8), (0, -0.75, 9.4), "Black", bevel=0.04, parent=root)
-    k.text("PlaqueText", "REBIRTH", 0.55, (0, -0.82, 9.4), "NeonPurple", extrude=0.02, parent=root, max_width=4.4)
+    k.text("PlaqueText", "REBIRTH", 0.55, (0, -0.82, 9.4), "NeonPurple", extrude=0.02, parent=root, max_width=4.4, logo=True)
     swirl = k.empty("Swirl", (0, 0, 4.7), root)
     for i in range(6):
         a = i / 6 * math.tau

@@ -169,7 +169,7 @@ def sell_stand(k, root):
     k.box("Counter", (6.6, 1.3, 1.3), (0, 0, 0.7), "Wood", bevel=0.05, parent=counter)
     k.box("CounterTop", (6.9, 1.55, 0.16), (0, -0.05, 1.42), "WoodDark", bevel=0.05, parent=counter)
     k.box("SignBoard", (4.2, 0.1, 0.62), (0, -0.72, 0.95), "Yellow", bevel=0.05, parent=counter)
-    k.text("SignText", "СКУПКА КАРТОФЕЛЯ", 0.36, (0, -0.79, 0.93), "WoodDark", extrude=0.03, parent=counter,
+    k.text("SignText", "POTATO BUYER", 0.36, (0, -0.79, 0.93), "WoodDark", extrude=0.03, parent=counter,
            max_width=3.9)
     # весы и касса
     k.lathe("ScaleBase", [(0.36, 0), (0.36, 0.06), (0.28, 0.16), (0.08, 0.2), (0.0, 0.2)], (-2.3, -0.1, 1.5),
@@ -238,7 +238,7 @@ def sell_stand(k, root):
     board = k.empty("PriceBoardGroup", (2.75, -3.05, 1.2), root, rot=(-12, 0, 0))
     k.box("PriceBoard", (1.3, 0.08, 0.9), (0, 0, 0), "Black", bevel=0.03, parent=board)
     k.box("PriceFrame", (1.42, 0.06, 1.02), (0, 0.04, 0), "Wood", bevel=0.03, parent=board)
-    k.text("PriceText", "$1 / шт", 0.3, (0, -0.06, 0), "White", extrude=0.02, parent=board, max_width=1.1)
+    k.text("PriceText", "$1 EACH", 0.3, (0, -0.06, 0), "White", extrude=0.02, parent=board, max_width=1.1)
     for x in (-0.5, 0.5):
         k.box(f"EaselLeg{x}", (0.08, 0.08, 1.6), (x, 0.1, -0.42), "WoodDark", bevel=0.02, parent=board)
 
@@ -312,7 +312,7 @@ def harvest_tower(k, root):
     # баннер контракта
     k.box("Banner", (3.4, 0.1, 0.95), (0, -2.4, 2.6), "Blue", bevel=0.05, parent=root)
     k.box("BannerStripe", (3.42, 0.11, 0.12), (0, -2.4, 2.2), "Yellow", bevel=0.02, parent=root)
-    k.text("BannerText", "АВТО-ПРОДАЖА", 0.42, (0, -2.47, 2.65), "White", extrude=0.03, parent=root, max_width=3.1)
+    k.text("BannerText", "AUTO-SELL", 0.42, (0, -2.47, 2.65), "White", extrude=0.03, parent=root, max_width=3.1)
     for x in (-1.5, 1.5):
         k.tube(f"BannerTie{x}", [(x, -2.36, 3.0), (x * 0.95, -2.2, 3.05)], 0.025, "MetalDark", parent=root,
                smooth_path=False)

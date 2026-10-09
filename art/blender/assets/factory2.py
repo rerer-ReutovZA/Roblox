@@ -73,7 +73,7 @@ def cradle(k, name, x, y, z_top, radius, parent, key="MetalDark"):
 # Модули
 # ----------------------------------------------------------------------
 def washer(k, root):
-    top = machine(k, root, "Blue", "NeonCyan", h=1.4, label="МОЙКА x1.5", label_key="NeonCyan")
+    top = machine(k, root, "Blue", "NeonCyan", h=1.4, label="WASHER x1.5", label_key="NeonCyan")
     y = 0.2
     for x in (-2.0, 1.4):
         cradle(k, f"Cradle{x}", x, y, top + 0.5, 1.1, root)
@@ -99,7 +99,7 @@ def washer(k, root):
 
 
 def peeler(k, root):
-    top = machine(k, root, "Steel", "Orange", h=0.9, label="ПИЛЕР +0.5", label_key="NeonOrange")
+    top = machine(k, root, "Steel", "Orange", h=0.9, label="PEELER +0.5", label_key="NeonOrange")
     x, y = -0.6, 0.4
     vessel = [(0.0, 0.0), (0.6, 0.02), (1.1, 0.2), (1.3, 0.55), (1.3, 2.4), (1.1, 2.8), (0.6, 3.05), (0.4, 3.1),
               (0.4, 3.4), (0.48, 3.45), (0.48, 3.55), (0.0, 3.55)]
@@ -124,7 +124,7 @@ def peeler(k, root):
 
 
 def fryer(k, root):
-    top = machine(k, root, "Steel", "Orange", h=0.9, label="ФРИТЮР x4", label_key="NeonOrange")
+    top = machine(k, root, "Steel", "Orange", h=0.9, label="FRYER x4", label_key="NeonOrange")
     y = 0.2
     k.box("Tank", (5.0, 3.2, 1.0), (0, y, top + 0.5), "Chrome", bevel=0.1, parent=root)
     k.box("Oil", (4.6, 2.8, 0.06), (0, y, top + 0.98), "NeonOrange", bevel=0.02, parent=root)
@@ -143,7 +143,7 @@ def fryer(k, root):
 
 
 def spice_drum(k, root):
-    top = machine(k, root, "RedMetal", "Yellow", h=0.9, label="СПЕЦИИ x6", label_key="NeonYellow")
+    top = machine(k, root, "RedMetal", "Yellow", h=0.9, label="SPICES x6", label_key="NeonYellow")
     y = 0.2
     for x in (-1.7, 1.7):
         cradle(k, f"Cradle{x}", x, y, top + 0.6 - x * 0.07, 1.2, root)
@@ -166,7 +166,7 @@ def spice_drum(k, root):
 
 
 def puree_vat(k, root):
-    top = machine(k, root, "Steel", "Yellow", h=0.5, label="ПЮРЕ +1", label_key="NeonYellow")
+    top = machine(k, root, "Steel", "Yellow", h=0.5, label="PUREE +1", label_key="NeonYellow")
     x, y = -0.4, 0.3
     k.lathe("Vat", [(0.0, 0.0), (1.6, 0.0), (1.8, 0.2), (1.8, 2.5), (1.9, 2.6), (1.9, 2.7), (1.7, 2.7), (1.7, 0.3),
                     (0.0, 0.3)], (x, y, top), "Chrome", segments=48, parent=root, sharp=60)
@@ -184,7 +184,7 @@ def puree_vat(k, root):
 
 
 def packer(k, root):
-    top = machine(k, root, "White", "Blue", h=2.2, label="УПАКОВКА +0.5", label_key="NeonCyan")
+    top = machine(k, root, "White", "Blue", h=2.2, label="PACKING +0.5", label_key="NeonCyan")
     y = 0.2
     k.box("FeedBox", (1.4, 1.4, 1.6), (-1.5, y + 0.6, top + 0.8), "Steel", bevel=0.1, parent=root)
     k.lathe("FilmRoll", [(0.42, -0.6), (0.42, 0.6), (0.1, 0.6), (0.1, -0.6)], (-1.5, y - 0.4, top + 0.4), "Chrome",
@@ -200,7 +200,7 @@ def packer(k, root):
 
 
 def cryo_tunnel(k, root):
-    top = machine(k, root, "White", "NeonCyan", h=0.9, label="КРИО x10", label_key="NeonCyan")
+    top = machine(k, root, "White", "NeonCyan", h=0.9, label="CRYO x10", label_key="NeonCyan")
     y = 0.2
     k.box("Tunnel", (5.4, 3.0, 2.2), (0, y, top + 1.1), "White", bevel=0.25, segments=3, parent=root)
     k.box("Frost", (5.6, 3.2, 0.3), (0, y, top + 2.2), "Ice", bevel=0.12, parent=root)
@@ -218,7 +218,7 @@ def cryo_tunnel(k, root):
 
 
 def sublimator(k, root):
-    top = machine(k, root, "Steel", "NeonPurple", h=0.5, label="СУБЛИМАЦИЯ x18", label_key="NeonPurple")
+    top = machine(k, root, "Steel", "NeonPurple", h=0.5, label="FREEZE-DRY x18", label_key="NeonPurple")
     y = 0.3
     for x in (-1.6, 1.4):
         cradle(k, f"Cradle{x}", x, y, top + 0.4, 1.4, root)
@@ -235,7 +235,7 @@ def sublimator(k, root):
 
 
 def autoclave(k, root):
-    top = machine(k, root, "Steel", "Red", h=0.5, label="АВТОКЛАВ +1.5", label_key="NeonRed")
+    top = machine(k, root, "Steel", "Red", h=0.5, label="AUTOCLAVE +1.5", label_key="NeonRed")
     y = 0.3
     for x in (-1.8, 1.2):
         cradle(k, f"Cradle{x}", x, y, top + 0.4, 1.4, root)
@@ -258,7 +258,7 @@ def autoclave(k, root):
 
 
 def starch_mill(k, root):
-    top = machine(k, root, "Steel", "White", h=0.5, label="КРАХМАЛ +2", label_key="NeonWhite")
+    top = machine(k, root, "Steel", "White", h=0.5, label="STARCH +2", label_key="NeonWhite")
     x, y = -0.8, 0.3
     k.lathe("MillBed", [(1.6, 0), (1.6, 0.5), (1.45, 0.5), (1.45, 0.2), (0.0, 0.2)], (x, y, top), "MetalDark",
             segments=40, parent=root)
@@ -303,14 +303,14 @@ def bioreactor(k, root):
     k.tube("Transfer", [(-1.4, 0.6, 1.0), (-1.2, 0.6, 1.0)], 0.12, "Chrome", parent=root, smooth_path=False)
     k.tube("Bridge", [(-2.6 + 1.2, 0.6, 1.0), (-1.2, 0.6, 1.0)], 0.12, "Chrome", parent=root, smooth_path=False)
     k.box("Sign", (3.2, 0.08, 0.6), (-1.3, -2.45, 1.6), "Black", bevel=0.03, parent=root)
-    k.text("SignText", "БИОРЕАКТОР x35", 0.26, (-1.3, -2.5, 1.6), "NeonGreen", extrude=0.015, parent=root,
+    k.text("SignText", "BIOREACTOR x35", 0.26, (-1.3, -2.5, 1.6), "NeonGreen", extrude=0.015, parent=root,
            max_width=2.9)
     for x in (-2.0, -0.6):
         k.box(f"SignLeg{x}", (0.08, 0.08, 1.3), (x, -2.42, 0.85), "MetalDark", bevel=0.02, parent=root)
 
 
 def extruder(k, root):
-    top = machine(k, root, "Steel", "Yellow", h=0.5, label="ПАЛОЧКИ +1", label_key="NeonYellow")
+    top = machine(k, root, "Steel", "Yellow", h=0.5, label="STICKS +1", label_key="NeonYellow")
     y = 0.3
     for x in (-1.8, 1.6):
         cradle(k, f"Cradle{x}", x, y, top + 0.5, 0.7, root)
@@ -360,7 +360,7 @@ def quantum_converter(k, root):
     k.potato("CorePotato", (0, 0, 0), 2.0, parent=core, key="Gold", seed=19, rot=(0, 15, 30))
     k.tag(core, k.bob(core, amplitude=0.35, cycles=1))
     k.box("Sign", (4.0, 0.1, 0.7), (0, -4.3, 1.3), "Black", bevel=0.04, parent=root)
-    k.text("SignText", "КВАНТ x100", 0.4, (0, -4.36, 1.3), "NeonPurple", extrude=0.02, parent=root, max_width=3.6)
+    k.text("SignText", "QUANTUM x100", 0.4, (0, -4.36, 1.3), "NeonPurple", extrude=0.02, parent=root, max_width=3.6)
     for x in (-1.5, 1.5):
         k.box(f"SignLeg{x}", (0.1, 0.1, 0.8), (x, -4.3, 0.75), "MetalDark", bevel=0.02, parent=root)
 
@@ -441,7 +441,7 @@ def factory_hall(k, root):
                   parent=root)
     # вывеска
     k.box("Sign", (12.0, 0.3, 1.4), (0, -hd - 0.4, H - 1.1), "Blue", bevel=0.1, parent=root)
-    k.text("SignText", "ЗАВОД ПЕРЕРАБОТКИ", 0.8, (0, -hd - 0.58, H - 1.1), "White", extrude=0.04, parent=root,
+    k.text("SignText", "PROCESSING PLANT", 0.8, (0, -hd - 0.58, H - 1.1), "White", extrude=0.04, parent=root,
            max_width=11.0)
     # декор: коробки чипсов и мешки
     for j in range(3):

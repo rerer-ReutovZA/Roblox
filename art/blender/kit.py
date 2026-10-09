@@ -444,8 +444,12 @@ class Kit:
         return self.cage(name, out, faces, loc, key, levels=levels, parent=parent, rot=rot, anim=anim)
 
     def text(self, name, body, size, loc, key, rot=(90, 0, 0), extrude=0.04, parent=None, align="CENTER",
-             max_width=None):
-        """Объёмный текст (по умолчанию лицом к -Y)."""
+             max_width=None, logo=False):
+        """Надпись (по умолчанию лицом к -Y), всегда на английском.
+
+        В превью — объёмный текст. При экспорте обычная надпись заменяется плоской меткой, на которой игра
+        рисует текст Roblox (SurfaceGui): его переводит автоперевод Roblox. logo=True — логотип или символ
+        («POTATO TYCOON», «H», «XL»): остаётся объёмной геометрией и не переводится."""
         cu = bpy.data.curves.new(name + "_font", "FONT")
         cu.body = body
         cu.size = size
@@ -469,6 +473,8 @@ class Kit:
         bpy.data.objects.remove(tmp)
         bpy.data.curves.remove(cu)
         obj = self._object(name, mesh, key, parent, loc, rot)
+        if not logo:
+            obj["label"] = body
         return obj
 
     # ------------------------------------------------------------------
