@@ -146,7 +146,8 @@ function Models.Robot(b: Builder, color: Color3)
 end
 
 function Models.StaffNpc(b: Builder, color: Color3, title: string)
-	local fig = b:figure(V(0, 0, 0), { shirt = color, pants = Color3.fromRGB(50, 55, 65), hat = nil }, 0, 0.85)
+	local fig =
+		b:figure(V(0, 0, 0), { shirt = color, pants = Color3.fromRGB(50, 55, 65), hat = nil, avatar = true }, 0, 0.85)
 	local head = fig:FindFirstChild("Head") :: BasePart
 	b:billboard(head, title, 1.8, Color3.fromRGB(255, 240, 180), 30)
 end

@@ -152,7 +152,7 @@ function Models.SellStand(b: Builder)
 	-- скупщик (ГДД 114)
 	b:figure(
 		V(0, 0, 0.6),
-		{ shirt = Color3.fromRGB(70, 110, 160), pants = Color3.fromRGB(60, 60, 70), hat = C.woodDark },
+		{ shirt = Color3.fromRGB(70, 110, 160), pants = Color3.fromRGB(60, 60, 70), hat = C.woodDark, avatar = true },
 		0
 	)
 	b:billboard(counter, "Деревенский скупщик", 6, C.yellow)
@@ -164,11 +164,10 @@ function Models.NpcMatvey(b: Builder)
 		shirt = Color3.fromRGB(150, 60, 50),
 		pants = Color3.fromRGB(70, 80, 120),
 		hat = Color3.fromRGB(215, 185, 110),
+		beard = C.white,
+		avatar = true,
 	}, 0, 0.95)
 	local head = fig:FindFirstChild("Head") :: BasePart
-	-- борода
-	local headLocal = b.origin:PointToObjectSpace(head.CFrame.Position)
-	b:box(V(0.9, 0.55, 0.25), headLocal + V(0, -0.45, 0.55), C.white, M.SmoothPlastic, { collide = false })
 	b:billboard(head, "Дед Матвей", 2.2, C.yellow)
 	prompt(head, "Talk", "Поговорить", "Дед Матвей")
 end

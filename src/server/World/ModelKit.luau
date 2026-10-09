@@ -348,19 +348,108 @@ function Kit.potato(self: Builder, pos: Vector3, scale: number, color: Color3?, 
 	return self:ellipsoid(Vector3.new(0.9, 0.6, 0.65) * scale, pos, color or Kit.C.potato, M.SmoothPlastic, opts)
 end
 
+export type FigureColors = {
+	shirt: Color3,
+	pants: Color3,
+	skin: Color3?,
+	hat: Color3?,
+	beard: Color3?,
+	avatar: boolean?, -- заменить фигурку настоящим аватаром R15 (когда игра запущена в Roblox)
+}
+
+local IDLE_ANIMATION = "rbxassetid://507766666" -- стандартная поза ожидания R15
+
+local function weldTo(head: BasePart, part: BasePart, offset: CFrame)
+	part.Anchored = false
+	part.CanCollide = false
+	part.Massless = true
+	part.CFrame = head.CFrame * offset
+	local weld = Instance.new("WeldConstraint")
+	weld.Part0 = head
+	weld.Part1 = part
+	weld.Parent = part
+	part.Parent = head.Parent
+end
+
+-- Аватар R15 вместо блочной фигурки. Создаётся асинхронно (описание грузится с сервера Roblox);
+-- таблички и подсказки с головы фигурки переезжают на голову аватара. Без Roblox (тесты) остаётся фигурка.
+function Kit.avatarize(self: Builder, fig: Model, colors: FigureColors, pos: Vector3, facing: number?, scale: number?)
+	local origin = self.origin
+	local s = scale or 1
+	task.spawn(function()
+		local ok, rig = pcall(function()
+			local desc = Instance.new("HumanoidDescription")
+			local skin = colors.skin or Kit.C.skin
+			desc.HeadColor = skin
+			desc.TorsoColor = colors.shirt
+			desc.LeftArmColor = colors.shirt
+			desc.RightArmColor = colors.shirt
+			desc.LeftLegColor = colors.pants
+			desc.RightLegColor = colors.pants
+			desc.HeightScale = s
+			desc.WidthScale = s
+			desc.DepthScale = s
+			desc.HeadScale = s
+			return game:GetService("Players"):CreateHumanoidModelFromDescription(desc, Enum.HumanoidRigType.R15)
+		end)
+		if not ok or not rig or not fig.Parent then
+			return
+		end
+		local humanoid = rig:FindFirstChildOfClass("Humanoid")
+		local root = rig:FindFirstChild("HumanoidRootPart") :: BasePart?
+		local head = rig:FindFirstChild("Head") :: BasePart?
+		if not humanoid or not root or not head then
+			rig:Destroy()
+			return
+		end
+		humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+		root.Anchored = true
+		local lift = humanoid.HipHeight + root.Size.Y / 2
+		rig:PivotTo(
+			origin * CFrame.new(pos) * CFrame.Angles(0, math.rad((facing or 0) + 180), 0) * CFrame.new(0, lift, 0)
+		)
+		local hs = head.Size
+		if colors.hat then
+			local brim = Instance.new("Part")
+			brim.Shape = Enum.PartType.Cylinder
+			brim.Size = Vector3.new(0.1, hs.X * 1.6, hs.X * 1.6)
+			brim.Color = colors.hat
+			brim.Material = Enum.Material.Fabric
+			weldTo(head, brim, CFrame.new(0, hs.Y * 0.42, 0) * CFrame.Angles(0, 0, math.rad(90)))
+			local crown = brim:Clone()
+			crown.Size = Vector3.new(hs.Y * 0.45, hs.X * 0.95, hs.X * 0.95)
+			weldTo(head, crown, CFrame.new(0, hs.Y * 0.62, 0) * CFrame.Angles(0, 0, math.rad(90)))
+		end
+		if colors.beard then
+			local beard = Instance.new("Part")
+			beard.Size = Vector3.new(hs.X * 0.75, hs.Y * 0.45, hs.Z * 0.3)
+			beard.Color = colors.beard
+			beard.Material = Enum.Material.SmoothPlastic
+			weldTo(head, beard, CFrame.new(0, -hs.Y * 0.38, -hs.Z * 0.42))
+		end
+		local oldHead = fig:FindFirstChild("Head")
+		if oldHead then
+			for _, c in ipairs(oldHead:GetChildren()) do
+				if c:IsA("BillboardGui") or c:IsA("ProximityPrompt") then
+					c.Parent = head
+				end
+			end
+		end
+		rig.Name = fig.Name
+		rig.Parent = fig.Parent
+		fig:Destroy()
+		pcall(function()
+			local animator = humanoid:FindFirstChildOfClass("Animator") or Instance.new("Animator")
+			animator.Parent = humanoid
+			local animation = Instance.new("Animation")
+			animation.AnimationId = IDLE_ANIMATION
+			animator:LoadAnimation(animation):Play()
+		end)
+	end)
+end
+
 -- Блочная фигурка человека (NPC без Humanoid). pos — точка на полу.
-function Kit.figure(
-	self: Builder,
-	pos: Vector3,
-	colors: {
-		shirt: Color3,
-		pants: Color3,
-		skin: Color3?,
-		hat: Color3?,
-	},
-	facing: number?,
-	scale: number?
-): Model
+function Kit.figure(self: Builder, pos: Vector3, colors: FigureColors, facing: number?, scale: number?): Model
 	local s = scale or 1
 	local g = self:group("Figure", pos)
 	local yaw = facing or 0
@@ -385,7 +474,14 @@ function Kit.figure(
 		g:box(Vector3.new(1.35, 0.35, 1.35) * s, at(Vector3.new(0, 5.1, 0)), colors.hat, M.SmoothPlastic, o)
 		g:box(Vector3.new(1.35, 0.12, 0.5) * s, at(Vector3.new(0, 4.98, 0.85)), colors.hat, M.SmoothPlastic, o)
 	end
-	return g:groupModel()
+	if colors.beard then
+		g:box(Vector3.new(0.9, 0.55, 0.25) * s, at(Vector3.new(0, 3.95, 0.55)), colors.beard, M.SmoothPlastic, o)
+	end
+	local model = g:groupModel()
+	if colors.avatar then
+		self:avatarize(model, colors, pos, facing, scale)
+	end
+	return model
 end
 
 -- Общая станина промышленного модуля: рама, корпус, панель управления, ножки
