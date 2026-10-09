@@ -11,6 +11,7 @@ local Format = require(ReplicatedStorage.Shared.Format)
 local Theme = require(script.Parent.Theme)
 local Root = require(script.Parent.Root)
 local State = require(script.Parent.Parent.State)
+local Sound = require(script.Parent.Parent.Controllers.Sound)
 
 local C = Theme.Colors
 local New = Theme.New
@@ -136,7 +137,7 @@ function Hud.init()
 	local menu = New("Frame", {
 		AnchorPoint = Vector2.new(0, 0.5),
 		Position = UDim2.new(0, 12, 0.5, 0),
-		Size = UDim2.fromOffset(76, 470),
+		Size = UDim2.fromOffset(76, 520),
 		BackgroundTransparency = 1,
 		Parent = Root.gui,
 	}, {
@@ -180,6 +181,26 @@ function Hud.init()
 			Parent = button,
 		})
 	end
+
+	-- музыка вкл/выкл
+	local musicButton
+	musicButton = Theme.button({
+		Size = UDim2.fromOffset(76, 44),
+		BackgroundColor3 = C.Panel,
+		BackgroundTransparency = 0.1,
+		LayoutOrder = #MENU + 1,
+		Text = "🎵 Music",
+		TextScaled = false,
+		TextSize = 15,
+		Parent = menu,
+	}, function()
+		local on = not Sound.musicEnabled()
+		Sound.play("Click")
+		Sound.setMusic(on)
+		musicButton.Text = if on then "🎵 Music" else "🔇 Music"
+		musicButton.TextColor3 = if on then Color3.new(1, 1, 1) else C.Muted
+	end)
+	Theme.stroke(C.Stroke, 1.5, 0.8).Parent = musicButton
 
 	local function refresh()
 		local cash = State.num("Cash")

@@ -278,7 +278,7 @@ function Effects.handle(data)
 		Sound.play("Golden")
 	elseif kind == "Confetti" then
 		Effects.confetti(data.big)
-		Sound.play("Cash")
+		Sound.play("Fanfare")
 	elseif kind == "Launch" then
 		launch(data.plotIndex)
 	elseif kind == "Squash" then
@@ -292,6 +292,7 @@ function Effects.handle(data)
 		if stage then
 			Effects.banner("STAGE " .. data.stage, stage.name)
 			Effects.confetti(false)
+			Sound.play("Fanfare")
 		end
 	elseif kind == "Sound" then
 		Sound.play(data.sound)

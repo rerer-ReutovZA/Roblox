@@ -54,6 +54,7 @@ function Models.GenPetrol(b: Builder)
 	smoke(exhaust, nil, 0.08)
 	local led = b:box(V(0.15, 0.15, 0.05), V(0.5, 1.1, 0.86), C.green, M.Neon, { collide = false })
 	b:tag(led, "Pulse", { Speed = 2 })
+	b.model:SetAttribute("Sound", "Engine")
 end
 
 function Models.GenDiesel25(b: Builder)
@@ -64,6 +65,7 @@ function Models.GenDiesel25(b: Builder)
 	smoke(stack)
 	local label = b:box(V(1.6, 0.5, 0.05), V(-0.8, 2.4, 1.63), C.white, M.SmoothPlastic, { collide = false })
 	b:label(label, Enum.NormalId.Back, "25 kW", { color = C.black })
+	b.model:SetAttribute("Sound", "Engine")
 end
 
 function Models.GenDiesel100(b: Builder)
@@ -77,6 +79,7 @@ function Models.GenDiesel100(b: Builder)
 	end
 	local label = b:box(V(2.4, 0.7, 0.05), V(0, 2.6, 2.11), C.black, M.SmoothPlastic, { collide = false })
 	b:label(label, Enum.NormalId.Back, "100 kW", { color = C.yellow })
+	b.model:SetAttribute("Sound", "Engine")
 end
 
 function Models.Biogas(b: Builder)
@@ -228,6 +231,7 @@ function Models.Substation(b: Builder)
 	local sign = b:box(V(1.4, 1, 0.05), V(0, 1.3, 2.4), C.yellow, M.SmoothPlastic, { collide = false })
 	b:label(sign, Enum.NormalId.Back, "⚡ DANGER", { color = C.black })
 	b.model:SetAttribute("Sparks", true)
+	b.model:SetAttribute("Sound", "Hum")
 end
 
 function Models.Battery(b: Builder)

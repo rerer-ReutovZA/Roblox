@@ -610,7 +610,7 @@ function Windows.open(name: string)
 	local scale = New("UIScale", { Scale = 0.85, Parent = frame })
 	TweenService:Create(scale, TweenInfo.new(0.18, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 })
 		:Play()
-	Sound.play("Click")
+	Sound.play("Open")
 	Windows.refresh()
 end
 

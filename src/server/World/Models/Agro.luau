@@ -292,6 +292,7 @@ function Models.Sprinkler(b: Builder)
 	water.Acceleration = V(0, -25, 0)
 	water.Parent = nozzle
 	b:tag(head:groupModel(), "Spin", { Axis = "Y", Speed = 120 })
+	b.model:SetAttribute("Sound", "Water")
 end
 
 -- Столб с двумя светильниками над рядами грядок (±5 по Z)
